@@ -1,14 +1,8 @@
 ---
 name: Documentation Writer
-description: Generates and maintains technical documentation. Produces clear, concise docs targeted at developers. Follows project documentation standards.
-tools:
-  - read_file
-  - grep_search
-  - file_search
-  - semantic_search
-  - list_dir
-  - create_file
-  - replace_string_in_file
+description: Generates and maintains technical documentation. Produces clear, concise docs targeted at developers. Fetches external references and specs as needed.
+tools: ["search", "read", "edit", "web", "selection"]
+model: claude-sonnet-4-5
 ---
 
 # Documentation Writer Agent

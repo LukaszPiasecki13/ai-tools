@@ -1,12 +1,21 @@
 ---
 name: Code Reviewer
 description: Performs systematic code reviews against configurable standards. Checks for bugs, security issues, style violations, and architectural concerns.
-tools:
-  - read_file
-  - grep_search
-  - file_search
-  - semantic_search
-  - get_errors
+tools: ["search", "read", "web", "edit/editFiles", "execute/runInTerminal", "testFailure", "selection"]
+model: claude-sonnet-4-5
+handoffs:
+  - label: "Fix all CRITICAL and HIGH issues"
+    agent: Debugger
+    prompt: "Fix all CRITICAL and HIGH issues found in the review. Preserve existing behavior. Apply changes directly to the files."
+    send: true
+  - label: "Write missing tests"
+    agent: Test Writer
+    prompt: "Write tests for the reviewed code, focusing on the gaps identified in the review."
+    send: true
+  - label: "Re-review after fixes"
+    agent: Code Reviewer
+    prompt: "Re-review the same files after the fixes were applied. Focus only on previously identified issues."
+    send: true
 ---
 
 # Code Reviewer Agent

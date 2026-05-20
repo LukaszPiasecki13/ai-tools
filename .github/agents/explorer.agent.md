@@ -1,13 +1,8 @@
 ---
 name: Explorer
-description: Fast read-only codebase exploration and research agent. Finds patterns, traces data flows, answers architectural questions, and maps dependencies.
-tools:
-  - read_file
-  - grep_search
-  - file_search
-  - semantic_search
-  - list_dir
-  - vscode_listCodeUsages
+description: Fast read-only codebase exploration and research agent. Finds patterns, traces data flows, answers architectural questions, and maps dependencies. Also fetches external documentation and specs.
+tools: ["search", "read", "web", "selection"]
+model: claude-sonnet-4-5
 ---
 
 # Explorer Agent

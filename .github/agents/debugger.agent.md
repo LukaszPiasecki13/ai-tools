@@ -1,14 +1,17 @@
 ---
 name: Debugger
 description: Systematic bug diagnosis and fix agent. Uses structured debugging methodology to identify root causes and propose minimal, targeted fixes.
-tools:
-  - read_file
-  - grep_search
-  - file_search
-  - semantic_search
-  - get_errors
-  - run_in_terminal
-  - replace_string_in_file
+tools: ["search", "read", "edit", "execute", "web", "selection"]
+model: claude-sonnet-4-5
+handoffs:
+  - label: "Review the fix"
+    agent: Code Reviewer
+    prompt: "Review the fix that was just applied. Check for correctness, edge cases, and regressions."
+    send: true
+  - label: "Write a regression test"
+    agent: Test Writer
+    prompt: "Write a regression test that would have caught the bug that was just fixed."
+    send: true
 ---
 
 # Debugger Agent
