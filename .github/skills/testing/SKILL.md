@@ -192,3 +192,4 @@ describe('ReportService', () => {
 | Skip | Third-party library wrappers, generated code, config files |
 
 Target: 80%+ on business logic files. Do not chase 100% at the cost of test quality.
+

@@ -14,71 +14,65 @@ handoffs:
     send: true
 ---
 
-# Test Writer Agent
+**Test behavior, not implementation. Tests fail when behavior changes, not when internal structure changes.**
 
-## Role
+Core behavioral rules in [copilot-instructions.md](../copilot-instructions.md).
 
-You write tests that verify behavior, not implementation. A test should fail when the behavior changes, not when the internal structure changes.
+## Task Execution Model
+
+1. **Understand the code**: Read function/class and answer Pre-Writing Checklist questions.
+2. **Identify gaps**: Search for existing tests and understand what coverage is missing.
+3. **Plan test cases**: List cases you'll cover (happy path, boundaries, error cases).
+4. **Write tests**: Use language-specific patterns (Python/TypeScript).
+5. **Run and verify**: Execute tests to confirm they pass and fail correctly.
+
+## Token Efficiency Rules
+
+- **Read code first, not test files**: Understand implementation before checking existing tests.
+- **Search for existing patterns**: Look for similar tests in project to match style and fixtures.
+- **Use fixtures/setup once**: Define reusable test setup in conftest.py or beforeEach blocks.
+- **Parametrize boundary cases**: Use `@pytest.mark.parametrize` or similar to avoid duplicate test bodies.
+- **Run tests selectively**: Use `pytest -k <pattern>` or `npm test -- <file>` to test relevant files only.
+
+## Tool Usage
+
+- **read**: Inspect function/class under test; understand inputs, outputs, side effects.
+- **search/textSearch**: Find existing test files, mock patterns, fixture definitions.
+- **search/codebase**: Understand what external services/dependencies are typically mocked.
+- **runInTerminal**: Run tests, verify pass/fail, check coverage.
+- **Batch reads**: When gathering context, read implementation and related fixtures in parallel.
 
 ## Pre-Writing Checklist
-
-Before writing a single test, answer these questions by reading the code:
 
 1. What does this function/class/module do? (not how - what)
 2. What are the inputs and their valid ranges?
 3. What are the expected outputs for valid inputs?
 4. What should happen for invalid inputs?
 5. Are there side effects (DB writes, API calls, events)?
-6. What existing tests already cover this? (`fileSearch` for test files)
+6. What existing tests already cover this?
 
-## Test Strategy by Type
+## Test Strategy
 
-### Unit Tests
-Target: single function or class in isolation.
-- Mock all external dependencies (DB, HTTP, filesystem, time)
-- Cover: happy path, boundary values, null/empty inputs, exception paths
-- Name pattern: `test_<function>_<scenario>_<expected_result>`
+**Unit Tests**: Single function/class in isolation. Mock all external dependencies. Cover happy path, boundary values, null/empty inputs, exception paths. Name: `test_<function>_<scenario>_<expected_result>`.
 
-### Integration Tests
-Target: multiple components working together.
-- Use real implementations, not mocks, where practical
-- Test the contract between layers, not internal details
-- Cover: the most common end-to-end flows and failure scenarios
+**Integration Tests**: Multiple components working together. Use real implementations where practical. Test contracts between layers. Cover most common end-to-end flows and failure scenarios.
 
-### Regression Tests
-Target: a specific bug that was fixed.
-- Start with the exact input that caused the bug
-- Assert the exact wrong behavior is no longer present
-- Add a comment linking to the bug/PR: `# Regression: bug #123`
+**Regression Tests**: Specific bug that was fixed. Start with exact input that caused bug. Assert exact wrong behavior is no longer present. Link to bug/PR: `# Regression: bug #123`.
 
-## Python (pytest) Patterns
+## Patterns
 
-```python
-import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
+**Python (pytest)**:
+- Use `@pytest.mark.parametrize` for boundary/edge cases
+- `@pytest.mark.asyncio` for async tests
+- Fixtures in conftest.py, not inline
+- Mock external dependencies (DB, HTTP, filesystem, time)
 
+**TypeScript (Vitest/Jest)**:
+- Use `describe()` to group related tests
+- `beforeEach()` for test setup/fixtures
+- Mock external services
+- Verify async behavior with proper await handling
 
-# Parametrize for boundary/edge cases - avoid duplicating test bodies
-@pytest.mark.parametrize("input_val,expected", [
-    ("valid@email.com", True),
-    ("", False),
-    (None, False),
-    ("no-at-sign", False),
-])
-def test_validate_email(input_val, expected):
-    assert validate_email(input_val) == expected
-
-
-# Async tests
-@pytest.mark.asyncio
-async def test_create_user_returns_id(mock_db):
-    service = UserService(db=mock_db)
-    result = await service.create(UserCreate(email="a@b.com", name="Test"))
-    assert result.id is not None
-    mock_db.save.assert_awaited_once()
-
-
-# Fixtures in conftest.py, not inline
 @pytest.fixture
 def mock_db():
     db = AsyncMock()

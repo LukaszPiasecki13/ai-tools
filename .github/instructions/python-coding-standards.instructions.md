@@ -1,5 +1,5 @@
 ---
-applyTo: ['**/*.py']
+applyTo: "**/*.py"
 description: "Python 3.12+ coding standards: Ruff, mypy strict, FastAPI patterns, pytest. Applied automatically to all Python files."
 ---
 
@@ -158,5 +158,38 @@ async def test_create_report_invalid_year(client: AsyncClient, invalid_year: int
 Add only to: public API functions, complex business logic, non-obvious algorithms.
 Skip for: private helpers, simple CRUD, test functions.
 Format: Google style with `Args`/`Returns`/`Raises` sections.
+
+---
+
+## Naming Conventions
+
+| Element | Convention | Example |
+|---------|-----------|----------|
+| Module/file | snake_case | `report_service.py` |
+| Class | PascalCase | `ReportService` |
+| Function/method | snake_case | `get_by_company()` |
+| Variable | snake_case | `report_count` |
+| Constant (module-level) | UPPER_SNAKE | `MAX_RETRY_COUNT` |
+| Private | leading underscore | `_validate_input()` |
+| Type alias | PascalCase | `ReportMap` |
+| Pydantic schema | PascalCase + suffix | `ReportCreate`, `ReportResponse` |
+| FastAPI router | snake_case | `report_router` |
+| Test function | `test_` + descriptive | `test_create_report_with_invalid_year()` |
+| Fixture | snake_case, noun | `mock_service`, `db_session` |
+
+- Boolean variables/params: `is_`, `has_`, `can_` prefix (`is_active`, `has_permission`)
+- Async functions: no special naming (`async` keyword is sufficient)
+- Abbreviations allowed: `db`, `id`, `url`, `api` - avoid all others
+
+## API and Database Naming
+
+| Element | Convention | Example |
+|---------|-----------|----------|
+| URL path | kebab-case, plural | `/api/v1/data-points` |
+| Query param | snake_case | `?company_id=abc&page_size=20` |
+| JSON field | snake_case | `created_at`, `company_id` |
+| DB table | snake_case, plural | `reports`, `data_points` |
+| DB column | snake_case | `created_at`, `company_id` |
+| DB index | `idx_` + table + columns | `idx_reports_company_status` |
 
 

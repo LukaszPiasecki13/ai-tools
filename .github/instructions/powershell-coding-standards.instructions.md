@@ -1,5 +1,5 @@
 ---
-applyTo: ['**/*.ps1', '**/*.psm1']
+applyTo: "**/*.ps1,**/*.psm1"
 description: "PowerShell 7+ coding standards: script structure, naming, error handling, Pester tests. Applied automatically to PowerShell files."
 ---
 

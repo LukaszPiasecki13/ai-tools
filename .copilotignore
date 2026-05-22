@@ -1,0 +1,101 @@
+# .copilotignore — files and patterns Copilot agents should ignore
+# Purpose: prevent agents from scanning, processing or referencing
+# sensitive, temporary, or large binary files.
+# PL: Lista plików i wzorców, które agenty Copilot nie powinny analizować ani przetwarzać.
+
+# Environment / secrets
+secrets/
+credentials/
+**/secrets/**
+**/credentials/**
+*.pem
+*.key
+*.p12
+*.jks
+*.pfx
+
+# Virtual environments and Python artifacts
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Node / frontend
+node_modules/
+.npm/
+.npmrc
+yarn-error.log*
+npm-debug.log*
+pnpm-debug.log*
+
+# Build / packaging / caches
+dist/
+build/
+coverage/
+.cache/
+.cache-loader/
+.pnpm-store/
+*.tgz
+*.zip
+*.tar.gz
+
+# IDE / editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+*.out
+*.err
+*.tmp
+temp/
+tmp/
+*.swp
+*~
+
+# Notebooks (only checkpoints)
+.ipynb_checkpoints/
+
+# Databases and binary artifacts
+*.sqlite3
+*.db
+*.db-journal
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# Compiled / binary
+*.class
+*.o
+*.so
+*.dll
+*.exe
+*.dylib
+
+# Large generated reports / test artifacts
+reports/
+artifacts/
+
+# Local config, credentials and environment overrides
+local.env
+local.*
+.env.local
+
+# Add repository-specific patterns below as needed.
+# If you want to exclude entire folders for Copilot, add them here.

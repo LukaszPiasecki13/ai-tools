@@ -130,6 +130,7 @@ X-RateLimit-Reset: 1620000000
 ```
 
 ## Documentation
+
 - Use OpenAPI/Swagger for auto-generated docs
 - Include request/response examples for each endpoint
 - Document all error codes and their meaning

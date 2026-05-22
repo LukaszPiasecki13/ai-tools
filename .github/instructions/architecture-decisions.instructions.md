@@ -1,5 +1,5 @@
 ---
-applyTo: ['docs/adr/**/*.md', '**/adr-*.md']
+applyTo: "docs/adr/**/*.md,**/adr-*.md"
 description: "ADR (Architecture Decision Record) template and process. Applied automatically when working in docs/adr/ or naming files with adr- prefix."
 ---
 

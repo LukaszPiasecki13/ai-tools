@@ -1,5 +1,5 @@
 ---
-applyTo: ['**/*.ts', '**/*.html', '**/*.scss']
+applyTo: "**/*.ts,**/*.html,**/*.scss"
 description: "Angular and React coding standards: TypeScript strict mode, ESLint + Prettier, Signals, component patterns. Applied automatically to TS/HTML/SCSS files."
 ---
 
@@ -146,3 +146,67 @@ export function ReportList({ companyId, onReportSelect }: ReportListProps): JSX.
 - Custom hooks: `use` prefix, extract reusable state logic
 - Never use `dangerouslySetInnerHTML` with user content
 - Use `DOMPurify` if raw HTML rendering is required
+
+---
+
+## Naming Conventions
+
+### TypeScript (Angular + React)
+
+| Element | Convention | Example |
+|---------|-----------|----------|
+| File | kebab-case | `report-list.component.ts` |
+| Class | PascalCase | `ReportListComponent` |
+| Interface | PascalCase (no `I` prefix) | `Report`, `UserProfile` |
+| Type alias | PascalCase | `LoadState<T>` |
+| Enum | PascalCase | `ReportStatus` |
+| Enum values | PascalCase | `ReportStatus.Draft` |
+| Function | camelCase | `getReportById()` |
+| Variable | camelCase | `reportCount` |
+| Constant (module-level) | UPPER_SNAKE | `MAX_RETRIES` |
+| Constant (local/function) | camelCase | `defaultConfig` |
+| Observable | camelCase + `$` suffix | `reports$`, `loading$` |
+| Signal | camelCase (no suffix) | `reports`, `loading` |
+| Private member | no underscore (use `private`) | `private readonly service` |
+
+### Angular-Specific
+
+| Element | Convention | Example |
+|---------|-----------|----------|
+| Component | PascalCase + `Component` | `ReportListComponent` |
+| Service | PascalCase + `Service` | `ReportService` |
+| Directive | PascalCase + `Directive` | `HighlightDirective` |
+| Pipe | PascalCase + `Pipe` | `DateFormatPipe` |
+| Guard | PascalCase + `Guard` | `AuthGuard` |
+| Interceptor | camelCase + `Interceptor` | `errorInterceptor` (fn) |
+| Selector (element) | `app-` + kebab-case | `app-report-card` |
+| Selector (directive) | `app` + camelCase | `appTooltip` |
+
+### React-Specific
+
+| Element | Convention | Example |
+|---------|-----------|----------|
+| Component | PascalCase | `ReportList` |
+| Hook | camelCase + `use` prefix | `useReports()` |
+| Context | PascalCase + `Context` | `AuthContext` |
+| Props interface | PascalCase + `Props` | `ReportListProps` |
+| Event handler | `handle` + Event | `handleClick`, `handleSubmit` |
+| Event handler prop | `on` + Event | `onClick`, `onSubmit` |
+
+### File Naming
+
+| Type | Convention | Example |
+|------|-----------|----------|
+| TS/Angular file | kebab-case + suffix | `report-list.component.ts` |
+| React component | PascalCase | `ReportList.tsx` |
+| React util | camelCase | `useReports.ts` |
+| Test file | same name + `.test`/`.spec` | `report.service.spec.ts` |
+| Config file | kebab-case | `eslint.config.mjs` |
+| Folder | kebab-case | `report-management/` |
+
+### JSON Field Mapping
+
+| Context | Convention | Example |
+|---------|-----------|----------|
+| Backend JSON field | snake_case | `created_at`, `company_id` |
+| Frontend TS property | camelCase | `createdAt`, `companyId` |
