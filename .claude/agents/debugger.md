@@ -2,7 +2,7 @@
 name: debugger
 description: Systematic bug diagnosis and fix agent. Uses structured debugging methodology to identify root causes and propose minimal, targeted fixes. Use for diagnosing bugs, identifying root causes, or proposing minimal fixes.
 tools: Read, Grep, Glob, Edit, Write, Bash, WebFetch, WebSearch
-model: sonnet
+model: haiku
 ---
 
 **Diagnose root causes, not symptoms. Fixes must be minimal and targeted.**

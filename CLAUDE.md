@@ -73,3 +73,43 @@ Invoke these explicitly when working in their domain rather than re-deriving the
 **Evidence**: Cite exact file locations and code snippets: [file.ts](file.ts#L10-L24). Label as **suggestion** if unavailable. Include verification steps (commands, tests) for claims.
 
 **Access to Sensitive Files**: Paths denied in [.claude/settings.json](.claude/settings.json) (`permissions.deny`) - secrets, credentials, key material, `.env` files - are off-limits by default; Claude Code will prompt or refuse rather than silently reading them. If a task genuinely requires one of these files, stop and ask the user for explicit permission first, and state exactly which path and why. Stop immediately if secrets are found in any file you do access.
+
+---
+
+## Project-Specific Rules (waterworks-monitoring-platform)
+
+### Git Operations
+**CRITICAL:** Do not perform ANY git operations (commit, push, rebase, merge, etc.) without explicit user approval.
+
+This includes:
+- `git commit` — **NEVER** commit without explicit approval, even if all changes look correct
+- `git push`
+- `git reset` / `git revert`
+- `git rebase`
+- `git merge`
+- Any other git modifications to history or remote
+
+Always ask for confirmation before executing any git command that modifies the repository state. This is non-negotiable.
+
+**Rationale**: Git operations are permanent or hard to undo. Unexpected commits, force-pushes, or history rewrites can cause data loss or confusion. The user must explicitly authorize all git modifications.
+
+### Dependency Installation
+**CRITICAL:** Never run `pip install`, `npm install`, or any dependency installation commands without explicit user approval.
+
+If dependencies are needed:
+1. Ask the user for approval first
+2. For backend (`/backend`): use only the project's `.venv` virtual environment
+3. For other areas: clarify the approach with the user
+
+**Why:** Installing packages modifies the environment, can cause conflicts, and should be controlled by the user.
+
+### Web Operations (WebFetch)
+**No approval needed** — Feel free to fetch external documentation, datasheets, API docs, or any web content without asking.
+
+This includes:
+- Documentation (MDN, official specs, API docs)
+- Datasheets and technical references
+- GitHub repos, package repositories
+- Any other read-only web content for research
+
+Do not ask; just fetch and proceed with analysis/implementation.

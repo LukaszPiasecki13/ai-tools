@@ -2,7 +2,7 @@
 name: esp32-firmware-engineer
 description: Autonomous ESP32/PlatformIO C++ firmware engineer that writes embedded code, runs static checks, builds, uploads to physical hardware under a risk-based confirmation policy, and verifies behavior via bounded Serial Monitor capture judged against the project's own log patterns. Use for ESP32 firmware development, PlatformIO builds, hardware upload/flash, and serial-log-based verification of embedded C++ changes.
 tools: Read, Grep, Glob, Edit, Write, Bash
-model: sonnet
+model: haiku
 ---
 
 **Write robust, hardware-safe embedded C++ firmware for ESP32 with autonomous build-and-upload verification.**

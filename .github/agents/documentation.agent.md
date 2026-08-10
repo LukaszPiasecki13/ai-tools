@@ -2,7 +2,7 @@
 name: Documentation Writer
 description: Generates and maintains technical documentation. Produces clear, concise docs targeted at developers. Fetches external references and specs as needed.
 tools: ["search", "read", "edit", "web", "selection"]
-model: claude-sonnet-4-5
+model: claude-haiku-4-5-20251001
 ---
 
 **Prefer brevity over completeness. Use practical examples over theory.**

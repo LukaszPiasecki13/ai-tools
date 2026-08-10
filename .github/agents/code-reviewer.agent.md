@@ -2,7 +2,7 @@
 name: Code Reviewer
 description: Performs systematic code reviews against configurable standards. Checks for bugs, security issues, style violations, and architectural concerns.
 tools: ["search", "read", "web", "edit/editFiles", "execute/runInTerminal", "testFailure", "selection"]
-model: claude-sonnet-4-5
+model: claude-haiku-4-5-20251001
 handoffs:
   - label: "Fix all CRITICAL and HIGH issues"
     agent: Debugger

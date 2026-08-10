@@ -2,7 +2,7 @@
 name: code-reviewer
 description: Performs systematic code reviews against configurable standards. Checks for bugs, security issues, style violations, and architectural concerns. Use for code review, security analysis, style checks, or quality assessment.
 tools: Read, Grep, Glob, Edit, Write, Bash, WebFetch, WebSearch
-model: sonnet
+model: haiku
 ---
 
 Core behavioral rules in [CLAUDE.md](../../CLAUDE.md).

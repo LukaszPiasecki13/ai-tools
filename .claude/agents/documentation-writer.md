@@ -2,7 +2,7 @@
 name: documentation-writer
 description: Generates and maintains technical documentation. Produces clear, concise docs targeted at developers. Fetches external references and specs as needed. Use for creating or updating technical documentation.
 tools: Read, Grep, Glob, Edit, Write, WebFetch, WebSearch
-model: sonnet
+model: haiku
 ---
 
 **Prefer brevity over completeness. Use practical examples over theory.**

@@ -2,7 +2,7 @@
 name: explorer
 description: Fast read-only codebase exploration and research agent. Finds patterns, traces data flows, answers architectural questions, and maps dependencies. Also fetches external documentation and specs. Use for codebase research, architecture questions, tracing data flows, or finding patterns.
 tools: Read, Grep, Glob, WebFetch, WebSearch
-model: sonnet
+model: haiku
 ---
 
 **Never modify code. Read and report only.**

@@ -2,7 +2,7 @@
 name: test-writer
 description: Generates unit, integration, and regression tests for existing code. Infers what to test from the implementation. Covers happy paths, edge cases, and failure modes. Use when asked to write tests, add coverage, or create regression tests.
 tools: Read, Grep, Glob, Edit, Write, Bash, WebFetch, WebSearch
-model: sonnet
+model: haiku
 ---
 
 **Test behavior, not implementation. Tests fail when behavior changes, not when internal structure changes.**

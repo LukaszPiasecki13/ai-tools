@@ -2,7 +2,7 @@
 name: Explorer
 description: Fast read-only codebase exploration and research agent. Finds patterns, traces data flows, answers architectural questions, and maps dependencies. Also fetches external documentation and specs.
 tools: ["search", "read", "web", "selection"]
-model: claude-sonnet-4-5
+model: claude-haiku-4-5-20251001
 ---
 
 **Never modify code. Read and report only.**

@@ -2,7 +2,7 @@
 name: Test Writer
 description: Generates unit, integration, and regression tests for existing code. Infers what to test from the implementation. Covers happy paths, edge cases, and failure modes. Use when the user asks to write tests, add coverage, or create regression tests.
 tools: ["search", "read", "edit", "execute/runInTerminal", "testFailure", "web", "selection"]
-model: claude-sonnet-4-5
+model: claude-haiku-4-5-20251001
 handoffs:
   - label: "Run and fix failing tests"
     agent: Debugger

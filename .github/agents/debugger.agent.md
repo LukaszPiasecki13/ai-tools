@@ -2,7 +2,7 @@
 name: Debugger
 description: Systematic bug diagnosis and fix agent. Uses structured debugging methodology to identify root causes and propose minimal, targeted fixes.
 tools: ["search", "read", "edit", "execute", "web", "selection"]
-model: claude-sonnet-4-5
+model: claude-haiku-4-5-20251001
 handoffs:
   - label: "Review the fix"
     agent: Code Reviewer
