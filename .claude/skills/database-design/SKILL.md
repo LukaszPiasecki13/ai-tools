@@ -1,6 +1,7 @@
 ---
 name: database-design
 description: Database modeling patterns for SQL, NoSQL (Firestore), BigQuery. Schema design, indexing, queries, and data migration. Use when the user asks about data models, database queries, schema changes, or data architecture.
+user-invocable: false
 ---
 
 # Database Design Skill

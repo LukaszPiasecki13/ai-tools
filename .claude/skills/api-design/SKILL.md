@@ -1,6 +1,7 @@
 ---
 name: api-design
 description: REST API design patterns, schema validation, versioning, error handling, and documentation. Use when the user asks about API endpoints, request/response schemas, HTTP conventions, or API architecture.
+user-invocable: false
 ---
 
 # API Design Skill

@@ -1,6 +1,7 @@
 ---
 name: testing
 description: Testing patterns and frameworks for Python (pytest, pytest-asyncio), TypeScript (Vitest, Jest), and Angular (Testing Library). Use when the user asks about writing tests, test coverage, mocking, fixtures, test setup, or testing strategy.
+user-invocable: false
 ---
 
 # Testing Skill

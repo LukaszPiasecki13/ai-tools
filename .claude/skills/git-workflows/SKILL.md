@@ -1,6 +1,7 @@
 ---
 name: git-workflows
 description: Git branching strategies, PR conventions, merge workflows, commit message standards, and conflict resolution patterns. Use when the user asks about git operations, branching, PRs, or version control workflows.
+user-invocable: false
 ---
 
 # Git Workflows Skill
@@ -121,4 +122,3 @@ git cherry-pick <commit-hash>
 git tag -a v1.2.0 -m "Release v1.2.0: feature X, fix Y"
 git push origin v1.2.0
 ```
-

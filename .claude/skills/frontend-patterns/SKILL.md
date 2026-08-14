@@ -1,6 +1,7 @@
 ---
 name: frontend-patterns
 description: Angular component architecture, state management, reactive patterns, and UI best practices. Use when the user asks about Angular components, services, RxJS, routing, or frontend architecture.
+user-invocable: false
 ---
 
 # Frontend Patterns Skill (Angular)
