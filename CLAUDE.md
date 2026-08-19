@@ -113,3 +113,6 @@ This includes:
 - Any other read-only web content for research
 
 Do not ask; just fetch and proceed with analysis/implementation.
+
+### Module & Key-Change Documentation
+New module, or key architectural/security change (new invariant, non-obvious defense) → document it in `docs/` in the same task. New module → new file + index entry in `01_backend-architecture.md`; change to an existing module → update its existing section instead of duplicating. Applies to backend/frontend/firmware alike. Ask before inventing a doc-index layout that doesn't exist yet.
