@@ -90,6 +90,28 @@ class Settings(BaseSettings):
 settings = Settings()
 ```
 
+### Query Parameters — Always Use Schema
+Query parameters must **always** use a Pydantic schema with `Depends()`, even for a single parameter. Never scatter individual parameters in function arguments.
+
+```python
+# schemas/report.py
+class ListReportsQuery(BaseModel):
+    skip: int = Field(0, ge=0)
+    limit: int = Field(100, ge=1, le=1000)
+    status: str | None = None
+
+# api/reports.py
+@router.get("/", response_model=PaginatedResponse[ReportResponse])
+def list_reports(
+    query: ListReportsQuery = Depends(),
+    service: ReportService = Depends(get_report_service),
+) -> PaginatedResponse[ReportResponse]:
+    reports, total = service.list_reports(query.skip, query.limit, query.status)
+    return PaginatedResponse(items=reports, total=total, skip=query.skip, limit=query.limit)
+```
+
+**Why:** Centralizes validation, defaults, and documentation. Reusable across endpoints. Consistent signatures.
+
 ### Dependencies
 ```python
 from collections.abc import AsyncGenerator

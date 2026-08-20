@@ -78,7 +78,13 @@ Invoke these explicitly when working in their domain rather than re-deriving the
 
 ## Project-Specific Rules (waterworks-monitoring-platform)
 
-### Git Operations
+The rules below are **enforced constraints** (CRITICAL) and **operational patterns** (best practice):
+
+### 🛑 CRITICAL Constraints
+
+These rules are non-negotiable and enforced without exception.
+
+#### Git Operations
 **CRITICAL:** Do not perform ANY git operations (commit, push, rebase, merge, etc.) without explicit user approval.
 
 This includes:
@@ -93,17 +99,30 @@ Always ask for confirmation before executing any git command that modifies the r
 
 **Rationale**: Git operations are permanent or hard to undo. Unexpected commits, force-pushes, or history rewrites can cause data loss or confusion. The user must explicitly authorize all git modifications.
 
-### Dependency Installation
-**CRITICAL:** Never run `pip install`, `npm install`, or any dependency installation commands without explicit user approval.
+#### Python Environment — Always `.venv`
+**CRITICAL:** All Python work (scripts, tests, dependencies, tooling) must use the project's `.venv` virtual environment.
 
-If dependencies are needed:
-1. Ask the user for approval first
-2. For backend (`/backend`): use only the project's `.venv` virtual environment
-3. For other areas: clarify the approach with the user
+This includes:
+- `pip install` — **always** in `.venv`, never globally
+- `python` — run via `.venv`, never system interpreter
+- Any package installation — requires **explicit user approval first**
 
-**Why:** Installing packages modifies the environment, can cause conflicts, and should be controlled by the user.
+**Why:** `.venv` isolates the project from the system; global installs cause version conflicts, environment pollution, and irreproducible setups.
 
-### Web Operations (WebFetch)
+#### Alembic Migrations — Only via `alembic revision`
+**CRITICAL:** Database migrations must be created exclusively with:
+```bash
+alembic revision --autogenerate -m "description"
+```
+Never hand-write or hand-edit a migration file, except to fix something Alembic already generated (e.g., a misdetected rename) — and even then, only with explicit user consent for anything beyond that.
+
+**Why:** Alembic tracks the migration chain; hand-edited migrations can desync the schema history and break upgrades in production.
+
+### 🟢 Operational Patterns
+
+These are best practices and standard operating procedures.
+
+#### Web Operations (WebFetch)
 **No approval needed** — Feel free to fetch external documentation, datasheets, API docs, or any web content without asking.
 
 This includes:
@@ -114,5 +133,5 @@ This includes:
 
 Do not ask; just fetch and proceed with analysis/implementation.
 
-### Module & Key-Change Documentation
+#### Module & Key-Change Documentation
 New module, or key architectural/security change (new invariant, non-obvious defense) → document it in `docs/` in the same task. New module → new file + index entry in `01_backend-architecture.md`; change to an existing module → update its existing section instead of duplicating. Applies to backend/frontend/firmware alike. Ask before inventing a doc-index layout that doesn't exist yet.
