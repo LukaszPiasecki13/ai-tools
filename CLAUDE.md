@@ -35,6 +35,7 @@ Prefer the narrowest subagent for the job over doing everything in the main thre
 - `git-workflows` - Branching, commit messages, PR conventions, conflict resolution
 - `testing` - pytest, Vitest/Jest, Angular Testing Library patterns
 - `jira-board-extractor` - Read-only Jira Cloud board data extraction
+- `prepare-work` - End-to-end analyze -> grill-me -> plan -> independent review -> implement -> test -> independent review -> E2E (ui-verify) -> docs pipeline, run as isolated subagents per phase with human gates between them; planning/review/implementation phases must read the relevant `.claude/rules/` and target-repo architecture docs (no ADO integration; problem described inline)
 
 Invoke these explicitly when working in their domain rather than re-deriving the convention from scratch.
 
