@@ -136,3 +136,6 @@ Do not ask; just fetch and proceed with analysis/implementation.
 
 #### Module & Key-Change Documentation
 New module, or key architectural/security change (new invariant, non-obvious defense) → document it in `docs/` in the same task. New module → new file + index entry in `01_backend-architecture.md`; change to an existing module → update its existing section instead of duplicating. Applies to backend/frontend/firmware alike. Ask before inventing a doc-index layout that doesn't exist yet.
+
+#### Firmware Hardware Wiring
+Before touching GPIO or physical wiring in `firmware/`, check `firmware/HARDWARE.md` — it's the source of truth for pin connections (ESP32-S3 ↔ modem, sensors). Don't guess pins. Update the doc in the same task when pins are added, changed, or confirmed against physical hardware.

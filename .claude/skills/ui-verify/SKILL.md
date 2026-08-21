@@ -62,3 +62,9 @@ Before starting, gather:
   everything together.
 - If a route requires state you can't reach through the UI (e.g. seeded data), say
   so rather than silently skipping the check.
+
+## Temporary Files
+
+- Store all screenshots, snapshots, and temporary artifacts in `.tmp/ui-verify/`
+- Clean up `.tmp/ui-verify/` after verification completes (remove directory or clear contents)
+- This keeps the project directory clean and prevents git from tracking transient files
