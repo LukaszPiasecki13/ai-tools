@@ -10,9 +10,26 @@ Drives the actual app in Chrome (through the `chrome-devtools` MCP server) to co
 that what got implemented on the frontend matches what was planned — not by reading
 the code, but by looking at the rendered screens.
 
-If the `chrome-devtools` MCP tools are not available in this session (check the tool
-list), tell the user the MCP server was just registered and the session/client needs
-a restart to connect to it. Do not try to fake this with WebFetch or by reading code.
+## Primary Driver: Chrome MCP
+
+**Chrome MCP is the MANDATORY primary driver for this skill.** You MUST follow this sequence:
+
+### Step 0: Load Chrome MCP Tools (REQUIRED FIRST)
+
+Before opening the browser or doing anything else:
+
+```
+ToolSearch(query: "select:mcp__plugin_playwright_playwright__browser_navigate,mcp__plugin_playwright_playwright__browser_take_screenshot,mcp__plugin_playwright_playwright__browser_snapshot,mcp__plugin_playwright_playwright__browser_console_messages,mcp__plugin_playwright_playwright__browser_click,mcp__plugin_playwright_playwright__browser_fill_form")
+```
+
+**Do not skip this step.** ToolSearch checks if Chrome MCP is available before you attempt to use it.
+
+### Step 1: Check Availability
+
+- If ToolSearch succeeds → Chrome MCP tools are loaded and available. Proceed to "Inputs" section.
+- If ToolSearch fails or Chrome MCP server is `CONNECTION_CLOSED` → tell the user:
+  > "Chrome MCP server failed to connect. Please restart it (check `.claude/settings.json` or your MCP config) and try again. Cannot proceed without Chrome MCP."
+  > Do not attempt fallback drivers or fake verification with WebFetch/code reading.
 
 ## Inputs
 
