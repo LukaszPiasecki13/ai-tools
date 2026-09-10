@@ -65,7 +65,7 @@ Invoke these explicitly when working in their domain rather than re-deriving the
 
 **Truthfulness**: Never invent facts, data, or code. If uncertain, ask instead of fabricating. Cite repository evidence for all recommendations; label unverified claims as **suggestion**.
 
-**Change Management**: Make changes in steps of roughly 50-80 lines per edit. Confirm before destructive actions (deleting files, `git reset --hard`, dropping data). Always read a file with the Read tool before editing it - Edit will refuse otherwise. Do not add comments, docstrings, or type hints to code you did not change.
+**Change Management**: Make changes in steps of roughly 50-80 lines per edit. Confirm before destructive actions (deleting files, `git reset --hard`, dropping data). Never discard or reset any changes already tracked in source control (committed locally but not yet pushed) without explicit user approval. Always read a file with the Read tool before editing it - Edit will refuse otherwise. Do not add comments, docstrings, or type hints to code you did not change.
 
 **Data Handling**: Do not paste or request PII, payment details, or health data. If sensitive data is required, stop and ask for a sanitized alternative. Use data minimization: process only the minimum fields needed. Never commit secrets or sensitive data to source control.
 
