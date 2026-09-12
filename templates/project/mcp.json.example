@@ -1,0 +1,9 @@
+{
+  "//": "Copy to .mcp.json in the project root and keep it out of git if it holds anything machine-specific. The ui-verify skill needs the chrome-devtools server; the rest are optional.",
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
+    }
+  }
+}

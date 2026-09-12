@@ -1,0 +1,45 @@
+name: Validate toolkit
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # No dependency install step on purpose: every script here is stdlib-only, so the
+      # checks run identically in CI and in a fresh clone on any machine.
+
+      - name: Validate component schemas, links and manifests
+        run: python scripts/validate_toolkit.py
+
+      - name: Test enforcement hooks
+        run: python -m unittest discover -s tests -v
+
+      - name: Check the Copilot mirror is in sync with its sources
+        run: python scripts/sync_copilot.py --check
+
+      - name: Check the component catalog is up to date
+        run: python scripts/generate_catalog.py --check
+
+      - name: Check the plugin manifest with the Claude Code CLI
+        continue-on-error: true
+        run: |
+          if command -v claude >/dev/null 2>&1; then
+            claude plugin validate .
+          else
+            echo "Claude Code CLI not present on the runner; skipping. "
+            echo "Run 'claude plugin validate .' locally before publishing a release."
+          fi
