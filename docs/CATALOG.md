@@ -1,5 +1,6 @@
 <!-- GENERATED FILE - DO NOT EDIT.
-     Regenerate: python scripts/generate_catalog.py -->
+     Source: agents/, skills/, rules/, hooks/hooks.json
+     Regenerate: python scripts/sync_copilot.py -->
 
 # Component catalog
 

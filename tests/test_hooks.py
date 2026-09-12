@@ -1,6 +1,6 @@
 """Regression tests for the enforcement hooks.
 
-Run: python -m unittest discover -s tests -v
+Run: pytest  (or: python -m unittest discover -s tests -v)
 
 These hooks sit in front of every Bash command and every file read, so two failure modes
 matter equally: letting a destructive command through, and blocking an ordinary one. The
@@ -16,7 +16,7 @@ import sys
 import unittest
 from pathlib import Path
 
-HOOKS = Path(__file__).resolve().parent.parent / "hooks" / "scripts"
+from conftest import HOOKS
 
 
 def decision(script: str, payload: dict) -> str | None:

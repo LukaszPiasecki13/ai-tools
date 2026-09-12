@@ -96,9 +96,9 @@ Three files/directories in this repository are output, never input:
 |-----------|------|----|
 | `.github/instructions/*.instructions.md` | `rules/*.md` (`paths` → `applyTo`) | `sync_copilot.py` |
 | `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md` | `agents/`, `skills/`, `CLAUDE.md` | `sync_copilot.py` |
-| `docs/CATALOG.md` | every component's frontmatter | `generate_catalog.py` |
+| `docs/CATALOG.md` | every component's frontmatter | `sync_copilot.py` |
 
-Each carries a "DO NOT EDIT" banner naming its source, and CI fails when either has drifted.
+Each carries a "DO NOT EDIT" banner naming its source, and CI fails when any has drifted.
 A generated inventory cannot go stale; a hand-written one always does.
 
 ## Verification
@@ -106,12 +106,18 @@ A generated inventory cannot go stale; a hand-written one always does.
 The toolkit tests itself, with standard-library Python only so the checks run the same way in
 CI and in a fresh clone:
 
-- `scripts/validate_toolkit.py` — frontmatter schemas, name/directory agreement, model
-  aliases, glob sanity, manifest consistency, broken links, committed credentials.
+- `tests/test_validate.py` — runs `scripts/validate_toolkit.py`: frontmatter schemas,
+  name/directory agreement, model aliases, glob sanity, manifest consistency, broken links,
+  committed credentials.
 - `tests/test_hooks.py` — every guard pattern has a deny case **and** an allow case. The allow
   cases are the important half: a guard with false positives gets disabled, and a disabled
   guard protects nothing.
-- `scripts/sync_copilot.py --check` and `generate_catalog.py --check` — drift detection.
+- `scripts/sync_copilot.py --check` — drift detection for both the Copilot mirror and the
+  catalog, since one script produces both.
+
+Both test modules are plain `unittest.TestCase` classes, so `python -m unittest discover -s
+tests` runs them with zero dependencies (what CI uses). `pytest` auto-discovers the same
+classes and is the preferred way to run them locally.
 
 ## Versioning
 

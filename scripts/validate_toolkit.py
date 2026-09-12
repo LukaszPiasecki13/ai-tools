@@ -7,15 +7,13 @@ alias that does not exist, a rule whose glob can never match, a link to a file t
 a hook pointing at a script that is not there.
 
 Usage:
-    python scripts/validate_toolkit.py            # report errors and warnings
-    python scripts/validate_toolkit.py --strict   # treat warnings as failures
+    python scripts/validate_toolkit.py
 
-Exits 1 when anything fails.
+Exits 1 when there is at least one error. Warnings are reported but do not fail the run.
 """
 
 from __future__ import annotations
 
-import argparse
 import json
 import py_compile
 import re
@@ -359,10 +357,6 @@ def check_links_and_secrets(report: Report) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--strict", action="store_true", help="treat warnings as failures")
-    args = parser.parse_args()
-
     report = Report()
     check_manifests(report)
     check_agents(report)
@@ -377,7 +371,7 @@ def main() -> int:
         print(f"ERROR {error}")
 
     counts = f"{len(report.errors)} error(s), {len(report.warnings)} warning(s)"
-    if report.errors or (args.strict and report.warnings):
+    if report.errors:
         print(f"\nFAILED: {counts}")
         return 1
     print(f"\nOK: {counts}")

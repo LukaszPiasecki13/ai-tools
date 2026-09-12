@@ -22,17 +22,11 @@ jobs:
       # No dependency install step on purpose: every script here is stdlib-only, so the
       # checks run identically in CI and in a fresh clone on any machine.
 
-      - name: Validate component schemas, links and manifests
-        run: python scripts/validate_toolkit.py
-
-      - name: Test enforcement hooks
+      - name: Run toolkit validation and hook tests
         run: python -m unittest discover -s tests -v
 
-      - name: Check the Copilot mirror is in sync with its sources
+      - name: Check the Copilot mirror and catalog are in sync with their sources
         run: python scripts/sync_copilot.py --check
-
-      - name: Check the component catalog is up to date
-        run: python scripts/generate_catalog.py --check
 
       - name: Check the plugin manifest with the Claude Code CLI
         continue-on-error: true

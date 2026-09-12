@@ -1,25 +1,30 @@
 #!/usr/bin/env python3
-"""Generate the GitHub Copilot mirror from the Claude Code sources.
+"""Generate the GitHub Copilot mirror and the component catalog from the Claude Code sources.
 
 The toolkit keeps one set of sources - `rules/`, `agents/`, `skills/`, `CLAUDE.md` - and
-projects them into the layout Copilot reads:
+projects them into two generated outputs:
 
+1. The layout Copilot reads:
     rules/<name>.md        ->  .github/instructions/<name>.instructions.md   (paths -> applyTo)
     agents/<name>.md       ->  .github/agents/<name>.agent.md
     skills/<name>/*        ->  .github/skills/<name>/*
     CLAUDE.md              ->  .github/copilot-instructions.md
 
-Everything under those `.github/` directories is generated output. Edit the source, re-run
-this script; never edit the mirror, because the next run overwrites it.
+2. `docs/CATALOG.md` - the inventory of every component, so a hand-maintained list
+   cannot go stale.
+
+Everything listed above is generated output. Edit the source, re-run this script; never edit
+a generated file directly, because the next run overwrites it.
 
 Usage:
-    python scripts/sync_copilot.py           # regenerate the mirror
-    python scripts/sync_copilot.py --check   # fail if the mirror is out of date (CI)
+    python scripts/sync_copilot.py           # regenerate the mirror and the catalog
+    python scripts/sync_copilot.py --check   # fail if either is out of date (CI)
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -27,11 +32,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _frontmatter import as_list, load  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
+CATALOG = ROOT / "docs" / "CATALOG.md"
 MIRROR_DIRS = [
     ROOT / ".github" / "instructions",
     ROOT / ".github" / "agents",
     ROOT / ".github" / "skills",
 ]
+
+TRUTHY = {"true", "yes", "on", "1"}
+
+
+def truthy(value: object) -> bool:
+    return str(value).strip().lower() in TRUTHY
+
 
 def banner(source: str, note: str = "") -> str:
     lines = ["<!-- GENERATED FILE - DO NOT EDIT.", f"     Source: {source}"]
@@ -96,8 +109,118 @@ def render_skill(path: Path) -> str:
     return "\n".join(lines) + "\n\n" + banner(f"skills/{path.parent.name}/SKILL.md") + "\n" + body.rstrip() + "\n"
 
 
+def first_sentence(text: str, limit: int = 160) -> str:
+    text = " ".join(str(text).split())
+    for stop in (". ", " - ", " — "):
+        if stop in text:
+            text = text.split(stop)[0]
+            break
+    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
+
+
+def catalog_table(headers: list[str], rows: list[list[str]]) -> str:
+    if not rows:
+        return "_None._\n"
+    out = ["| " + " | ".join(headers) + " |", "|" + "|".join("---" for _ in headers) + "|"]
+    out += ["| " + " | ".join(cell.replace("|", "\\|") for cell in row) + " |" for row in rows]
+    return "\n".join(out) + "\n"
+
+
+def build_catalog() -> str:
+    """Render docs/CATALOG.md - the inventory of every component, derived from the sources."""
+    agents, commands, skills, rules = [], [], [], []
+
+    for path in sorted((ROOT / "agents").glob("*.md")):
+        meta, _ = load(path)
+        agents.append([
+            f"`{meta.get('name', path.stem)}`",
+            str(meta.get("model", "inherit")),
+            first_sentence(meta.get("description", "")),
+        ])
+
+    for skill_dir in sorted(p for p in (ROOT / "skills").iterdir() if p.is_dir()):
+        source = skill_dir / "SKILL.md"
+        if not source.exists():
+            continue
+        meta, _ = load(source)
+        name = skill_dir.name
+        description = first_sentence(meta.get("description", ""))
+
+        if truthy(meta.get("disable-model-invocation")):
+            hint = str(meta.get("argument-hint", "")).strip()
+            isolated = "fork" if str(meta.get("context", "")).strip() == "fork" else ""
+            commands.append([f"`/ai-tools:{name}`", f"`{hint}`" if hint else "—", isolated or "—", description])
+        else:
+            auto = "model-invoked" if not truthy(meta.get("user-invocable", "true")) else "model or user"
+            skills.append([f"`{name}`", auto, description])
+
+    for path in sorted((ROOT / "rules").glob("*.md")):
+        meta, _ = load(path)
+        patterns = as_list(meta.get("paths"))
+        rules.append([
+            f"`{path.stem}`",
+            ", ".join(f"`{p}`" for p in patterns) if patterns else "**always loaded**",
+            first_sentence(meta.get("description", "")),
+        ])
+
+    hooks_rows = []
+    hooks_file = ROOT / "hooks" / "hooks.json"
+    if hooks_file.exists():
+        config = json.loads(hooks_file.read_text(encoding="utf-8"))
+        for event, matchers in config.get("hooks", {}).items():
+            for matcher in matchers:
+                for hook in matcher.get("hooks", []):
+                    command = str(hook.get("command", ""))
+                    script = command.split("/")[-1].strip("\"'") if "/" in command else command
+                    hooks_rows.append([
+                        f"`{event}`",
+                        f"`{matcher.get('matcher', '*')}`",
+                        f"`{script}`",
+                        str(hook.get("statusMessage", "")).rstrip("."),
+                    ])
+
+    parts = [
+        banner("agents/, skills/, rules/, hooks/hooks.json").rstrip(),
+        "",
+        "# Component catalog",
+        "",
+        "Every component in the toolkit, derived from the component files themselves.",
+        "",
+        "## Agents",
+        "",
+        "Delegated automatically when a task matches the description, or invoked by name.",
+        "",
+        catalog_table(["Agent", "Model", "Purpose"], agents),
+        "",
+        "## Commands",
+        "",
+        "Typed deliberately. Hidden from automatic model invocation, so they never fire on their own.",
+        "",
+        catalog_table(["Command", "Arguments", "Context", "Purpose"], commands),
+        "",
+        "## Skills",
+        "",
+        "Loaded on demand when the description matches the task — free until used.",
+        "",
+        catalog_table(["Skill", "Invocation", "Purpose"], skills),
+        "",
+        "## Rules",
+        "",
+        "Path-scoped standards. Installed with `scripts/install.py`; they load when a matching file is read.",
+        "",
+        catalog_table(["Rule", "Applies to", "Purpose"], rules),
+        "",
+        "## Hooks",
+        "",
+        "Deterministic enforcement — these run regardless of what the model decides.",
+        "",
+        catalog_table(["Event", "Matcher", "Script", "Action"], hooks_rows),
+    ]
+    return "\n".join(parts).rstrip() + "\n"
+
+
 def build() -> dict[Path, bytes]:
-    """Compute the complete expected mirror as {path: content}."""
+    """Compute the complete expected set of generated files as {path: content}."""
     expected: dict[Path, bytes] = {}
 
     for rule in sorted((ROOT / "rules").glob("*.md")):
@@ -125,6 +248,8 @@ def build() -> dict[Path, bytes]:
         content = banner("CLAUDE.md") + "\n" + claude_md.read_text(encoding="utf-8").rstrip() + "\n"
         expected[ROOT / ".github" / "copilot-instructions.md"] = content.encode("utf-8")
 
+    expected[CATALOG] = build_catalog().encode("utf-8")
+
     return expected
 
 
@@ -138,6 +263,8 @@ def current() -> dict[Path, bytes]:
     instructions = ROOT / ".github" / "copilot-instructions.md"
     if instructions.exists():
         found[instructions] = instructions.read_bytes()
+    if CATALOG.exists():
+        found[CATALOG] = CATALOG.read_bytes()
     return found
 
 
@@ -153,13 +280,13 @@ def main() -> int:
 
     if args.check:
         if not stale and not changed:
-            print(f"OK: Copilot mirror is in sync ({len(expected)} files)")
+            print(f"OK: Copilot mirror and catalog are in sync ({len(expected)} files)")
             return 0
         for path in changed:
             print(f"DRIFT  {path.relative_to(ROOT)}")
         for path in stale:
             print(f"STALE  {path.relative_to(ROOT)}")
-        print("\nFAILED: mirror is out of date. Run: python scripts/sync_copilot.py")
+        print("\nFAILED: out of date. Run: python scripts/sync_copilot.py")
         return 1
 
     for path in stale:

@@ -3,6 +3,21 @@
 All notable changes to this toolkit. Versions follow the `version` field in
 `.claude-plugin/plugin.json`; installed copies update when it is bumped.
 
+## [Unreleased]
+
+### Changed
+- `scripts/generate_catalog.py` merged into `scripts/sync_copilot.py` — one script now
+  produces both the Copilot mirror and `docs/CATALOG.md`, and `--check` covers both. Fewer
+  scripts to keep in sync, one less step in CI.
+- `scripts/validate_toolkit.py` lost the unused `--strict` flag; nothing invoked it.
+- Toolkit validation moved into `tests/test_validate.py`, so `pytest` (or `python -m
+  unittest discover -s tests`) alone covers both validation and hook behaviour.
+- Local test runner is now `pytest` (added `pytest.ini`, `tests/conftest.py`); CI keeps
+  `python -m unittest discover -s tests`, since the same test files support both with zero
+  dependencies.
+- Pre-commit checklist shortened from three commands to two:
+  `pytest` then `python scripts/sync_copilot.py`.
+
 ## [2.0.0] — 2026-09-12
 
 Restructured from a loose `.claude/` directory into a versioned Claude Code plugin with

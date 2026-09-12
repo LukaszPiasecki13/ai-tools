@@ -109,14 +109,16 @@ CI fails if the mirror has drifted, so the two assistants cannot disagree.
 ## Development
 
 ```bash
-python scripts/validate_toolkit.py      # frontmatter, manifests, links, committed secrets
-python -m unittest discover -s tests    # hook behaviour
-python scripts/sync_copilot.py --check  # mirror drift
+pytest                                  # toolkit validation + hook behaviour
+python scripts/sync_copilot.py --check  # mirror + catalog drift
 claude plugin validate .                # the official manifest check
 ```
 
-All scripts are standard-library only — no install step, and they behave the same in CI as in
-a fresh clone. Python 3.9+ is the only requirement.
+Every script and test is standard-library only — no install step, and they behave the same in
+CI as in a fresh clone (CI runs `python -m unittest discover -s tests`, which the same test
+files support with zero dependencies). `pytest` is the recommended way to run them locally;
+it auto-discovers the same tests and adds `-k` filtering and `--lf`. Python 3.9+ is the only
+hard requirement.
 
 Conventions for adding a component, and the rule/skill/command/agent/hook decision table, are
 in [CLAUDE.md](CLAUDE.md).

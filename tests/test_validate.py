@@ -1,6 +1,6 @@
 """Validation tests for the toolkit structure.
 
-Run: python -m unittest discover -s tests -v
+Run: pytest  (or: python -m unittest discover -s tests -v)
 
 Verifies that all components have correct schemas, manifests, frontmatter,
 links, and contain no committed secrets. Runs validate_toolkit.py as a unit test.
@@ -11,7 +11,8 @@ from __future__ import annotations
 import subprocess
 import sys
 import unittest
-from pathlib import Path
+
+from conftest import SCRIPTS
 
 
 class ToolkitValidation(unittest.TestCase):
@@ -19,8 +20,7 @@ class ToolkitValidation(unittest.TestCase):
 
 	def test_validate_toolkit(self) -> None:
 		"""Run validate_toolkit.py and assert no errors or warnings."""
-		root = Path(__file__).resolve().parent.parent
-		validator = root / "scripts" / "validate_toolkit.py"
+		validator = SCRIPTS / "validate_toolkit.py"
 
 		result = subprocess.run(
 			[sys.executable, str(validator)],

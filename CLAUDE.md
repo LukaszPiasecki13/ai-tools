@@ -21,12 +21,14 @@ output. Edit the source, then run `python scripts/sync_copilot.py`. CI fails on 
 ## Before every commit
 
 ```bash
-python -m unittest discover -s tests    # validate toolkit + hook behaviour
-python scripts/sync_copilot.py          # regenerate the mirror
+pytest                          # toolkit validation + hook behaviour
+python scripts/sync_copilot.py  # regenerate the mirror + docs/CATALOG.md
 ```
 
-Tests run: `test_validate.py` (toolkit structure, schemas, links, secrets) and
-`test_hooks.py` (hook deny/allow cases).
+Tests: `tests/test_validate.py` (runs `scripts/validate_toolkit.py` — schemas, manifests,
+links, secrets) and `tests/test_hooks.py` (hook deny/allow cases). Both are plain
+`unittest.TestCase` classes with zero dependencies, so CI runs the same suite via
+`python -m unittest discover -s tests`; `pytest` is the local default.
 
 ## Which mechanism to use
 
