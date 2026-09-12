@@ -22,7 +22,8 @@ Prefer the narrowest subagent for the job over doing everything in the main thre
 - `powershell-coding-standards` (`**/*.ps1`, `**/*.psm1`) - script structure, Pester
 - `security-checklist` (`**/*.py`, `**/*.ts`, `**/*.tsx`, `**/*.ps1`) - OWASP Top 10: auth, input validation, injection, XSS, CSRF, rate limiting
 - `error-handling-patterns` (`**/*.py`, `**/*.ts`, `**/*.tsx`) - exception hierarchy, HTTP error contract, logging strategy
-- `architecture-decisions` (`docs/adr/**`, `**/adr-*.md`) - ADR template and process
+- `architecture-decisions` (`**/adr/**`, `**/adr-*.md`, `**/ADR-*.md`) - ADR template and process
+- `knowledge-base` (`docs/**/*.md`, `CONTEXT.md`, `PRODUCT.md`) - warstwy L0-L4, front-matter, limity rozmiaru, reguły edycji dokumentów
 - `cpp-embedded-coding-standards` (`**/*.cpp`, `**/*.h`, `**/*.hpp`, `**/*.ino`) - non-blocking loops, String/heap caution, PROGMEM, log tagging, pin safety, watchdog
 
 ## Skills (invoked on demand)
@@ -35,6 +36,7 @@ Prefer the narrowest subagent for the job over doing everything in the main thre
 - `git-workflows` - Branching, commit messages, PR conventions, conflict resolution
 - `testing` - pytest, Vitest/Jest, Angular Testing Library patterns
 - `jira-board-extractor` - Read-only Jira Cloud board data extraction
+- `knowledge-base` - Projektowanie i porządkowanie bazy wiedzy dla agentów: model warstwowy L0-L4, schemat metadanych, gotowe szablony dokumentów (PRODUCT, CONTEXT, ADR, kontrakt modułu/interfejsu, runbook, spec, badanie, eksperyment, segment, ryzyka), walidator `kb_validate.py` i plan automatyzacji
 - `prepare-work` - End-to-end analyze -> grill-me -> plan -> independent review -> implement -> test -> independent review -> E2E (ui-verify) -> docs pipeline, run as isolated subagents per phase with human gates between them; planning/review/implementation phases must read the relevant `.claude/rules/` and target-repo architecture docs (no ADO integration; problem described inline)
 
 Invoke these explicitly when working in their domain rather than re-deriving the convention from scratch.

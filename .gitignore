@@ -1,3 +1,5 @@
 .env
 .mcp.json
 .playwright-mcp/
+__pycache__/
+*.pyc

@@ -1,6 +1,6 @@
 ---
-paths: ["docs/adr/**/*.md", "**/adr-*.md"]
-description: ADR (Architecture Decision Record) template and process. Auto-loaded when working in docs/adr/ or on files named adr-*.
+paths: ["**/adr/**/*.md", "**/adr-*.md", "**/ADR-*.md"]
+description: ADR (Architecture Decision Record) template and process. Auto-loaded when working on any file under an adr/ directory or named adr-*.
 ---
 
 # Architecture Decision Records (ADR)
