@@ -80,7 +80,7 @@ def resolve(profiles: set[str], explicit: list[str]) -> list[str]:
     return sorted(selected)
 
 
-def install_rules(destination: Path, names: list[str], link: bool, dry_run: bool) -> list[str]:
+def install_rules(destination: Path, names: list[str], dry_run: bool) -> list[str]:
     rules = available()
     unknown = [name for name in names if name not in rules]
     if unknown:
@@ -113,20 +113,23 @@ def install_rules(destination: Path, names: list[str], link: bool, dry_run: bool
 
     for name in names:
         source, target = rules[name], rules_root / f"{name}.md"
-        if target.exists() or target.is_symlink():
+        was_symlink = target.is_symlink()
+        if target.exists() or was_symlink:
             target.unlink()
-        if link:
-            target.symlink_to(source)
-        else:
-            shutil.copy2(source, target)
+        shutil.copy2(source, target)
         print(f"  installed {name}.md")
+        if was_symlink:
+            rel = target.relative_to(destination) if destination in target.parents else target
+            print(
+                f"    replaced a stale symlink on disk - if git still tracks it as one (mode"
+                f" 120000), the copy alone won't fix history. Run: git add -f {rel}"
+            )
 
     manifest_path.write_text(
         json.dumps(
             {
                 "source": "https://github.com/lukaszpiasecki13/ai-tools",
                 "installed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                "mode": "symlink" if link else "copy",
                 "rules": names,
             },
             indent=2,
@@ -163,7 +166,6 @@ def main() -> int:
     scope.add_argument("--user", action="store_true", help="install into ~/.claude/rules (every project)")
     parser.add_argument("--only", default="", help="comma-separated rule names, overriding stack detection")
     parser.add_argument("--settings", action="store_true", help="also install the project settings template")
-    parser.add_argument("--link", action="store_true", help="symlink instead of copy (updates follow the repo)")
     parser.add_argument("--dry-run", action="store_true", help="print what would happen, change nothing")
     parser.add_argument("--list", action="store_true", help="list available rules and profiles")
     args = parser.parse_args()
@@ -196,7 +198,7 @@ def main() -> int:
         print("No rules selected. Use --only to choose explicitly, or --list to see what exists.")
         return 1
 
-    install_rules(destination, names, args.link, args.dry_run)
+    install_rules(destination, names, args.dry_run)
 
     if args.settings and not args.user:
         install_settings(destination, args.dry_run)
