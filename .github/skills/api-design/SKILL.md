@@ -3,6 +3,10 @@ name: api-design
 description: REST API design patterns, schema validation, versioning, error handling, and documentation. Use when the user asks about API endpoints, request/response schemas, HTTP conventions, or API architecture.
 ---
 
+<!-- GENERATED FILE - DO NOT EDIT.
+     Source: skills/api-design/SKILL.md
+     Regenerate: python scripts/sync_copilot.py -->
+
 # API Design Skill
 
 ## REST Conventions

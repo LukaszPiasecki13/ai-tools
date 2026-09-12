@@ -1,0 +1,29 @@
+// Copy one of these options to .mcp.json in the project root.
+// Keep it out of git if it holds machine-specific paths (e.g., CHROME_PATH on Windows).
+// The ui-verify skill needs chrome-devtools; others are optional.
+
+// OPTION 1: npx (default - works everywhere, no setup)
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
+    }
+  }
+}
+
+// OPTION 2: local install (faster, customizable)
+// Setup: npm install -g chrome-devtools-mcp
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "chrome-devtools",
+      "env": {
+        "CHROME_PATH": "/usr/bin/chromium-browser"
+      }
+    }
+  }
+}
+
+// Windows CHROME_PATH example:
+// "CHROME_PATH": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"

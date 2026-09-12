@@ -1,0 +1,67 @@
+<!-- Template for a project CLAUDE.md. Copy to the project root, fill in, delete what does
+     not apply. Target: under 200 lines. Everything here loads into every session, so an
+     entry earns its place only if Claude would otherwise get it wrong.
+
+     Do NOT put generic coding standards here - those are path-scoped rules, installed with
+     scripts/install.py, and they load only when a matching file is touched. -->
+
+# <Project name>
+
+<One or two sentences: what this system does and who uses it. Not a feature list.>
+
+## Commands
+
+<Exact, copy-pasteable. Verify each one before committing this file - a wrong command here
+is worse than no command.>
+
+| Task | Command |
+|------|---------|
+| Install | `` |
+| Run (dev) | `` |
+| Test | `` |
+| Test (single file) | `` |
+| Lint | `` |
+| Typecheck | `` |
+| Migrations | `` |
+
+## Layout
+
+<Two or three lines. Entry points and boundaries only - Claude reads the tree itself.>
+
+- `backend/app/api/` - HTTP routes; no business logic
+- `backend/app/services/` - business logic and persistence
+- `frontend/src/features/` - one folder per feature slice
+
+## Constraints
+
+<The rules Claude would otherwise break. Each one states what is forbidden and why, in one
+or two lines. Delete the ones that do not apply to this project.>
+
+**Git.** Do not run `git commit`, `git push`, `git rebase`, `git merge` or `git reset`
+without explicit approval in the conversation. Ask first, every time.
+
+**Python environment.** All Python runs through the project virtual environment
+(`.venv`), never the system interpreter. Installing a dependency needs approval first.
+
+**Migrations.** Create them only with `alembic revision --autogenerate -m "..."`. Never
+hand-write one; a hand-edited migration desyncs the chain and breaks upgrades in production.
+
+**Hardware pins.** Before touching GPIO or wiring, read `<path to the pin map>`. It is the
+source of truth. Do not guess pin numbers; update that document in the same task when a pin
+changes.
+
+## Documentation
+
+<When a change must be documented, and where it goes. Delete if the project has no such rule.>
+
+New module → new file in `docs/` plus an index entry in `<index file>`. Change to an existing
+module → update its existing section rather than adding a second one.
+
+## Domain vocabulary
+
+<Terms that mean something specific here and are not obvious from the code. Three to ten
+entries. Delete the section if the code already reads clearly.>
+
+| Term | Meaning |
+|------|---------|
+| | |

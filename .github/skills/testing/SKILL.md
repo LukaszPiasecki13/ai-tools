@@ -3,6 +3,10 @@ name: testing
 description: Testing patterns and frameworks for Python (pytest, pytest-asyncio), TypeScript (Vitest, Jest), and Angular (Testing Library). Use when the user asks about writing tests, test coverage, mocking, fixtures, test setup, or testing strategy.
 ---
 
+<!-- GENERATED FILE - DO NOT EDIT.
+     Source: skills/testing/SKILL.md
+     Regenerate: python scripts/sync_copilot.py -->
+
 # Testing Skill
 
 ## Python - pytest
@@ -192,4 +196,3 @@ describe('ReportService', () => {
 | Skip | Third-party library wrappers, generated code, config files |
 
 Target: 80%+ on business logic files. Do not chase 100% at the cost of test quality.
-
