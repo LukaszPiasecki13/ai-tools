@@ -1,7 +1,12 @@
 ---
-applyTo: "docs/adr/**/*.md,**/adr-*.md"
-description: "ADR (Architecture Decision Record) template and process. Applied automatically when working in docs/adr/ or naming files with adr- prefix."
+name: architecture-decisions
+description: ADR (Architecture Decision Record) template and process. Auto-loaded when working in docs/adr/ or on files named adr-*.
+applyTo: docs/adr/**/*.md,**/adr-*.md
 ---
+
+<!-- GENERATED FILE - DO NOT EDIT.
+     Source: rules/architecture-decisions.md
+     Regenerate: python scripts/sync_copilot.py -->
 
 # Architecture Decision Records (ADR)
 
@@ -60,5 +65,3 @@ Reference specific trade-offs that made this the best option.
 3. If accepted: change status to `Accepted`, merge
 4. If rejected: document why, close PR
 5. If superseded later: update status, link to new ADR
-
-

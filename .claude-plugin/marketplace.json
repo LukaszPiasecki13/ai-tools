@@ -1,0 +1,18 @@
+{
+  "name": "ai-tools",
+  "owner": {
+    "name": "lukaszpiasecki13",
+    "url": "https://github.com/lukaszpiasecki13"
+  },
+  "description": "Single-plugin marketplace hosting the AI Toolkit.",
+  "plugins": [
+    {
+      "name": "ai-tools",
+      "source": "./",
+      "description": "Subagents, skills, slash commands and enforcement hooks for Python/FastAPI, TypeScript, PowerShell and ESP32 work.",
+      "category": "development",
+      "license": "SEE LICENSE IN LICENSE",
+      "keywords": ["python", "typescript", "esp32", "code-review", "testing"]
+    }
+  ]
+}

@@ -1,7 +1,12 @@
 ---
-applyTo: "**/*.ps1,**/*.psm1"
-description: "PowerShell 7+ coding standards: script structure, naming, error handling, Pester tests. Applied automatically to PowerShell files."
+name: powershell-coding-standards
+description: PowerShell 7+ coding standards - script structure, naming, error handling, Pester tests. Auto-loaded for PowerShell files.
+applyTo: **/*.ps1,**/*.psm1
 ---
+
+<!-- GENERATED FILE - DO NOT EDIT.
+     Source: rules/powershell-coding-standards.md
+     Regenerate: python scripts/sync_copilot.py -->
 
 # PowerShell Coding Standards
 

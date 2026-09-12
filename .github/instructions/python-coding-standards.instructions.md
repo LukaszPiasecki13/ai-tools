@@ -1,15 +1,35 @@
 ---
-applyTo: "**/*.py"
-description: "Python 3.12+ coding standards: Ruff, mypy strict, FastAPI patterns, pytest. Applied automatically to all Python files."
+name: python-coding-standards
+description: Python 3.12+ coding standards - Ruff, mypy strict, FastAPI patterns, pytest. Auto-loaded for Python files.
+applyTo: **/*.py
 ---
+
+<!-- GENERATED FILE - DO NOT EDIT.
+     Source: rules/python-coding-standards.md
+     Regenerate: python scripts/sync_copilot.py -->
 
 # Python Coding Standards
 
-Python 3.12+ with FastAPI or Django REST. Toolchain: `uv`, Ruff, mypy strict, pytest.
+Python 3.12+ with FastAPI or Django REST. Toolchain: Ruff, mypy strict, pytest.
 
 ## Package Management
 
-Use `uv` exclusively - not pip or poetry. Always commit `uv.lock`. Do not commit `.venv/`.
+Follow the package manager the project already uses — never introduce a second one.
+
+| Project state | Use | Lockfile |
+|---------------|-----|----------|
+| New project, free choice | `uv` | commit `uv.lock` |
+| Existing `uv.lock` | `uv` | commit `uv.lock` |
+| Existing `requirements.txt` / `pyproject.toml` with pip | `pip` inside the project `.venv` | commit pinned `requirements*.txt` |
+| Existing `poetry.lock` | `poetry` | commit `poetry.lock` |
+
+Invariants regardless of tool:
+
+- Never install into the system interpreter. Always the project's virtual environment
+  (`uv run` / `.venv/bin/python` / `.venv\Scripts\python.exe`).
+- Never commit `.venv/`.
+- Adding or upgrading a dependency is a decision, not a side effect: propose it and get
+  approval before installing.
 
 ## Formatting Rules (Ruff)
 
@@ -89,6 +109,28 @@ class Settings(BaseSettings):
 
 settings = Settings()
 ```
+
+### Query Parameters — Always Use Schema
+Query parameters must **always** use a Pydantic schema with `Depends()`, even for a single parameter. Never scatter individual parameters in function arguments.
+
+```python
+# schemas/report.py
+class ListReportsQuery(BaseModel):
+    skip: int = Field(0, ge=0)
+    limit: int = Field(100, ge=1, le=1000)
+    status: str | None = None
+
+# api/reports.py
+@router.get("/", response_model=PaginatedResponse[ReportResponse])
+def list_reports(
+    query: ListReportsQuery = Depends(),
+    service: ReportService = Depends(get_report_service),
+) -> PaginatedResponse[ReportResponse]:
+    reports, total = service.list_reports(query.skip, query.limit, query.status)
+    return PaginatedResponse(items=reports, total=total, skip=query.skip, limit=query.limit)
+```
+
+**Why:** Centralizes validation, defaults, and documentation. Reusable across endpoints. Consistent signatures.
 
 ### Dependencies
 ```python
@@ -191,5 +233,3 @@ Format: Google style with `Args`/`Returns`/`Raises` sections.
 | DB table | snake_case, plural | `reports`, `data_points` |
 | DB column | snake_case | `created_at`, `company_id` |
 | DB index | `idx_` + table + columns | `idx_reports_company_status` |
-
-

@@ -1,7 +1,12 @@
 ---
-applyTo: "**/*.py,**/*.ts,**/*.tsx"
-description: "Error handling patterns for Python backend and TypeScript frontend: exception hierarchy, HTTP contract, logging strategy. Applied to Python and TypeScript files."
+name: error-handling-patterns
+description: Error handling patterns for Python backend and TypeScript frontend - exception hierarchy, HTTP contract, logging strategy. Auto-loaded for Python and TypeScript files.
+applyTo: **/*.py,**/*.{ts,tsx,js,jsx}
 ---
+
+<!-- GENERATED FILE - DO NOT EDIT.
+     Source: rules/error-handling-patterns.md
+     Regenerate: python scripts/sync_copilot.py -->
 
 # Error Handling Patterns
 

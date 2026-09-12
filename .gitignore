@@ -1,5 +1,12 @@
 .env
 .mcp.json
 .playwright-mcp/
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
+venv/
+
+# Claude Code local state
+.claude/settings.local.json
