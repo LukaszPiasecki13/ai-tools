@@ -33,6 +33,7 @@ Typed deliberately. Hidden from automatic model invocation, so they never fire o
 | `/ai-tools:pr-description` | `[base branch, default: main]` | — | Write a pull request title and body from the branch's actual diff against its base. |
 | `/ai-tools:react-feature` | `[feature name - what it does]` | — | Scaffold a React feature slice |
 | `/ai-tools:security-scan` | `[optional path or base branch]` | fork | Audit the current changes against the OWASP security checklist in an isolated subagent. |
+| `/ai-tools:setup-ai-tools` | — | — | Automated setup for new repository |
 | `/ai-tools:test-focus` | `[optional path or test name filter]` | — | Run only the tests affected by the current changes, then widen if they pass. |
 | `/ai-tools:toolkit-validate` | — | — | Validate this toolkit |
 
