@@ -22,6 +22,14 @@ or
 python path/to/ai-tools/scripts/setup.py /path/to/repo
 ```
 
+**For maintainers who have both repos:**
+
+```bash
+python path/to/ai-tools/scripts/setup.py /path/to/repo --link
+```
+
+The `--link` flag symlinks rules instead of copying them, so changes in ai-tools propagate instantly to the project.
+
 ## What this does
 
 1. **Copies templates** — `CLAUDE.md`, `settings.json`, `mcp.json`
