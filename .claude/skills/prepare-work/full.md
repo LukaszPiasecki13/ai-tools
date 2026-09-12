@@ -617,6 +617,22 @@ wymyśla bez potwierdzenia. Jeśli "Konwencje repo" zawierają własną regułę
 jest nadrzędna wobec tabeli wyżej.
 
 
+**Repo z bazą wiedzy warstwową** (jest `docs/00_KNOWLEDGE-MAP.md` albo front-matter z `layer:`)
+- zakres wyznacza `applies_to`, nie zgadywanie. Dodatkowo obowiązuje:
+
+
+1. Dokumenty, których `applies_to` łapie zmienione pliki, są zaktualizowane i mają nowe `verified`.
+2. Decyzje nieodwracalne podjęte w trakcie mają ADR; inne dokumenty tylko do niego linkują.
+3. Nowe pojęcia domenowe są w `CONTEXT.md`.
+4. Nowy dokument ma wpis w mapie wiedzy.
+5. Dokument zadania (L3) dostaje `status: archived`.
+6. `python scripts/kb_validate.py --root . --strict` kończy się kodem 0.
+
+
+Zerowa delta w bazie wiedzy jest dopuszczalna, ale wymaga jednego zdania uzasadnienia w raporcie
+fazy. Bez tego każda iteracja powiększa dystans między kodem a wiedzą.
+
+
 Subagent odpowiedzialny za dokumentację sam sprawdza finalny `git diff --stat` i
 `git diff --name-only`, ale czyta diff kodu tylko gdy jest potrzebny do zweryfikowania konkretnego
 twierdzenia. Po edycji uruchamia najtańszą dostępną walidację dokumentacji (lint/link check) oraz

@@ -51,7 +51,6 @@ related:
   - be-architecture
 supersedes: []
 superseded_by: null
-tags: [telemetria, ingest]
 ---
 ```
 
@@ -74,7 +73,12 @@ tags: [telemetria, ingest]
 | `domain` | nie | string | `backend` / `frontend` / `firmware` / `product` / `market`. |
 | `supersedes` / `superseded_by` | przy zastąpieniu | lista / `id` | Łańcuch zastąpień. |
 | `expires` | L3 | `YYYY-MM-DD` | Po tej dacie dokument roboczy jest automatycznie do archiwizacji. |
-| `tags` | nie | lista | Wyłącznie do wyszukiwania. Nigdy nie niosą znaczenia normatywnego. |
+
+Powyższa tabela to komplet — nowe pole dodawaj dopiero wtedy, gdy potrafisz
+wskazać mechanizm, który bez niego nie działa. Każde kolejne jest kosztem
+ponoszonym przy **każdym** dokumencie. Odrzucony przykład: `tags` — wyszukiwanie
+pokrywają `domain`, `related` i szukanie pełnotekstowe, więc pole było czystą
+biurokracją i zostało usunięte ze schematu.
 
 ### Wymagalność per warstwa
 
@@ -178,6 +182,29 @@ Zestaw egzekwowany przez [`scripts/kb_validate.py`](./scripts/kb_validate.py).
 | `E008` | Przekroczony twardy limit rozmiaru |
 | `E009` | `status: superseded` bez `superseded_by` |
 | `E010` | Zły format daty (wymagane `YYYY-MM-DD`) |
+
+### Zmiana schematu
+
+Schemat będzie się zmieniał. Bez reguły migracji pierwsza zmiana zamienia całą
+bazę w czerwony raport i kończy się wyłączeniem walidacji.
+
+**Wersja schematu jest jedna dla całego repo** i mieszka w tym pliku (nagłówek
+poniżej), nie w polu każdego dokumentu — pole `schema_version` w setkach plików
+to koszt bez korzyści, bo i tak wszystkie migrujesz naraz.
+
+| Rodzaj zmiany | Tryb wprowadzenia |
+|---|---|
+| Nowe pole opcjonalne | od razu, bez migracji |
+| Nowe pole **obowiązkowe** | najpierw jako ostrzeżenie (`W1xx`) przez jeden cykl przeglądu, potem jako błąd (`E002`) |
+| Nowa wartość w enumie | od razu |
+| Usunięcie wartości z enumu | najpierw ostrzeżenie, migracja istniejących dokumentów, dopiero potem usunięcie z walidatora |
+| Zmiana znaczenia istniejącego pola | zabroniona — dodaj nowe pole, stare oznacz jako wycofywane |
+
+Migrację przeprowadza się skryptem jednorazowym w osobnym commicie, nigdy ręcznie
+plik po pliku i nigdy w tym samym commicie co zmiana walidatora — inaczej nie da
+się odróżnić, co zmieniła migracja, a co człowiek.
+
+**Wersja schematu: 1.0** (2026-09-12).
 
 ### Ostrzeżenia (raportowane, nie blokują)
 

@@ -18,40 +18,23 @@ Use ADRs for decisions that affect multiple files, teams, or are hard to reverse
 
 ## File Naming and Location
 
-- File: `adr-NNN-short-title.md` (e.g., `adr-001-use-fastapi.md`)
-- Location: `docs/adr/` in the project root
+- File: `NNNN-short-slug.md` (e.g., `0001-use-fastapi.md`)
+- Location: `docs/adr/` in the project root — one directory per repo, shared by
+  technical and business decisions
 - Number sequentially, never reuse numbers
 
-## Template
+## Template — single source
 
-```markdown
-# ADR-NNN: [Short Decision Title]
+The canonical ADR template lives in one place:
+[`.claude/skills/knowledge-base/templates/adr.template.md`](../skills/knowledge-base/templates/adr.template.md).
 
-## Status
-[Proposed | Accepted | Deprecated | Superseded by ADR-XXX]
+Copy it; do not reconstruct an ADR from memory and do not maintain a second
+template here. Deciding *whether* a decision deserves an ADR is covered by
+[`domain-modeling/ADR-FORMAT.md`](../skills/domain-modeling/ADR-FORMAT.md).
 
-## Date
-YYYY-MM-DD
-
-## Context
-What is the problem? What constraints exist?
-What options were considered?
-
-## Decision
-What did we choose and why?
-Reference specific trade-offs that made this the best option.
-
-## Consequences
-
-### Positive
-- What becomes easier or better
-
-### Negative
-- What becomes harder or what we give up
-
-### Neutral
-- Side effects that are neither good nor bad
-```
+Minimum viable ADR: title, Status, Kontekst, Decyzja, Rozpatrywane alternatywy,
+Konsekwencje. The alternatives section is what stops a rejected option from
+being re-proposed in six months — never drop it.
 
 ## Review Process
 

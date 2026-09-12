@@ -56,6 +56,14 @@ Ten sam skrypt na pull requeście, dodatkowo `--report` z podsumowaniem ostrzeż
 w komentarzu PR. Rozjazdy (`W102`) mają wtedy najlepszy moment na naprawę — obok
 diffu, który je spowodował.
 
+### Testy walidatora
+
+`python3 scripts/test_kb_validate.py` — zestaw przypina reguły, które łatwo
+„naprawić" w złą stronę. Najważniejsza: kotwice GitHuba **nie zwijają** kolejnych
+myślników, więc nagłówek z em-dashem daje kotwicę z `--`. Uproszczenie tego
+miejsca zamienia poprawną bazę w kilkanaście fałszywych alarmów. Uruchamiaj po
+każdej zmianie walidatora.
+
 ### Cotygodniowy przegląd
 
 Raport `--format json` → lista przeterminowanych i rozjechanych dokumentów. To
@@ -127,7 +135,10 @@ pełnotekstowego do znalezienia kontekstu.
 **Cel:** baza aktualizuje się jako element definicji ukończenia, nie jako
 osobne zadanie „kiedyś potem".
 
-Pętla — do wpięcia w istniejący pipeline (`prepare-work`):
+Pętla jest wpięta w [`prepare-work`](../prepare-work/SKILL.md): wariant pełny
+w Fazie 11 (Dokumentacja), wariant uproszczony w zasadzie 12. Oba wyzwalają się
+tylko w repo z bazą warstwową — rozpoznają ją po `docs/00_KNOWLEDGE-MAP.md` albo
+po front-matter z `layer:`, więc w repo bez bazy nic się nie zmienia.
 
 ```
    ┌──────────────────────────────────────────────────────────┐

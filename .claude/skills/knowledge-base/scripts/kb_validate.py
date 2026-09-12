@@ -48,7 +48,7 @@ REQUIRED_BY_LAYER: dict[str, list[str]] = {
 }
 
 DATE_FIELDS = ["created", "verified", "review_after", "expires"]
-LIST_FIELDS = {"applies_to", "sources", "related", "tags", "supersedes"}
+LIST_FIELDS = {"applies_to", "sources", "related", "supersedes"}
 
 # (miękki, twardy) limit linii
 SIZE_LIMITS: dict[str, tuple[int, int]] = {
@@ -186,7 +186,14 @@ def strip_noise(text: str) -> str:
 
 
 def slugify(heading: str) -> str:
-    """Kotwica w stylu GitHub."""
+    """Kotwica w stylu GitHub.
+
+    UWAGA: GitHub NIE zwija kolejnych myślników. Nagłówek `Część 3: Analiza — Architektura`
+    ma kotwicę `#część-3-analiza--architektura` z podwójnym myślnikiem, bo usunięty
+    dwukropek i em-dash zostawiają po sobie dwie spacje. Dodanie tu `re.sub(r"-+", "-", s)`
+    wygląda na sprzątanie, a jest regresją: zrywa każdą kotwicę wygenerowaną przez
+    standardowe generatory spisu treści. Pokrywa to `test_kb_validate.py`.
+    """
     s = heading.strip().lower()
     s = re.sub(r"`([^`]*)`", r"\1", s)
     s = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", s)
@@ -520,7 +527,10 @@ def metrics(docs: list[Document], diags: list[Diagnostic]) -> dict[str, Any]:
     codes = [d.code for d in diags]
     l2 = [d for d in docs if d.layer == "L2"]
     l12 = [d for d in docs if d.layer in ("L1", "L2")]
-    pct = lambda n, total: round(100 * n / total, 1) if total else 0.0  # noqa: E731
+
+    def pct(n: int, total: int) -> float:
+        return round(100 * n / total, 1) if total else 0.0
+
     return {
         "dokumentów": len(docs),
         "błędów": sum(1 for c in codes if c.startswith("E")),

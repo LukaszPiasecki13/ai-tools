@@ -57,6 +57,11 @@ niedokończoną walidację. Nie wznawiaj subagentów; każde wywołanie jest św
     zatrzymuje pipeline i wymaga decyzji usera. Minory zapisz bez iteracji.
 12. Dokumentacja jest opcjonalna. Aktualizuj ją tylko, gdy user jawnie o to poprosi albo konwencje
     repo wymuszają wpis (np. obowiązkowy changelog); wtedy ogranicz się do najmniejszego zakresu.
+    Wyjątek nieopcjonalny: w repo z bazą wiedzy warstwową (jest `docs/00_KNOWLEDGE-MAP.md` albo
+    front-matter z `layer:`) zaktualizuj dokumenty, których `applies_to` łapie zmienione pliki,
+    podbij w nich `verified` i uruchom `python scripts/kb_validate.py --root . --strict`.
+    To nie jest dokumentowanie „na zapas" — to warunek, żeby następne uruchomienie pipeline'u
+    dostało prawdziwy materiał wejściowy.
 
 
 ## Klasyfikacja

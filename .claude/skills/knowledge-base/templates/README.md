@@ -21,6 +21,21 @@ usuwasz po wypełnieniu.
 | Hipotezę produktową do sprawdzenia | [`experiment`](./experiment.template.md) | L3→L4 | `docs/research/experiments/` |
 | Wynik badania, analizy, wywiadu | [`research-note`](./research-note.template.md) | L4 | `docs/research/` |
 
+## Jeden szablon na artefakt
+
+Szablony w tym katalogu są **kanoniczne**. Jeżeli inny plik w repo opisuje ten
+sam artefakt, ma linkować tutaj, a nie utrzymywać drugiej wersji:
+
+| Artefakt | Forma (kanon) | Kiedy go użyć (osobny dokument) |
+|---|---|---|
+| ADR | [`adr.template.md`](./adr.template.md) | [`domain-modeling/ADR-FORMAT.md`](../../domain-modeling/ADR-FORMAT.md) — kryteria „czy to zasługuje na ADR", numeracja |
+| Słownik | [`CONTEXT.template.md`](./CONTEXT.template.md) | [`domain-modeling/CONTEXT-FORMAT.md`](../../domain-modeling/CONTEXT-FORMAT.md) — jak pisać hasła i listę `_Unikać_` |
+
+Podział jest celowy: **kiedy** i **jak** to dwa różne pytania, ale **forma** ma
+jedno źródło. Dwa szablony tego samego artefaktu to antywzorzec
+[A4](../ANTIPATTERNS.md) — nowe dokumenty rozjeżdżają się z istniejącymi
+i żadna konwencja nie jest egzekwowana.
+
 ## Zasady wspólne
 
 1. **Front-matter jest obowiązkowy.** Plik bez niego nie przejdzie walidacji (`E001`).

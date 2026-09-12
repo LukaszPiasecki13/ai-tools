@@ -1,33 +1,28 @@
 ---
 paths: ["docs/**/*.md", "CONTEXT.md", "PRODUCT.md", "**/CONTEXT.md"]
-description: Konwencje bazy wiedzy dla agentów - warstwy, front-matter, linki, aktualizacja. Ładowane automatycznie przy pracy na dokumentach w docs/.
+description: Konwencje bazy wiedzy dla agentów - front-matter, warstwy, limity, reguły edycji dokumentów. Ładowane automatycznie przy pracy na dokumentach w docs/.
 ---
 
 # Baza wiedzy — konwencje
 
-Pełny framework: [`.claude/skills/knowledge-base/`](../skills/knowledge-base/SKILL.md).
-Ta reguła to zestaw minimalny, wymuszany przy każdej edycji dokumentu.
+Minimum egzekwowane przy każdej edycji dokumentu. Uzasadnienia, pełny model
+i szablony: [`skills/knowledge-base/`](../skills/knowledge-base/SKILL.md).
 
-## Warstwy
+## Warstwa — wybierz jedną
 
-| Warstwa | Co | Gdzie |
-|---|---|---|
-| L0 | reguły zachowania agenta | `CLAUDE.md`, `.claude/rules/` |
-| L1 | słownik, kanon produktu, decyzje | `CONTEXT.md`, `PRODUCT.md`, `docs/adr/`, `docs/product/` |
-| L2 | architektura, moduły, kontrakty, runbooki | `docs/technical/` |
-| L3 | plany, specyfikacje, briefy | `docs/plans/` |
-| L4 | badania, analizy, pomiary | `docs/research/` |
+`L0` reguły agenta · `L1` słownik, kanon produktu, decyzje (ADR) ·
+`L2` architektura, moduły, kontrakty, runbooki · `L3` plany i specyfikacje ·
+`L4` badania i dowody.
 
-Konflikt rozstrzyga warstwa wyższa. **Konflikt jest defektem** — zgłoś go jako
-otwarty punkt, nie wybieraj po cichu jednej wersji.
+Sprzeczność rozstrzyga warstwa wyższa i **jest defektem** — zgłoś ją jako otwarty
+punkt, nie wybieraj po cichu. **Plan (L3) nigdy nie opisuje stanu systemu**; stan
+opisuje L2 z linkami do kodu.
 
-**Plan (L3) nie opisuje stanu systemu.** Stan opisuje wyłącznie L2 z linkami do kodu.
-
-## Front-matter — obowiązkowy w każdym pliku pod `docs/`
+## Front-matter — obowiązkowy pod `docs/`
 
 ```yaml
 ---
-id: <unikalny-slug>
+id: <unikalny-slug>          # stabilny, nie zmienia się przy przenoszeniu pliku
 title: <zdanie>
 layer: L1
 domain: <backend|frontend|firmware|product|market>
@@ -35,7 +30,7 @@ status: draft|active|superseded|archived
 confidence: fact|decision|hypothesis
 owner: <imię>
 created: YYYY-MM-DD
-verified: YYYY-MM-DD
+verified: YYYY-MM-DD         # data sprawdzenia treści wobec rzeczywistości
 review_after: YYYY-MM-DD | on-change   # L1, L2
 applies_to: [<glob kodu>]              # L2 — obowiązkowe
 sources: [<ścieżka|URL>]               # L2, L4
@@ -43,42 +38,33 @@ expires: YYYY-MM-DD                    # L3
 ---
 ```
 
-`verified` podbija ten, kto **sprawdził treść wobec rzeczywistości** — nie ten,
-kto poprawił literówkę.
+Pełna tabela pól i reguł walidacji: [METADATA.md](../skills/knowledge-base/METADATA.md).
 
 ## Reguły edycji
 
-1. **Jeden fakt — jedno miejsce.** Wszędzie indziej głęboki link `plik.md#kotwica`.
-   Nie kopiuj treści między dokumentami.
-2. **Twierdzenie normatywne ma źródło** — link do kodu, ADR albo dowodu L4.
-   Bez źródła oznacz `confidence: hypothesis` i dodaj w treści:
-   `> **[HIPOTEZA]** … Podstawa: … Niezweryfikowane wobec: …`
-3. **Decyzja idzie do ADR**, nie do planu ani dokumentu technicznego. Warunki:
-   nieodwracalna + nieoczywista + był realny wybór. Wszystkie trzy naraz.
+1. **Jeden fakt — jedno miejsce.** Wszędzie indziej link `plik.md#kotwica`.
+2. **Twierdzenie normatywne ma źródło** (kod, ADR, dowód L4). Bez źródła →
+   `confidence: hypothesis` + w treści `> **[HIPOTEZA]** … Podstawa: …`.
+3. **Decyzja idzie do ADR**, nie do planu. Warunki łącznie: nieodwracalna,
+   nieoczywista, był realny wybór. Szablon:
+   [adr.template.md](../skills/knowledge-base/templates/adr.template.md).
 4. **Nowe pojęcie domenowe → `CONTEXT.md` natychmiast**, z listą `_Unikać_`.
-5. **Nic nie kasujesz** — `status: archived` albo `superseded` + `superseded_by`.
-6. **Zmiana nagłówka zrywa kotwice** — napraw linkujące dokumenty w tym samym commicie.
-7. **Nowy dokument → wpis w mapie wiedzy** (`docs/00_KNOWLEDGE-MAP.md`) w tym samym commicie.
-8. **Zmiana kodu objętego `applies_to`** → aktualizacja dokumentu i nowe `verified`,
+5. **Nic nie kasujesz** — `archived` albo `superseded` + `superseded_by`.
+6. **Zmiana nagłówka zrywa kotwice** — napraw linkujące dokumenty w tym commicie.
+7. **Nowy dokument → wpis w `docs/00_KNOWLEDGE-MAP.md`** w tym samym commicie.
+8. **Zmiana kodu z `applies_to`** → aktualizacja dokumentu i nowe `verified`,
    w tym samym commicie co kod.
+9. **`verified` podbija ten, kto sprawdził** — nie ten, kto poprawił literówkę.
 
-## Limity rozmiaru (linie)
+## Limity rozmiaru (linie, miękki / twardy)
 
-| Typ | Miękki | Twardy |
-|---|---|---|
-| ADR | 80 | 150 |
-| `CONTEXT.md` | 200 | 400 |
-| L2 / L3 / L4 | 400 | 800 |
+ADR 80/150 · `CONTEXT.md` 200/400 · L2, L3, L4 400/800.
 
-Przekroczenie twardego limitu → dokument do rozbicia po **adresowalności**
-(jaka sekcja jest celem osobnego pytania), nie po długości. Oryginał zostaje
-stroną-rozdzielaczem z linkami do części.
+Ponad twardy limit → rozbicie po **adresowalności** (co jest celem osobnego
+pytania), nie po długości. Oryginał zostaje rozdzielaczem z linkami.
 
-## Zanim uznasz dokument za skończony
+## Przed zamknięciem zadania
 
 ```bash
 python scripts/kb_validate.py --root . --strict
 ```
-
-Sprawdza: front-matter, martwe linki i kotwice, zduplikowane `id`, limity
-rozmiaru, przeterminowanie, rozjazd doc↔kod.

@@ -1,5 +1,12 @@
 # CONTEXT.md Format
 
+This file defines the **body** of a glossary: how a term is written, how
+alternatives are rejected, what belongs and what doesn't. When the repo runs the
+knowledge-base conventions, the same file also carries front-matter — the
+ready-to-copy version with it is
+[`knowledge-base/templates/CONTEXT.template.md`](../knowledge-base/templates/CONTEXT.template.md).
+The two agree on the body; only the metadata header is added.
+
 ## Structure
 
 ```md

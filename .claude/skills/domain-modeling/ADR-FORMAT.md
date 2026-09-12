@@ -4,23 +4,41 @@ ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slu
 
 Create the `docs/adr/` directory lazily — only when the first ADR is needed.
 
-## Template
+## Division of responsibility
+
+This file answers **whether** a decision deserves an ADR (see "When to offer an
+ADR" below) and how to number it. The **form** of the file — front-matter,
+sections, size budget — has a single canonical definition:
+[`knowledge-base/templates/adr.template.md`](../knowledge-base/templates/adr.template.md).
+
+Do not maintain a competing template here. Two templates for the same artifact
+means new ADRs drift from the existing ones and no convention gets enforced.
+
+## Minimum shape
+
+An ADR is short — 80 lines is generous, 150 is the hard ceiling. What it must
+always carry:
 
 ```md
-# {Short title of the decision}
+# {Decision as a declarative sentence}
 
-{1-3 sentences: what's the context, what did we decide, and why.}
+{1-3 sentences: the context, what was decided, what stays open.}
+
+## Status
+## Kontekst
+## Decyzja
+## Rozpatrywane alternatywy
+## Konsekwencje
 ```
 
-That's it. An ADR can be a single paragraph. The value is in recording *that* a decision was made and *why* — not in filling out sections.
+The value is in recording *that* a decision was made, *why*, and *what was
+rejected* — not in filling out sections for their own sake. Drop a section only
+when it would genuinely be empty, and never drop the rejected alternatives:
+that is the section that stops a discarded option from coming back in six months.
 
-## Optional sections
-
-Only include these when they add genuine value. Most ADRs won't need them.
-
-- **Status** frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`) — useful when decisions are revisited
-- **Considered Options** — only when the rejected alternatives are worth remembering
-- **Consequences** — only when non-obvious downstream effects need to be called out
+Statuses: `draft | active | superseded | archived`, with `superseded_by` when
+superseded. Detail in
+[`knowledge-base/METADATA.md`](../knowledge-base/METADATA.md).
 
 ## Numbering
 
