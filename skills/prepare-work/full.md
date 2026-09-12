@@ -267,7 +267,7 @@ Wariant pełny został wybrany w `SKILL.md`; zapisz `variant: full` w manifeści
    - "Reguły architektoniczne" - wyłącznie ścieżki bezwzględne w `{rules_root}`: zawsze
      `architecture-decisions.md`, `security-checklist.md`, `error-handling-patterns.md`;
      wg typu dotykanych plików `python-coding-standards.md` (`*.py`),
-     `frontend-coding-standards.md` (`*.ts`/`*.tsx`/`*.html`/`*.scss`),
+     `typescript-coding-standards.md` (`*.ts`/`*.tsx`/`*.js`/`*.jsx`/`*.html`/`*.scss`),
      `powershell-coding-standards.md` (`*.ps1`),
      `cpp-embedded-coding-standards.md` (`*.cpp`/`*.h`/`*.ino`)
    - "Konwencje repo" - pusta, wypełni ją Faza 1

@@ -1,5 +1,5 @@
 ---
-paths: ["**/*.py", "**/*.ts", "**/*.tsx", "**/*.ps1"]
+paths: ["**/*.py", "**/*.{ts,tsx,js,jsx}", "**/*.{ps1,psm1}"]
 description: OWASP Top 10 security checklist - JWT auth, input validation, SQL injection, XSS, CSRF, rate limiting, secrets management. Auto-loaded for Python, TypeScript, and PowerShell files.
 ---
 
@@ -9,7 +9,12 @@ OWASP Top 10. Apply to all code handling auth, user input, database access, or s
 
 ## Authentication (JWT)
 
-- Use `PyJWT`. Do NOT use `python-jose` - unmaintained since 2022.
+- Prefer `PyJWT` for new code.
+- If a project uses `python-jose`, the floor must be `>=3.4.0`. Everything below it is
+  vulnerable to CVE-2024-33663 (algorithm confusion with OpenSSH ECDSA keys),
+  CVE-2024-33664 (denial of service via a compressed JWE "JWT bomb") and CVE-2024-29370
+  — all three fixed in 3.4.0 (source: OSV/GitHub Advisory Database).
+  A dependency pinned `>=3.3.0` is **not** safe: the floor itself is a vulnerable version.
 - Algorithms: `RS256` with `audience` and `issuer` validation.
 - Access tokens: 15-30 min lifetime. Refresh tokens: 7-30 days, rotate on use.
 - Store refresh tokens in `httpOnly`, `Secure`, `SameSite=Strict` cookies. Never in `localStorage`.
@@ -29,7 +34,10 @@ OWASP Top 10. Apply to all code handling auth, user input, database access, or s
 
 - Never commit secrets, API keys, passwords, or connection strings to git.
 - Load from environment variables (`os.environ["KEY"]` - fails fast if missing) or secret managers.
-- Add `.env`, `*.pem`, `*.key`, `service-account*.json` to `.gitignore` (already covered by `.claudeignore` for Claude's own file access).
+- Add `.env`, `*.pem`, `*.key`, `service-account*.json` to `.gitignore`.
+- Block the assistant's own access to them with `permissions.deny` in the project's
+  `.claude/settings.json` — see `templates/project/settings.json` in this toolkit.
+  `.gitignore` stops commits; only `permissions.deny` stops reads.
 
 ## XSS Prevention
 

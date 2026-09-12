@@ -28,9 +28,12 @@ This skill is read-only. It must not create, edit, move, or delete Jira data.
 
 **Setup:**
 ```bash
-cd .claude/skills/jira-board-extractor
-uv pip install requests python-dotenv
+cd "${CLAUDE_SKILL_DIR}"
+python -m pip install requests python-dotenv   # inside the project's virtual environment
 ```
+
+`${CLAUDE_SKILL_DIR}` resolves to this skill's own directory regardless of where the plugin
+is installed, so the path stays correct on every machine.
 
 **Usage examples:**
 
@@ -90,7 +93,9 @@ JIRA_API_TOKEN=your_api_token
 JIRA_BASE_URL=https://your-domain.atlassian.net
 ```
 
-Keep the `.env` file uncommitted (it is already covered by `.claudeignore`). Read the values at runtime only.
+Keep the `.env` file uncommitted: it must be in `.gitignore`, and in the project's
+`permissions.deny` so the assistant cannot read it either. Load the values at runtime from
+the environment — never paste a token into the conversation, a script, or a commit.
 
 ## Required Inputs
 

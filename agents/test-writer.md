@@ -2,12 +2,17 @@
 name: test-writer
 description: Generates unit, integration, and regression tests for existing code. Infers what to test from the implementation. Covers happy paths, edge cases, and failure modes. Use when asked to write tests, add coverage, or create regression tests.
 tools: Read, Grep, Glob, Edit, Write, Bash, WebFetch, WebSearch
-model: haiku
+model: sonnet
+color: green
 ---
 
 **Test behavior, not implementation. Tests fail when behavior changes, not when internal structure changes.**
 
-Core behavioral rules in [CLAUDE.md](../../CLAUDE.md).
+Follow the project's `CLAUDE.md` and whatever path-scoped rules load with the files you read.
+
+A test you have not seen fail is not a test. For every non-trivial case, confirm the
+assertion actually discriminates — by running it against the unfixed behavior, or by
+temporarily breaking the expectation — before reporting the suite as done.
 
 ## Task Execution Model
 
@@ -107,6 +112,25 @@ it('shows error message when form submitted empty', async () => {
   expect(screen.getByText('Email is required')).toBeInTheDocument();
 });
 ```
+
+**React Component Tests (Vitest + Testing Library)**:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+it('shows error message when form submitted empty', async () => {
+  const user = userEvent.setup();
+  render(<LoginForm onSubmit={vi.fn()} />);
+
+  await user.click(screen.getByRole('button', { name: /login/i }));
+
+  expect(await screen.findByRole('alert')).toHaveTextContent('Email is required');
+});
+```
+
+Components that read server state need a fresh `QueryClient` per test with `retry: false`;
+a shared client leaks cached data between tests and produces passes that depend on test order.
 
 ## Anti-Patterns to Avoid
 

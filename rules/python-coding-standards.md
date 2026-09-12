@@ -5,11 +5,26 @@ description: Python 3.12+ coding standards - Ruff, mypy strict, FastAPI patterns
 
 # Python Coding Standards
 
-Python 3.12+ with FastAPI or Django REST. Toolchain: `uv`, Ruff, mypy strict, pytest.
+Python 3.12+ with FastAPI or Django REST. Toolchain: Ruff, mypy strict, pytest.
 
 ## Package Management
 
-Use `uv` exclusively - not pip or poetry. Always commit `uv.lock`. Do not commit `.venv/`.
+Follow the package manager the project already uses — never introduce a second one.
+
+| Project state | Use | Lockfile |
+|---------------|-----|----------|
+| New project, free choice | `uv` | commit `uv.lock` |
+| Existing `uv.lock` | `uv` | commit `uv.lock` |
+| Existing `requirements.txt` / `pyproject.toml` with pip | `pip` inside the project `.venv` | commit pinned `requirements*.txt` |
+| Existing `poetry.lock` | `poetry` | commit `poetry.lock` |
+
+Invariants regardless of tool:
+
+- Never install into the system interpreter. Always the project's virtual environment
+  (`uv run` / `.venv/bin/python` / `.venv\Scripts\python.exe`).
+- Never commit `.venv/`.
+- Adding or upgrading a dependency is a decision, not a side effect: propose it and get
+  approval before installing.
 
 ## Formatting Rules (Ruff)
 

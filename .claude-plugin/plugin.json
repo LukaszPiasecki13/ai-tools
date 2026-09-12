@@ -1,0 +1,25 @@
+{
+  "name": "ai-tools",
+  "displayName": "AI Toolkit",
+  "version": "2.0.0",
+  "description": "Personal engineering toolkit for Claude Code: subagents, skills, slash commands and enforcement hooks for Python/FastAPI, TypeScript (React and Angular), PowerShell and ESP32/PlatformIO work.",
+  "author": {
+    "name": "lukaszpiasecki13",
+    "url": "https://github.com/lukaszpiasecki13"
+  },
+  "homepage": "https://github.com/lukaszpiasecki13/ai-tools",
+  "repository": "https://github.com/lukaszpiasecki13/ai-tools",
+  "license": "MIT",
+  "keywords": [
+    "python",
+    "fastapi",
+    "typescript",
+    "react",
+    "angular",
+    "powershell",
+    "esp32",
+    "code-review",
+    "testing",
+    "workflow"
+  ]
+}

@@ -1,5 +1,5 @@
 ---
-paths: ["**/*.py", "**/*.ts", "**/*.tsx"]
+paths: ["**/*.py", "**/*.{ts,tsx,js,jsx}"]
 description: Error handling patterns for Python backend and TypeScript frontend - exception hierarchy, HTTP contract, logging strategy. Auto-loaded for Python and TypeScript files.
 ---
 
