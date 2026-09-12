@@ -3,6 +3,10 @@ name: database-design
 description: Database modeling patterns for SQL, NoSQL (Firestore), BigQuery. Schema design, indexing, queries, and data migration. Use when the user asks about data models, database queries, schema changes, or data architecture.
 ---
 
+<!-- GENERATED FILE - DO NOT EDIT.
+     Source: skills/database-design/SKILL.md
+     Regenerate: python scripts/sync_copilot.py -->
+
 # Database Design Skill
 
 ## Data Modeling Principles
