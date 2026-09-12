@@ -5,6 +5,13 @@ All notable changes to this toolkit. Versions follow the `version` field in
 
 ## [Unreleased]
 
+### Fixed
+- **Breaking:** `.claude-plugin/plugin.json` and `marketplace.json` declared `"license":
+  "MIT"` — an explicit grant to use, copy and redistribute this code — with no `LICENSE`
+  file in the repository to back it. Added `LICENSE` (all rights reserved, viewing only) and
+  changed both manifests to `"SEE LICENSE IN LICENSE"`. The repository stays public; no
+  license is now granted for reuse or redistribution.
+
 ### Changed
 - `scripts/generate_catalog.py` merged into `scripts/sync_copilot.py` — one script now
   produces both the Copilot mirror and `docs/CATALOG.md`, and `--check` covers both. Fewer

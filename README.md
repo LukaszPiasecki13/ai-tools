@@ -1,5 +1,8 @@
 # AI Toolkit
 
+> This repository is public for reference only. No license is granted to use, copy, or
+> install it — see [LICENSE](LICENSE).
+
 A personal engineering toolkit for [Claude Code](https://code.claude.com/docs), packaged as a
 plugin: subagents, skills, slash commands, path-scoped coding standards, and hooks that
 enforce the rules rather than just describing them.
@@ -131,6 +134,9 @@ in [CLAUDE.md](CLAUDE.md).
 - [docs/MIGRATION-2.0.md](docs/MIGRATION-2.0.md) — what changed in 2.0 and what to do about it
 - [docs/adr/](docs/adr/) — the decisions behind the structure
 
-## Licence
+## License
 
-MIT.
+All rights reserved — see [LICENSE](LICENSE). This repository is published so the toolkit is
+visible and reachable from any of the author's own machines; it is not an open-source release.
+No permission is granted to use, copy, modify, or install this code, including via the plugin
+marketplace, without prior written permission from the copyright holder.

@@ -11,7 +11,7 @@
       "source": "./",
       "description": "Subagents, skills, slash commands and enforcement hooks for Python/FastAPI, TypeScript, PowerShell and ESP32 work.",
       "category": "development",
-      "license": "MIT",
+      "license": "SEE LICENSE IN LICENSE",
       "keywords": ["python", "typescript", "esp32", "code-review", "testing"]
     }
   ]
