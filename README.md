@@ -57,7 +57,7 @@ repository": load it as a plugin rather than opening both repositories side by s
 |---|---|---|
 | **Agents** | 6 | `explorer`, `debugger`, `code-reviewer`, `test-writer`, `documentation-writer`, `esp32-firmware-engineer` |
 | **Commands** | 9 | `/ai-tools:commit`, `pr-description`, `adr`, `security-scan`, `test-focus`, `onboard-project`, `fastapi-endpoint`, `react-feature`, `toolkit-validate` |
-| **Skills** | 15 | API and database design, React and Angular patterns, testing, git workflows, debugging, domain modelling, UI verification, the `prepare-work` pipeline, Jira extraction |
+| **Skills** | 16 | API and database design, React and Angular patterns, testing, git workflows, debugging, domain modelling, UI verification, the `prepare-work` pipeline, Jira extraction, ESP32 serial monitoring |
 | **Rules** | 7 | Python, TypeScript, PowerShell, embedded C++, security, error handling, ADRs |
 | **Hooks** | 3 | destructive-command guard, credential-read guard, format-on-edit |
 

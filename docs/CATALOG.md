@@ -49,6 +49,7 @@ Loaded on demand when the description matches the task — free until used.
 | `database-design` | model-invoked | Database modeling patterns for SQL, NoSQL (Firestore), BigQuery |
 | `diagnosing-bugs` | model or user | Diagnosis loop for hard bugs and performance regressions |
 | `domain-modeling` | model-invoked | Build and sharpen a project's domain model |
+| `esp32-serial-monitor` | model or user | Connect to an ESP32 device over USB serial, send commands, and capture/parse its tagged log output for interactive debugging and manual protocol testing |
 | `git-workflows` | model-invoked | Git branching strategies, PR conventions, merge workflows, commit message standards, and conflict resolution patterns |
 | `grill-me` | model or user | A relentless interview to sharpen a plan or design. |
 | `grill-with-docs` | model or user | A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glossary) as we go. |
