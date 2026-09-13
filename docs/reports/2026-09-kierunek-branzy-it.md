@@ -445,11 +445,20 @@ Testy sprawdzają to, co przewidziałeś; awarie biorą się z tego, czego nie p
 na wyprostowaniu wzorca w module zwraca się na każdym kolejnym pliku, który agent w nim napisze.
 To jest najlepszy dostępny argument za refaktoryzacją — i jednocześnie wyjaśnienie danych GitCleara.
 
-**4. Zacznij od specyfikacji, nie od promptu.** Thoughtworks umieszcza *spec-driven development*
-w centrum radaru: przepływ **spec → plan → implementacja**, z narzędziami w rodzaju OpenSpec
-czy GitHub Spec Kit. Powód jest prozaiczny: specyfikacja jest artefaktem, który da się zrecenzować
-**zanim** powstanie kod. Recenzja specyfikacji na jednej stronie kosztuje ułamek recenzji
-diffa na 900 linii.
+**4. Zacznij od specyfikacji, nie od promptu — ale traktuj to jako eksperyment, nie standard.**
+Thoughtworks opisuje *spec-driven development* jako przepływ **spec → plan → implementacja**,
+z narzędziami takimi jak Amazon Kiro, GitHub spec-kit czy Tessl Framework. **Sprostowanie:**
+w Radarze v34 technika ta siedzi w pierścieniu **„Assess"** — najostrożniejszym z czterech
+(Assess/Trial/Adopt/Hold) — nie w centrum radaru, jak wcześniej sugerowałem. Sami autorzy nazywają
+te przepływy „rozbudowanymi i opiniotwórczymi" i wprost wskazują otwarte problemy: trudno
+zrecenzować sam plik specyfikacji, a nie jest jasne, dla kogo właściwie przeznaczone są generowane
+artefakty pośrednie.
+([Thoughtworks — Spec-driven development](https://www.thoughtworks.com/radar/techniques/spec-driven-development))
+
+Powód, dla którego mimo to warto spróbować, zostaje ten sam: specyfikacja jest artefaktem, który
+da się zrecenzować **zanim** powstanie kod. Recenzja specyfikacji na jednej stronie kosztuje ułamek
+recenzji diffa na 900 linii — ale „Assess" oznacza: sprawdź na małym projekcie, zanim postawisz
+na tym proces całego zespołu.
 
 **5. Uruchamiaj agenty w piaskownicy.** Kontener, ograniczone sekrety, ograniczona sieć. Po incydencie
 Clinejection traktowanie treści z zewnątrz (issue, README zależności, komentarze w PR) jako danych
@@ -530,11 +539,24 @@ rynek jest dla nich za mały, a koszt dotarcia za wysoki.
 (patrz 3.5). Wymagania, które dla dużego gracza są kosztem, dla wyspecjalizowanego dostawcy
 są barierą wejścia chroniącą go przed konkurencją.
 
-**[B] Y Combinator** w zapytaniach o startupy na 2026 r. mówi to samo innym językiem:
-**wygrywa głębia, nie szybkość** — wiedza dziedzinowa, biegłość regulacyjna, wiarygodność operacyjna
-i gotowość do zajęcia się problemami, które nie dają trakcji z dnia na dzień. Kierunek: **zastępować
-usługę, nie wspomagać narzędziem**; sprzedawać wynik, nie oprogramowanie.
-([YC RFS 2026](https://www.ycombinator.com/rfs))
+**[B] Y Combinator.** W liście „Requests for Startups" na jesień 2026 r. YC kieruje founderów
+w stronę problemów **świata fizycznego i infrastruktury** — obronność, opieka zdrowotna, opieka nad
+seniorami, zbieranie danych z rzeczywistości, „system operacyjny świata fizycznego" — oraz osobno
+w stronę **infrastruktury zgodności regulacyjnej przemyślanej od zera pod AI**.
+([YC RFS](https://www.ycombinator.com/rfs))
+
+> **Sprostowanie do popularnej interpretacji — i przykład metody z sekcji 0.**
+> W obiegu wtórnym te same zapytania streszcza się hasłami „wygrywa głębia, nie szybkość"
+> oraz „zastępuj usługę, nie wspomagaj narzędziem". Pierwotnie zacytowałem je tak w tym raporcie.
+> Po sprawdzeniu strony źródłowej: **YC tego tak nie formułuje**, a w punkcie o edukacji mówi
+> wręcz odwrotnie — szuka narzędzia, które *„nie zastępuje nauczycieli, tylko czyni ich
+> skuteczniejszymi"*. Kierunek na dziedzinę, świat fizyczny i regulacje jest w RFS realnie obecny;
+> ramka „głębia kontra szybkość" jest dopisana przez komentatorów. **[C]**
+>
+> Zostawiam to sprostowanie w tekście zamiast po cichu poprawić, bo pokazuje dokładnie ten
+> mechanizm, przed którym ostrzega sekcja 0: teza brzmiąca sensownie i zgodna z resztą obrazu
+> przeszła u mnie bez sprawdzenia, bo *pasowała*. To jest najczęstszy tryb awarii przy pisaniu
+> takich raportów — i przy pracy z agentem.
 
 > ### Uwaga wprost o Twoim projekcie
 >
