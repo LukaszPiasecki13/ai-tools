@@ -184,17 +184,30 @@ po wdrożeniu najpierw jest spadek produktywności, dopiero potem zwrot.
 Trzy niezależne źródła, trzy różne metodologie, ten sam wniosek. To najmocniej udowodniona teza
 w tym raporcie.
 
-**[A] CircleCI**, telemetria ponad **28 mln** przebiegów CI:
+**[A] CircleCI, „2026 State of Software Delivery"** — dane z ponad **28 mln** przebiegów CI,
+ponad 22 tys. organizacji w 149 krajach, zebrane w pierwszych 28 dniach września 2025 (to jest
+raport **roczny**, nie kwartalny „Q2 Pulse" — dwa różne dokumenty tego samego dostawcy noszą
+podobne nazwy i podają różne liczby; dopilnowałem, żeby nie zlepić ich w jedno):
 
-- średnia przepustowość **+59% r/r** — największy wzrost aktywności od pierwszej edycji raportu w 2019 r.,
-- ale rozkład jest skrajnie nierówny: top 5% zespołów podwoiło przepustowość (6,8 → 13,4 uruchomień
-  dziennie), **mediana zespołu urosła o 4%**, dolne 25% nie urosło wcale,
-- kluczowe: przepustowość na **gałęzi głównej** dla mediany zespołu **spadła o 7%**, wskaźniki
-  powodzenia są na pięcioletnim minimum, a czasy odtworzenia rosną,
-- przepustowość na gałęziach feature wzrosła o ok. 50% — **i niemal nic z tego nie przełożyło się
-  na wdrożone zmiany**.
+- średnia przepustowość **+59% r/r**,
+- rozkład jest skrajnie nierówny: top 5% zespołów niemal podwoiło przepustowość (6,8 → 13,4
+  uruchomień dziennie), top 10% +47%, top 25% +25%, **mediana zespołu +4%**, dolne 25% bez
+  mierzalnego wzrostu — potwierdzone w komunikacie prasowym CircleCI,
+- kluczowe: przepustowość na **gałęzi głównej** dla mediany zespołu **spadła o 7%**, wskaźnik
+  powodzenia buildów spadł do 70,8% — najniżej od ponad pięciu lat,
+- przepustowość na gałęziach feature wzrosła — i w dużej mierze nie przełożyła się na wdrożone zmiany.
 
-([CircleCI 2026](https://circleci.com/resources/2026-state-of-software-delivery-q2-pulse/))
+([CircleCI — 2026 State of Software Delivery](https://circleci.com/resources/2026-state-of-software-delivery/),
+liczby per-percentyl potwierdzone w [komunikacie prasowym](https://www.prnewswire.com/news-releases/circleci-publishes-2026-state-of-software-delivery-302691131.html))
+
+**Kontrapunkt, którego nie chcę pominąć.** Niezależna analiza Roba Bowleya podważa dokładnie
+wniosek, na którym opieram tę tezę: wskazuje, że dane top 5% zawierają nietypowo krótkie czasy
+przebiegu (rzędu 6 sekund) sugerujące błąd pomiaru, oraz że jeden zespół uruchamiający ok. 130 tys.
+przebiegów dziennie mógł zniekształcić agregaty. Jego konkluzja: teza „1 na 20 zespołów to opanował"
+jest słabiej ugruntowana, niż wygląda w podsumowaniu raportu.
+([Rob Bowley](https://blog.robbowley.net/2026/04/02/more-code-less-delivery-but-does-the-circleci-2026-report-really-show-1-in-20-teams-are-benefiting/))
+To nie unieważnia kierunku (przepustowość na `main` u mediany faktycznie spadła — to jest osobna
+liczba od kwestionowanego „1 na 20"), ale obniża pewność co do skali zjawiska u najlepszych zespołów.
 
 **[B] DORA**: wzrost przepustowości przy równoczesnym wzroście niestabilności.
 
@@ -886,7 +899,9 @@ regulacyjnej — bo to są jedyne rzeczy, których ten scenariusz nie unieważni
 
 - [METR — Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)
 - [GitHub — Quantifying GitHub Copilot's impact in the enterprise with Accenture](https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-in-the-enterprise-with-accenture/)
-- [CircleCI — 2026 State of Software Delivery, Q2 Pulse](https://circleci.com/resources/2026-state-of-software-delivery-q2-pulse/)
+- [CircleCI — 2026 State of Software Delivery (raport roczny)](https://circleci.com/resources/2026-state-of-software-delivery/)
+- [CircleCI — komunikat prasowy z liczbami per-percentyl](https://www.prnewswire.com/news-releases/circleci-publishes-2026-state-of-software-delivery-302691131.html)
+- [Rob Bowley — krytyczna analiza raportu CircleCI 2026](https://blog.robbowley.net/2026/04/02/more-code-less-delivery-but-does-the-circleci-2026-report-really-show-1-in-20-teams-are-benefiting/)
 - [Stanford Digital Economy Lab — Canaries in the Coal Mine, aktualizacja sierpień 2026](https://digitaleconomy.stanford.edu/news/canariesaug26/)
 - [ChartMogul — The SaaS Retention Report: The AI churn wave](https://chartmogul.com/reports/saas-retention-the-ai-churn-wave/)
 - [GitClear — The Maintainability Gap: 2026 AI Code Quality Research](https://www.gitclear.com/the_ai_code_quality_maintainability_gap)
