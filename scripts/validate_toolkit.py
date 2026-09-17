@@ -313,6 +313,38 @@ def check_hooks(report: Report) -> None:
             report.error(script, f"does not compile: {exc}")
 
 
+def check_pre_commit_hooks_manifest(report: Report) -> None:
+    """Validates .pre-commit-hooks.yaml - hooks THIS repo exposes to other projects via the
+    `pre-commit` framework (the opposite direction from a project's own .pre-commit-config.yaml).
+
+    Not a real YAML parser - the file is a flat list of hook definitions and a few regex lines
+    catch the one failure mode that matters: `entry` pointing at a script that moved or never
+    existed, which breaks every consumer's hook silently until their pre-commit run fails.
+    """
+    manifest = ROOT / ".pre-commit-hooks.yaml"
+    if not manifest.exists():
+        return
+
+    text = manifest.read_text(encoding="utf-8")
+    ids = re.findall(r"^-\s*id:\s*(\S+)", text, re.MULTILINE)
+    if not ids:
+        report.error(manifest, "no hook 'id' entries found")
+    seen: set[str] = set()
+    for hook_id in ids:
+        if hook_id in seen:
+            report.error(manifest, f"duplicate hook id: {hook_id}")
+        seen.add(hook_id)
+        if not KEBAB.match(hook_id):
+            report.error(manifest, f"hook id must be kebab-case, got {hook_id!r}")
+
+    interpreters = {"python3", "python", "sh", "bash"}
+    for match in re.finditer(r"^\s*entry:\s*(.+)$", text, re.MULTILINE):
+        parts = match.group(1).strip().split()
+        script_token = parts[1] if parts and parts[0] in interpreters else (parts[0] if parts else "")
+        if script_token and not script_token.startswith("-") and not (ROOT / script_token).exists():
+            report.error(manifest, f"entry references {script_token}, which does not exist")
+
+
 def strip_code_blocks(text: str) -> str:
     """Blank out fenced code blocks so illustrative snippets are not linted as prose."""
     out, fenced = [], False
@@ -363,6 +395,7 @@ def main() -> int:
     check_skills(report)
     check_rules(report)
     check_hooks(report)
+    check_pre_commit_hooks_manifest(report)
     check_links_and_secrets(report)
 
     for warning in report.warnings:

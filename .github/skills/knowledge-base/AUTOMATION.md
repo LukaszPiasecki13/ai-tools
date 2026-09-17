@@ -34,17 +34,21 @@ nie ma czego automatyzować — każde uruchomienie agenta startuje z innej wied
 
 ### Pre-commit
 
+Sposób podpięcia zależy od tego, czy repo już używa frameworka `pre-commit` —
+pełne uzasadnienie i wariant bez `pre-commit` w [SKILL.md](./SKILL.md),
+sekcja „Wdrożenie walidatora w repo docelowym".
+
 ```yaml
-# .pre-commit-config.yaml
-  - repo: local
+# .pre-commit-config.yaml — repo używające pre-commit: zdalny hook, zero kopii
+repos:
+  - repo: https://github.com/lukaszpiasecki13/ai-tools
+    rev: <commit-sha-lub-tag>
     hooks:
       - id: kb-validate
-        name: walidacja bazy wiedzy
-        entry: python scripts/kb_validate.py --root . --strict
-        language: system
-        files: ^(docs/|CLAUDE\.md|CONTEXT\.md|PRODUCT\.md|\.claude/)
-        pass_filenames: false
 ```
+
+Skrypt zostaje wyłącznie w `ai-tools`; `pre-commit` sam go pobiera do własnego
+cache'a. Żaden plik nie trafia do repo produktu.
 
 `--strict` → kod wyjścia 1 przy błędach `E*`, 0 przy samych ostrzeżeniach.
 Ostrzeżenia w pre-commicie nie blokują nigdy: pierwsza blokada na „dokument

@@ -1,0 +1,33 @@
+# Hooks this repository exposes to OTHER projects via the `pre-commit` framework.
+#
+# This is the opposite direction from .pre-commit-config.yaml (which lints this repo itself):
+# a consumer project lists this repo under its own `repos:` and pre-commit clones it into
+# ~/.cache/pre-commit at the pinned `rev`, then invokes `entry` with the consumer repo as the
+# working directory. No file from this repo is copied into the consumer's git tree - that is
+# the whole point: one script, one place it lives, every project references the same bytes.
+#
+# Consumer-side .pre-commit-config.yaml entry:
+#
+#   - repo: https://github.com/lukaszpiasecki13/ai-tools
+#     rev: <commit-sha-or-tag>          # branch names are not supported by pre-commit itself
+#     hooks:
+#       - id: kb-validate
+#
+# `rev` has to be a real commit, most recently the tip of the branch this file ships on; once
+# merged, point it at a `main` commit (or a release tag, once this repo starts tagging). Update
+# it the same way as any other pre-commit hook pin: `pre-commit autoupdate` or by hand.
+#
+# language: unsupported_script (the current name for the old `script` alias, removed in a
+# future pre-commit version - see https://pre-commit.com/#budgeting-for-the-future) runs the
+# entry command literally, using whatever `python3` is on the consumer's PATH. No isolated
+# environment is created and none is needed: kb_validate.py is stdlib-only by design.
+- id: kb-validate
+  name: knowledge-base validator
+  description: >-
+    Validates a knowledge-base-shaped docs/ tree: front-matter schema, dead links and anchors,
+    size limits, staleness, and doc<->code drift via each document's `applies_to` glob. See
+    skills/knowledge-base/METADATA.md for the full rule set.
+  entry: python3 skills/knowledge-base/scripts/kb_validate.py --root . --strict
+  language: unsupported_script
+  always_run: true
+  pass_filenames: false

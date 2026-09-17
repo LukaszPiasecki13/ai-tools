@@ -28,25 +28,51 @@ projektowaniu bazy od zera.
 
 ## Wdrożenie walidatora w repo docelowym
 
-`kb_validate.py` jest **dostarczany do projektu**, nie uruchamiany z pluginu —
-ma stać w repo, żeby działał w pre-commicie i w CI także tam, gdzie plugin nie
-jest zainstalowany. Kopiuje go `scripts/install.py` z tego repozytorium, tym
-samym mechanizmem co reguły ścieżkowe — **nie ręczne `cp`**, bo ręczna kopia to
-duplikat kodu bez sposobu na aktualizację.
+Dwie ścieżki. Pierwsza nie kopiuje ani bajtu do repo produktu — wybierz ją,
+chyba że jest niedostępna.
+
+### A) Repo używa frameworka `pre-commit` — zero duplikacji
+
+`kb_validate.py` zostaje wtedy **wyłącznie w tym repozytorium**.
+`.pre-commit-hooks.yaml` w korzeniu `ai-tools` udostępnia go jako zdalny hook —
+`pre-commit` sam klonuje ten skrypt do własnego cache'a przy uruchomieniu
+i wykonuje go z katalogiem roboczym ustawionym na repo produktu. Do niczyjego
+drzewa gita nie trafia żaden dodatkowy plik.
+
+W `.pre-commit-config.yaml` repo docelowego:
+
+```yaml
+repos:
+  - repo: https://github.com/lukaszpiasecki13/ai-tools
+    rev: <commit-sha-lub-tag>   # NIE nazwa gałęzi — pre-commit tego nie wspiera
+    hooks:
+      - id: kb-validate
+```
+
+`rev` aktualizuje się tak jak każdy inny pin pre-commita: `pre-commit
+autoupdate` albo ręcznie. To jest jedyne miejsce, które trzeba odświeżyć po
+zmianie w `ai-tools` — sam skrypt nigdy nie jest kopiowany, więc nie ma czego
+synchronizować ręcznie.
+
+### B) Repo NIE używa `pre-commit` — kopia z manifestem jako fallback
+
+Gdy w projekcie nie ma frameworka `pre-commit` (i nie warto go teraz
+wprowadzać), `scripts/install.py --validator` kopiuje `kb_validate.py` oraz
+`test_kb_validate.py` do `scripts/` repo docelowego, z manifestem
+(`scripts/.ai-tools-kb-validate.json`) śledzącym, że są pod zarządzaniem:
 
 ```bash
 python <ai-tools>/scripts/install.py --target . --validator
 python3 scripts/kb_validate.py --root . --strict
-python3 scripts/test_kb_validate.py      # 16 testów, tylko stdlib
 ```
 
-Instalator zapisuje manifest (`scripts/.ai-tools-kb-validate.json`) i przy
-kolejnym uruchomieniu **odświeża** oba pliki — jedna komenda synchronizuje
-zmiany zamiast ręcznego kopiowania w kółko. Plik skopiowany ręcznie przed
-istnieniem tej komendy zostaje automatycznie rozpoznany po treści i przejęty
-pod zarządzanie, bez utraty historii; plik o tej samej nazwie, ale innej
-treści, jest zostawiony w spokoju — instalator nigdy nie nadpisze cudzego
-skryptu po cichu.
+Ponowne uruchomienie **odświeża** oba pliki. Plik skopiowany ręcznie przed
+istnieniem tej komendy zostaje rozpoznany po treści i przejęty pod
+zarządzanie; plik o tej samej nazwie, ale innej treści, zostaje nietknięty.
+
+To jest naprawdę duplikat kodu — akceptowalny tylko dlatego, że alternatywą
+jest brak walidacji w ogóle. Repo, które już ma `pre-commit`, powinno używać
+wariantu A i nie utrzymywać lokalnej kopii równolegle.
 
 Skrypty korzystają wyłącznie z biblioteki standardowej, więc w repo docelowym
 nie pojawia się żadna nowa zależność.
