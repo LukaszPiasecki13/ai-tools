@@ -221,11 +221,22 @@ repo/
         └── competitors/
 ```
 
-**Jeden katalog `docs/adr/` na repo.** Decyzje biznesowe i techniczne mieszkają
-razem, numerowane wspólnie. Rozdzielenie ich (`docs/business/adr/` +
-`docs/technical/adr/`) wygląda porządnie i kosztuje dokładnie tyle: agent, który
-szuka „wszystkich zaakceptowanych decyzji", znajdzie połowę. Jeśli potrzebujesz
-podziału — użyj pola `domain:` w metadanych, nie osobnego drzewa.
+**Jeden katalog `docs/adr/` jest domyślny, nie obowiązkowy.** Numeracja wspólna
+dla decyzji biznesowych i technicznych ułatwia jedno pytanie: „wszystkie
+zaakceptowane decyzje" nie wymaga przeszukania dwóch drzew.
+
+Rozdzielenie na `docs/business/adr/` i `docs/technical/adr/` jest równie
+uprawnionym wyborem, gdy odbiorcy obu typów decyzji faktycznie się różnią —
+biznesowe czyta i akceptuje ktoś inny niż techniczne, więc osobne katalogi
+odpowiadają osobnym procesom przeglądu, nie tylko estetyce. To nie jest
+teoretyczna alternatywa: `waterworks-monitoring-platform` używa dokładnie tego
+podziału, świadomie i konsekwentnie zapisanego w regule `architecture-decisions`
+i w `CLAUDE.md` repozytorium.
+
+**Rozstrzyga zawsze konwencja już zapisana w projekcie**, nie domyślna
+rekomendacja tego pliku. Jeśli zakładasz bazę od zera i nie masz powodu do
+podziału — zacznij od jednego katalogu, bo dodanie podziału później jest tanie,
+a scalenie dwóch drzew z powrotem w jeden jest robotą do wykonania ręcznie.
 
 ---
 

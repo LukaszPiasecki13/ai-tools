@@ -3,7 +3,8 @@ id: adr-<NNNN>-<krotki-slug>
 title: <Decyzja w formie zdania oznajmującego>
 layer: L1
 domain: <backend|frontend|firmware|product|market>
-status: draft          # draft → active (= zaakceptowany) → superseded → archived
+status: draft          # metadane KB, dla walidatora - patrz METADATA.md. NIE to samo, co
+                        # sekcja "## Status" niżej (ta ma własne, ustalone w repo słownictwo)
 confidence: decision
 owner: <imię>
 created: <YYYY-MM-DD>
@@ -24,10 +25,13 @@ Piszesz ADR, gdy spełnione są TRZY warunki naraz:
 Brak któregokolwiek → bez ADR. ADR-y pisane "na wszelki wypadek" rozmywają
 rejestr i sprawiają, że nikt go nie czyta.
 
-Nazwa pliku i lokalizacja: rozstrzyga reguła `architecture-decisions`
-(domyślnie `docs/adr/adr-NNN-short-title.md`). Gdy repo ma już własną konwencję
-nazw, wygrywa ta z repo — nie zaprowadzaj drugiej. Numeracja ciągła w całym repo,
-wspólna dla decyzji technicznych i biznesowych; numer nigdy nie jest użyty ponownie.
+Nazwa pliku i lokalizacja: rozstrzyga reguła `architecture-decisions` z TEGO
+repo — nie zgaduj z tego szablonu, przeczytaj regułę. Domyślna konwencja to
+`docs/adr/NNNN-short-title.md` z numeracją wspólną dla całego repo, ale reguła
+może przewidywać podział wg domeny (np. `docs/business/adr/` +
+`docs/technical/adr/`, każdy z własną, niezależną numeracją) — oba warianty są
+prawidłowe, patrz [ARCHITECTURE.md](../ARCHITECTURE.md). Numer nigdy nie jest
+użyty ponownie, niezależnie od wybranego układu.
 
 Ten plik dodaje do tej konwencji wyłącznie **front-matter** wymagany przez bazę
 wiedzy oraz polskie nagłówki sekcji. Kryteria „czy to w ogóle zasługuje na ADR"
@@ -46,7 +50,18 @@ measurements", nie "Wybór modelu przechowywania telemetrii".
 
 ## Status
 
-<!-- draft | active | superseded by ADR-NNNN | archived — zgodnie z front-matter -->
+<!--
+Wartości i słowa ustala reguła `architecture-decisions` tego repo (domyślnie:
+Proposed | Accepted | Deprecated | Superseded by ADR-NNNN) — to jest INNE
+słownictwo niż front-matterowe `status:` wyżej, celowo: to pole czyta człowiek
+i wpisuje w nim wynik przeglądu, tamto czyta walidator.
+
+Nowy ADR zaczyna od najsłabszego stanu (Proposed / draft). Przejście na
+Accepted / active wpisuje CZŁOWIEK po przeglądzie — agent nigdy nie zmienia
+tego pola samodzielnie, choćby decyzja wyglądała na oczywistą.
+-->
+
+Proposed
 
 ## Kontekst
 

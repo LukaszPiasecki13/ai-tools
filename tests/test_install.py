@@ -1,9 +1,11 @@
-"""Tests for scripts/install.py's knowledge-base validator installer.
+"""Tests for scripts/install.py.
 
-Covers the failure mode this mechanism exists to prevent: a hand-copied kb_validate.py in a
-project drifting silently from the toolkit's source of truth. Each case runs against a real
-temporary directory rather than mocking the filesystem, so a change to install_kb_validator's
-actual file-writing behaviour is what these tests exercise.
+Two things this covers, each against a real temporary directory rather than a mock:
+
+- the knowledge-base validator installer, whose failure mode is a hand-copied kb_validate.py
+  in a project drifting silently from the toolkit's source of truth;
+- profile detection (`detect()`), whose failure mode is a rule that never gets installed
+  because nothing recognises the project layout that calls for it.
 """
 
 from __future__ import annotations
@@ -93,6 +95,37 @@ class TestInstallKbValidator(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertTrue((self.destination / "scripts" / "kb_validate.py").exists())
+
+
+class TestDetectProfiles(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.target = Path(self._tmp.name)
+
+    def test_empty_directory_matches_nothing(self) -> None:
+        self.assertEqual(install.detect(self.target), set())
+
+    def test_single_adr_directory_is_detected(self) -> None:
+        (self.target / "docs" / "adr").mkdir(parents=True)
+        self.assertIn("adr", install.detect(self.target))
+
+    def test_split_by_domain_adr_directories_are_detected(self) -> None:
+        """Regression: docs/business/adr + docs/technical/adr is a deliberate, equally valid
+        convention (waterworks-monitoring-platform's rules/architecture-decisions.md prescribes
+        exactly this split) that the original docs/adr-only check missed entirely."""
+        (self.target / "docs" / "business" / "adr").mkdir(parents=True)
+        self.assertIn("adr", install.detect(self.target))
+
+    def test_knowledge_base_layout_is_detected(self) -> None:
+        docs = self.target / "docs"
+        docs.mkdir()
+        (docs / "00_KNOWLEDGE-MAP.md").write_text("# Mapa\n", encoding="utf-8")
+        self.assertIn("knowledge-base", install.detect(self.target))
+
+    def test_knowledge_base_profile_resolves_to_its_rule(self) -> None:
+        self.assertEqual(install.PROFILES["knowledge-base"], ("knowledge-base",))
+        self.assertIn("knowledge-base", install.available())
 
 
 if __name__ == "__main__":

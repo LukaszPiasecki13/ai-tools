@@ -33,7 +33,7 @@ Keep rules as rules, and distribute them with `scripts/install.py`:
 
 - `--user` installs into `~/.claude/rules/ai-tools/`, applying to every project on the machine.
   The documentation recommends this location for shared rules because it avoids the external-
-  import approval dialog that symlinked project rules trigger.
+  import approval dialog that project rules sourced from outside the project trigger.
 - `--target <path>` installs into one project's `.claude/rules/ai-tools/`, after detecting the
   stack from `pyproject.toml`, `package.json`, `platformio.ini` and similar markers, and
   selecting only the matching rules.
@@ -54,8 +54,7 @@ in a firmware project.
 
 ### Negative
 - Two installation steps instead of one, which has to be documented clearly or it gets missed.
-- Rules updated in the repository do not reach a project until the installer is re-run. The
-  `--link` option trades this for symlinks where the platform allows them.
+- Rules updated in the repository do not reach a project until the installer is re-run there.
 
 ### Neutral
 - GitHub Copilot reads `~/.claude/rules` as one of its user-profile instruction locations, so

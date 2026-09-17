@@ -52,6 +52,7 @@ PROFILES: dict[str, tuple[str, ...]] = {
     "powershell": ("powershell-coding-standards", "security-checklist"),
     "embedded": ("cpp-embedded-coding-standards",),
     "adr": ("architecture-decisions",),
+    "knowledge-base": ("knowledge-base",),
 }
 
 
@@ -76,8 +77,13 @@ def detect(target: Path) -> set[str]:
         profiles.add("powershell")
     if any(target.glob("**/platformio.ini")):
         profiles.add("embedded")
-    if (target / "docs" / "adr").is_dir() or (target / "docs" / "decisions").is_dir():
+    # Split-by-domain (docs/business/adr, docs/technical/adr) is a deliberate, equally valid
+    # convention some projects choose - detect it alongside the single-directory layout.
+    adr_dirs = ("docs/adr", "docs/decisions", "docs/business/adr", "docs/technical/adr")
+    if any((target / d).is_dir() for d in adr_dirs):
         profiles.add("adr")
+    if (target / "docs" / "00_KNOWLEDGE-MAP.md").is_file():
+        profiles.add("knowledge-base")
 
     return profiles
 
@@ -91,7 +97,7 @@ def resolve(profiles: set[str], explicit: list[str]) -> list[str]:
     return sorted(selected)
 
 
-def install_rules(destination: Path, names: list[str], link: bool, dry_run: bool) -> list[str]:
+def install_rules(destination: Path, names: list[str], dry_run: bool) -> list[str]:
     rules = available()
     unknown = [name for name in names if name not in rules]
     if unknown:
@@ -124,20 +130,23 @@ def install_rules(destination: Path, names: list[str], link: bool, dry_run: bool
 
     for name in names:
         source, target = rules[name], rules_root / f"{name}.md"
-        if target.exists() or target.is_symlink():
+        was_symlink = target.is_symlink()
+        if target.exists() or was_symlink:
             target.unlink()
-        if link:
-            target.symlink_to(source)
-        else:
-            shutil.copy2(source, target)
+        shutil.copy2(source, target)
         print(f"  installed {name}.md")
+        if was_symlink:
+            rel = target.relative_to(destination) if destination in target.parents else target
+            print(
+                f"    replaced a stale symlink on disk - if git still tracks it as one (mode"
+                f" 120000), the copy alone won't fix history. Run: git add -f {rel}"
+            )
 
     manifest_path.write_text(
         json.dumps(
             {
                 "source": "https://github.com/lukaszpiasecki13/ai-tools",
                 "installed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                "mode": "symlink" if link else "copy",
                 "rules": names,
             },
             indent=2,
@@ -234,7 +243,6 @@ def main(argv: list[str] | None = None) -> int:
         "--validator", action="store_true",
         help="also install the knowledge-base validator into scripts/ (requires --target)",
     )
-    parser.add_argument("--link", action="store_true", help="symlink instead of copy (updates follow the repo)")
     parser.add_argument("--dry-run", action="store_true", help="print what would happen, change nothing")
     parser.add_argument("--list", action="store_true", help="list available rules and profiles")
     args = parser.parse_args(argv)
@@ -268,7 +276,7 @@ def main(argv: list[str] | None = None) -> int:
     names = resolve(profiles, [n.strip() for n in args.only.split(",") if n.strip()])
     did_something = bool(names)
     if names:
-        install_rules(destination, names, args.link, args.dry_run)
+        install_rules(destination, names, args.dry_run)
     else:
         print("No rules selected. Use --only to choose explicitly, or --list to see what exists.")
 

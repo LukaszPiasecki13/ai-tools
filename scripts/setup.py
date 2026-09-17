@@ -19,7 +19,7 @@ TEMPLATES_DIR = ROOT / "templates" / "project"
 INSTALL_SCRIPT = ROOT / "scripts" / "install.py"
 
 
-def setup_project(project_path: Path, link: bool = False) -> None:
+def setup_project(project_path: Path) -> None:
     """Complete setup: templates + all rules."""
     if not project_path.exists():
         print(f"❌ Project path does not exist: {project_path}")
@@ -91,8 +91,6 @@ def setup_project(project_path: Path, link: bool = False) -> None:
         ",".join(rules),
         "--settings",
     ]
-    if link:
-        cmd.append("--link")
 
     result = subprocess.run(cmd, capture_output=False)
     if result.returncode != 0:
@@ -122,16 +120,10 @@ def main() -> None:
         default=".",
         help="Path to project (default: current directory)",
     )
-    parser.add_argument(
-        "--link",
-        action="store_true",
-        help="Symlink rules instead of copy (updates follow ai-tools repo; use when maintaining both repos)",
-    )
-
     args = parser.parse_args()
     project_path = Path(args.project).resolve()
 
-    setup_project(project_path, link=args.link)
+    setup_project(project_path)
 
 
 if __name__ == "__main__":

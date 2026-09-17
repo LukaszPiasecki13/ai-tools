@@ -24,13 +24,7 @@ or
 python path/to/ai-tools/scripts/setup.py /path/to/repo
 ```
 
-**For maintainers who have both repos:**
-
-```bash
-python path/to/ai-tools/scripts/setup.py /path/to/repo --link
-```
-
-The `--link` flag symlinks rules instead of copying them, so changes in ai-tools propagate instantly to the project.
+Rules are plain file copies. Changes in ai-tools only reach a project when the installer is re-run there — re-run `python scripts/install.py --target /path/to/repo --only <rules>` whenever ai-tools changes and you want a project to pick them up.
 
 ## What this does
 
