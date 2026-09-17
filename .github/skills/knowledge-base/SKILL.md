@@ -34,23 +34,26 @@ projektowaniu bazy od zera.
 
 `kb_validate.py` jest **dostarczany do projektu**, nie uruchamiany z pluginu —
 ma stać w repo, żeby działał w pre-commicie i w CI także tam, gdzie plugin nie
-jest zainstalowany.
+jest zainstalowany. Kopiuje go `scripts/install.py` z tego repozytorium, tym
+samym mechanizmem co reguły ścieżkowe — **nie ręczne `cp`**, bo ręczna kopia to
+duplikat kodu bez sposobu na aktualizację.
 
 ```bash
-mkdir -p scripts
-cp "${CLAUDE_SKILL_DIR}/scripts/kb_validate.py" scripts/
-cp "${CLAUDE_SKILL_DIR}/scripts/test_kb_validate.py" scripts/
-python3 scripts/test_kb_validate.py      # 16 testów, tylko stdlib
+python <ai-tools>/scripts/install.py --target . --validator
 python3 scripts/kb_validate.py --root . --strict
+python3 scripts/test_kb_validate.py      # 16 testów, tylko stdlib
 ```
 
-`${CLAUDE_SKILL_DIR}` wskazuje katalog tego skilla niezależnie od tego, gdzie
-zainstalowano plugin. Skrypty korzystają wyłącznie z biblioteki standardowej,
-więc w repo docelowym nie pojawia się żadna nowa zależność.
+Instalator zapisuje manifest (`scripts/.ai-tools-kb-validate.json`) i przy
+kolejnym uruchomieniu **odświeża** oba pliki — jedna komenda synchronizuje
+zmiany zamiast ręcznego kopiowania w kółko. Plik skopiowany ręcznie przed
+istnieniem tej komendy zostaje automatycznie rozpoznany po treści i przejęty
+pod zarządzanie, bez utraty historii; plik o tej samej nazwie, ale innej
+treści, jest zostawiony w spokoju — instalator nigdy nie nadpisze cudzego
+skryptu po cichu.
 
-Aktualizacja: skopiuj ponownie oba pliki i uruchom testy. Testy przypinają
-zachowania, które łatwo zepsuć „upraszczając" (zgodność kotwic z GitHubem),
-więc kopiowanie samego walidatora bez nich jest fałszywą oszczędnością.
+Skrypty korzystają wyłącznie z biblioteki standardowej, więc w repo docelowym
+nie pojawia się żadna nowa zależność.
 
 ## Wybór trybu
 

@@ -6,20 +6,32 @@ usuwasz po wypełnieniu.
 
 ## Wybór szablonu
 
+Pięć plików, nie więcej. Cztery mają własną, nieprzenośną formę i front-matter
+odmienny od reszty bazy — te zostają osobno. Wszystko inne, niezależnie od
+warstwy, zaczyna się od jednego generycznego szablonu.
+
 | Chcę zapisać… | Szablon | Warstwa | Gdzie |
 |---|---|---|---|
 | Punkt wejścia do całej bazy | [`KNOWLEDGE-MAP`](./KNOWLEDGE-MAP.template.md) | — | `docs/00_KNOWLEDGE-MAP.md` |
 | Czym jest produkt, dla kogo, co jest poza zakresem | [`PRODUCT`](./PRODUCT.template.md) | L1 | `PRODUCT.md` (korzeń) |
 | Nazewnictwo domeny | [`CONTEXT`](./CONTEXT.template.md) | L1 | `CONTEXT.md` (korzeń) |
 | Decyzję, której nie chcę tłumaczyć trzeci raz | [`adr`](./adr.template.md) | L1 | `docs/adr/` — nazwy wg reguły `architecture-decisions` |
-| Kto jest klientem i co go boli | [`segment-persona`](./segment-persona.template.md) | L1 | `docs/product/segments/` |
-| Ryzyko, które może wywrócić projekt | [`risk-register`](./risk-register.template.md) | L1 | `docs/product/ryzyka.md` |
-| Jak zbudowany jest moduł / komponent | [`component`](./component.template.md) | L2 | `docs/technical/<obszar>/` |
-| Kontrakt API / formatu wiadomości / schematu | [`interface-contract`](./interface-contract.template.md) | L2 | `docs/technical/<obszar>/` |
-| Procedurę operacyjną krok po kroku | [`runbook`](./runbook.template.md) | L2 | `docs/technical/runbooks/` |
-| Zadanie do zlecenia agentowi albo człowiekowi | [`spec`](./spec.template.md) | L3 | `docs/plans/` |
-| Hipotezę produktową do sprawdzenia | [`experiment`](./experiment.template.md) | L3→L4 | `docs/research/experiments/` |
-| Wynik badania, analizy, wywiadu | [`research-note`](./research-note.template.md) | L4 | `docs/research/` |
+| Cokolwiek innego: opis modułu, kontrakt API, runbook, zadanie do zlecenia, notatka z badania, eksperyment produktowy… | [`generic`](./generic.template.md) | L2 / L3 / L4 (do wyboru) | `docs/technical/`, `docs/plans/` albo `docs/research/` — wg warstwy |
+
+### Dlaczego jeden szablon zamiast dziesięciu wyspecjalizowanych
+
+Nie da się z góry przewidzieć wszystkich typów dokumentów, jakich zażąda
+konkretny projekt — a szablon, którego nikt nie użył, jest samym kosztem bez
+korzyści: trzeba go czytać, utrzymywać w spójności z resztą i tłumaczyć, po co
+istnieje. `generic.template.md` różni się między L2/L3/L4 wyłącznie wymaganymi
+polami front-matter (`applies_to` dla L2, `expires` dla L3, `sources` dla L4 —
+patrz [METADATA.md](../METADATA.md)) i podpowiedziami w treści; strukturę pliku
+projektujesz sam, doraźnie, dla konkretnego dokumentu.
+
+**Kiedy wydzielić nowy, dedykowany szablon:** dopiero gdy ten sam kształt
+sekcji powtórzy się kilkukrotnie dla jednego typu dokumentu w praktyce — nie
+zanim to nastąpi. Wydzielenie z realnego powtórzenia daje szablon dopasowany
+do tego, czego faktycznie potrzebujesz; wydzielenie z góry daje zgadywankę.
 
 ## Miejsce wśród istniejących komponentów toolkitu
 
