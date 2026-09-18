@@ -141,20 +141,10 @@ pełnotekstowego do znalezienia kontekstu.
 osobne zadanie „kiedyś potem".
 
 Naturalnym miejscem wpięcia jest skill [`prepare-work`](../prepare-work/SKILL.md)
-— wariant pełny ma obowiązkową Fazę 11 (Dokumentacja), wariant uproszczony
-zasadę 12. **Wpięcie nie jest wykonane**; poniższa lista jest gotowa do dopisania
-tam, gdy uznasz to za właściwe. Warunek wyzwalania trzymaj po stronie repo
-docelowego (obecność `docs/00_KNOWLEDGE-MAP.md`), żeby projekty bez bazy
-warstwowej nie płaciły za nic.
-
-```
-   ┌──────────────────────────────────────────────────────────┐
-   │                                                          │
-   ▼                                                          │
-L1/L2 ──► specyfikacja (L3) ──► implementacja ──► test ──► delta L1/L2
-kanon       pakiet kontekstu      kod + testy            ADR / kontrakt
-i kontrakty  jako wejście                                 last_reviewed++
-```
+(Faza 11 w wariancie pełnym, zasada 12 w uproszczonym) — **nie jest tam dziś
+wpięte**; poniższa lista jest gotowa do dopisania, gdy o tym zdecydujesz.
+Warunek wyzwalania trzymaj po stronie repo docelowego (obecność
+`docs/00_KNOWLEDGE-MAP.md`), żeby projekty bez bazy warstwowej nie płaciły za nic.
 
 **Reguła twarda:** zadanie jest ukończone, gdy zawiera deltę w bazie wiedzy albo
 jawne stwierdzenie „brak zmian w bazie" z uzasadnieniem. Bez tego każda iteracja
@@ -191,21 +181,13 @@ odpowiadający dokument albo jawnie deklarują, że nie muszą.
 ## Etap 5 — Wytwarzanie sterowane bazą
 
 Dopiero gdy etapy 0–4 działają, baza może **generować pracę**, a nie tylko ją
-opisywać. Kolejność ma znaczenie — generowanie z niesprawdzanej bazy propaguje
-błędy szybciej, niż człowiek je wyłapie.
-
-| Zastosowanie | Wejście | Wyjście |
-|---|---|---|
-| Generowanie briefu zadania | `PRODUCT.md` + ADR + luka w kontrakcie L2 | gotowa specyfikacja L3 |
-| Wykrywanie luk | moduły kodu bez dokumentu L2 | lista brakujących kontraktów |
-| Audyt spójności | `CONTEXT.md` vs nazewnictwo w kodzie | lista rozjazdów terminologicznych |
-| Onboarding nowego repo | `PRODUCT.md` + `CONTEXT.md` + szablony | szkielet bazy nowego produktu |
-| Przegląd decyzji | ADR-y z przeterminowanym `last_reviewed` (`W101`) | lista decyzji do potwierdzenia |
-| Pakiet sprzedażowy / raport | `PRODUCT.md` + L4 dowody | materiał zewnętrzny bez zmyśleń |
-
-Największy zysk w kontekście **wielu produktów**: `PRODUCT.md` + `CONTEXT.md` +
-zestaw ADR to kompletny, przenośny „genom" produktu. Nowy produkt startuje z tych
-samych szablonów i tej samej konstytucji L0 — zmienia się wyłącznie treść L1.
+opisywać — kolejność ma znaczenie, generowanie z niesprawdzanej bazy propaguje
+błędy szybciej, niż człowiek je wyłapie. To jest kierunek, nie gotowy mechanizm:
+żadna z tych rzeczy nie ma dziś narzędzia ani wpięcia, patrz Etap 4. Przykłady
+tego, co odblokowuje sprawdzona baza wielu produktów: generowanie briefu zadania
+z `PRODUCT.md` + ADR + luki w kontrakcie L2; wykrywanie modułów kodu bez
+dokumentu L2; audyt `CONTEXT.md` vs nazewnictwo w kodzie; szkielet nowej bazy
+z `PRODUCT.md` + `CONTEXT.md` + szablonów jako przenośnego „genomu" produktu.
 
 ---
 

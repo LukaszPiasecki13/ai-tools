@@ -146,16 +146,17 @@ Metryki zdrowia: [AUTOMATION.md](./AUTOMATION.md), sekcja końcowa.
 ## Reguły, których nie łam
 
 1. **Słownik przed resztą.** Nieustalone nazewnictwo skaża każdy kolejny dokument.
-2. **Jeden fakt — jedno miejsce.** Wszędzie indziej głęboki link.
-3. **Decyzja mieszka w ADR.** Nie w planie, nie w komentarzu, nie w czacie.
-4. **Nic nie kasujesz** — dopisujesz zastąpienie w treści i przenosisz plik
-   (np. do `plans/archive/`), nigdy nie usuwasz historii decyzji.
-5. **Twierdzenie normatywne ma źródło.** Bez źródła to hipoteza i musi być tak
-   oznaczona w treści (`> **[HIPOTEZA]** …`).
-6. **Zapisuj natychmiast.** Pojęcie i decyzja trafiają do pliku w tej samej turze,
-   w której powstały. Batch na koniec sesji nie nastąpi.
-7. **Budżet L0.** `CLAUDE.md` ≤ 300 linii. Reszta to reguły ścieżkowe i skille.
-8. **Plan to nie stan.** Stan systemu opisuje wyłącznie L2 z linkami do kodu.
+2. **Zapisuj natychmiast.** Pojęcie i decyzja trafiają do pliku w tej samej turze,
+   w której powstały. Ustalenie, które zostaje wyłącznie w rozmowie, znika razem
+   z sesją — batch na koniec sesji nie nastąpi, bo sesja kończy się wcześniej,
+   niż zakłada plan, systematycznie.
+3. **Budżet L0.** `CLAUDE.md` ≤ 300 linii. Reszta to reguły ścieżkowe i skille.
+4. **Plan to nie stan.** Stan systemu opisuje wyłącznie L2 z linkami do kodu.
+
+Reszta reguł strukturalnych (jeden fakt jedno miejsce, decyzja mieszka w ADR,
+nic nie kasujesz, twierdzenie ma źródło, i trzy więcej) żyje w jednym miejscu,
+nie tutaj — [ARCHITECTURE.md](./ARCHITECTURE.md) §6, z uzasadnieniem kosztu
+złamania każdej.
 
 ## Typowe rozstrzygnięcia
 

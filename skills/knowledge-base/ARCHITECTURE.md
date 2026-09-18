@@ -180,17 +180,9 @@ możliwej strategii.
 
 Dla powtarzalnych typów zadań zdefiniuj gotowy zestaw dokumentów — *pakiet
 kontekstu*. Zamiast wybierać materiał za każdym razem od nowa, agent dostaje
-nazwę pakietu.
-
-| Pakiet | Zawartość |
-|---|---|
-| `backend-feature` | L0 reguły Pythona + `CONTEXT.md` + architektura backendu + dokument modułu + właściwe ADR |
-| `firmware-change` | L0 reguły C++ + mapa sprzętowa + dokument protokołu + runbook provisioningu |
-| `business-decision` | `PRODUCT.md` + `CONTEXT.md` + wszystkie ADR ze statusem `accepted` + rejestr ryzyk |
-| `market-research` | `PRODUCT.md` + segmenty/persony + istniejące dowody L4 z danego obszaru |
-
-Pakiety trzymaj w mapie wiedzy. Gdy pakiet zaczyna być za duży, to nie pakiet
-jest za duży — to dokumenty w nim naruszyły budżet rozmiaru.
+nazwę pakietu. Mechanizm wpięcia, format zapisu w mapie wiedzy i przykład —
+[AUTOMATION.md](./AUTOMATION.md), Etap 3. Gdy pakiet zaczyna być za duży, to
+nie pakiet jest za duży — to dokumenty w nim naruszyły budżet rozmiaru.
 
 ---
 
