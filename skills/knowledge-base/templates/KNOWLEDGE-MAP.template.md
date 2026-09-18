@@ -28,7 +28,7 @@ wygrywa przy sprzeczności.
 | Warstwa | Co zawiera | Gdzie |
 |---|---|---|
 | **L0 — Konstytucja** | Reguły zachowania agenta | `CLAUDE.md`, `.claude/rules/` |
-| **L1 — Kanon** | Słownik, kanon produktu, decyzje | `CONTEXT.md`, `PRODUCT.md`, `docs/adr/`, `docs/product/` |
+| **L1 — Kanon** | Słownik, decyzje, ewentualnie kanon produktu | `CONTEXT.md`, `docs/adr/`, `docs/product/` |
 | **L2 — Kontrakty** | Architektura, moduły, interfejsy, runbooki | `docs/technical/` |
 | **L3 — Pamięć robocza** | Plany, specyfikacje, briefy | `docs/plans/` |
 | **L4 — Dowody** | Badania, analizy, pomiary | `docs/research/` |
@@ -39,11 +39,11 @@ wygrywa przy sprzeczności.
 
 | Zadanie | Czytaj w tej kolejności |
 |---|---|
-| Pierwszy kontakt z projektem | `PRODUCT.md` → `CONTEXT.md` → ADR ze statusem `accepted` |
+| Pierwszy kontakt z projektem | `CONTEXT.md` → ADR ze statusem `accepted` |
 | Zmiana w backendzie | `CONTEXT.md` → architektura → dokument modułu |
 | Zmiana w firmware | mapa sprzętowa → dokument protokołu → runbook |
-| Decyzja biznesowa | `PRODUCT.md` → ryzyka → ADR-y `active` |
-| Nowe badanie rynku | `PRODUCT.md` → segmenty → istniejące dowody L4 |
+| Decyzja biznesowa | `CONTEXT.md` → ryzyka → ADR-y `active` |
+| Nowe badanie rynku | `CONTEXT.md` → segmenty → istniejące dowody L4 |
 
 ## Pakiety kontekstu
 

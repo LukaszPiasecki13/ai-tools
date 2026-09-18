@@ -1,6 +1,6 @@
 ---
 name: knowledge-base
-description: "Projektowanie, porządkowanie i utrzymanie bazy wiedzy czytanej przez agentów AI - warstwy L0-L4, metadane, szablony dokumentów, walidacja i automatyzacja. Use when the user wants to build, restructure, audit or automate a knowledge base / documentation set for AI agents, asks how to organize docs for a product or startup so agents can use them, mentions 'baza wiedzy', 'biblioteka wiedzy', 'uporządkować dokumentację', or needs templates for PRODUCT.md, ADR, context packs, glossary or module contracts."
+description: "Projektowanie, porządkowanie i utrzymanie bazy wiedzy czytanej przez agentów AI - warstwy L0-L4, metadane, szablony dokumentów, walidacja i automatyzacja. Use when the user wants to build, restructure, audit or automate a knowledge base / documentation set for AI agents, asks how to organize docs for a product or startup so agents can use them, mentions 'baza wiedzy', 'biblioteka wiedzy', 'uporządkować dokumentację', or needs templates for ADR, context packs, glossary or module contracts."
 ---
 
 <!-- GENERATED FILE - DO NOT EDIT.
@@ -106,10 +106,10 @@ Ustal, który z czterech trybów obowiązuje, i idź tylko jego ścieżką.
 ### Tryb A — nowa baza od zera
 
 1. [ARCHITECTURE.md](./ARCHITECTURE.md) §2, §5 — warstwy i katalogi.
-2. Załóż L1 w kolejności: `CONTEXT.md` (słownik) → `PRODUCT.md` → pierwsze ADR.
+2. Załóż L1 w kolejności: `CONTEXT.md` (słownik) → pierwsze ADR.
    **Słownik pierwszy.** Bez ustalonych nazw wszystko poniżej opisuje te same
    rzeczy trzema słowami.
-3. `docs/00_KNOWLEDGE-MAP.md` z szablonu, nawet gdy wskazuje trzy pliki.
+3. `docs/00_KNOWLEDGE-MAP.md` z szablonu, nawet gdy wskazuje dwa pliki.
 4. `CLAUDE.md` (L0) ≤ 300 linii, z jawnym wskazaniem punktu wejścia do bazy.
 5. Walidator + pre-commit — [AUTOMATION.md](./AUTOMATION.md) Etap 1.
 

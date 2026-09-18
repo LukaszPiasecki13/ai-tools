@@ -56,7 +56,6 @@ Reguły zachowania agenta: `CLAUDE.md`, `.claude/rules/*.md`, `.claude/agents/*.
 Ustalenia, które przetrwają wiele iteracji kodu:
 
 - `CONTEXT.md` — słownik domeny (jedno pojęcie = jedna nazwa, reszta na liście `_Unikać_`).
-- `PRODUCT.md` — kanon produktu: problem, klient, zakres, wartość, wykluczenia.
 - `docs/adr/` — rejestr decyzji (jedna decyzja = jeden plik).
 - `docs/business/` — segmenty, model przychodowy, rejestr ryzyk.
 
@@ -193,8 +192,7 @@ Warstwa jest wymiarem pierwszym, temat drugim.
 ```
 repo/
 ├── CLAUDE.md                       # L0 — konstytucja (WERSJONOWANA, nie w .gitignore)
-├── CONTEXT.md  ─┐                  # L1 — słownik (albo docs/CONTEXT.md)
-├── PRODUCT.md  ─┘                  # L1 — kanon produktu
+├── CONTEXT.md                      # L1 — słownik (albo docs/CONTEXT.md)
 ├── .claude/
 │   ├── rules/                      # L0 — reguły po ścieżce
 │   ├── agents/                     # L0 — definicje subagentów

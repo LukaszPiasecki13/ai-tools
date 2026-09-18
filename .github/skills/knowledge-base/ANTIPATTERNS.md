@@ -66,8 +66,9 @@ z `CLAUDE.md`. Tabela generowana z front-matter (Etap 2 w [AUTOMATION.md](./AUTO
 **Objaw.** Szablon ADR mówi `adr-NNN-tytul.md` z sekcjami po angielsku, a w repo
 leżą pliki `0001-tytul.md` z sekcjami po polsku. Reguła obejmuje `docs/adr/**`,
 a ADR-y leżą w `docs/business/adr/`. Albo, ten sam problem na poziomie treści
-zamiast konwencji: cena abonamentu w `PRODUCT.md`, w ADR o modelu przychodowym
-i w planie biznesowym; numer pinu GPIO w dokumencie sprzętowym i w opisie modułu.
+zamiast konwencji: cena abonamentu w dokumencie produktowym, w ADR o modelu
+przychodowym i w planie biznesowym; numer pinu GPIO w dokumencie sprzętowym
+i w opisie modułu.
 
 **Koszt.** Dla konwencji: reguła **nie ładuje się nigdy** — glob nie trafia.
 Wygląda na aktywną, jest martwa. Agent tworzy nowy dokument wg szablonu,

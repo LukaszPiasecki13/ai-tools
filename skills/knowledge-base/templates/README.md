@@ -6,14 +6,13 @@ usuwasz po wypełnieniu.
 
 ## Wybór szablonu
 
-Pięć plików, nie więcej. Cztery mają własną, nieprzenośną formę i front-matter
+Cztery pliki, nie więcej. Trzy mają własną, nieprzenośną formę i front-matter
 odmienny od reszty bazy — te zostają osobno. Wszystko inne, niezależnie od
 warstwy, zaczyna się od jednego generycznego szablonu.
 
 | Chcę zapisać… | Szablon | Warstwa | Gdzie |
 |---|---|---|---|
 | Punkt wejścia do całej bazy | [`KNOWLEDGE-MAP`](./KNOWLEDGE-MAP.template.md) | — | `docs/00_KNOWLEDGE-MAP.md` |
-| Czym jest produkt, dla kogo, co jest poza zakresem | [`PRODUCT`](./PRODUCT.template.md) | L1 | `PRODUCT.md` (korzeń) |
 | Nazewnictwo domeny | [`CONTEXT`](./CONTEXT.template.md) | L1 | `CONTEXT.md` (korzeń) |
 | Decyzję, której nie chcę tłumaczyć trzeci raz | [`adr`](./adr.template.md) | L1 | `docs/adr/` — nazwy wg reguły `architecture-decisions` |
 | Cokolwiek innego: opis modułu, kontrakt API, runbook, zadanie do zlecenia, notatka z badania, eksperyment produktowy… | [`generic`](./generic.template.md) | L2 / L3 / L4 (do wyboru) | `docs/technical/`, `docs/plans/` albo `docs/research/` — wg warstwy |
@@ -67,11 +66,10 @@ co innego niż wskazany autorytet, to **te pliki** są do poprawy.
 
 ```
 1. CONTEXT.md          ← nazewnictwo. Zawsze pierwsze.
-2. PRODUCT.md          ← co budujemy i dla kogo
-3. docs/adr/0001-…     ← pierwsza decyzja, która była realnym wyborem
-4. docs/00_KNOWLEDGE-MAP.md
-5. CLAUDE.md           ← L0, ze wskazaniem punktu wejścia do bazy
-6. walidator + pre-commit
+2. docs/adr/0001-…     ← pierwsza decyzja, która była realnym wyborem
+3. docs/00_KNOWLEDGE-MAP.md
+4. CLAUDE.md           ← L0, ze wskazaniem punktu wejścia do bazy
+5. walidator + pre-commit
 ```
 
 Dokumenty L2 powstają wraz z kodem, który opisują — nie wcześniej. Kontrakt

@@ -185,9 +185,9 @@ opisywać — kolejność ma znaczenie, generowanie z niesprawdzanej bazy propag
 błędy szybciej, niż człowiek je wyłapie. To jest kierunek, nie gotowy mechanizm:
 żadna z tych rzeczy nie ma dziś narzędzia ani wpięcia, patrz Etap 4. Przykłady
 tego, co odblokowuje sprawdzona baza wielu produktów: generowanie briefu zadania
-z `PRODUCT.md` + ADR + luki w kontrakcie L2; wykrywanie modułów kodu bez
-dokumentu L2; audyt `CONTEXT.md` vs nazewnictwo w kodzie; szkielet nowej bazy
-z `PRODUCT.md` + `CONTEXT.md` + szablonów jako przenośnego „genomu" produktu.
+z ADR + luki w kontrakcie L2; wykrywanie modułów kodu bez dokumentu L2; audyt
+`CONTEXT.md` vs nazewnictwo w kodzie; szkielet nowej bazy z `CONTEXT.md`
++ szablonów jako przenośnego punktu startowego dla kolejnego produktu.
 
 ---
 
