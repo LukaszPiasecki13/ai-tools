@@ -18,16 +18,21 @@
 # it the same way as any other pre-commit hook pin: `pre-commit autoupdate` or by hand.
 #
 # language: unsupported_script (the current name for the old `script` alias, removed in a
-# future pre-commit version - see https://pre-commit.com/#budgeting-for-the-future) runs the
-# entry command literally, using whatever `python3` is on the consumer's PATH. No isolated
-# environment is created and none is needed: kb_validate.py is stdlib-only by design.
+# future pre-commit version - see https://pre-commit.com/#budgeting-for-the-future) invokes
+# `entry` directly, via its own shebang - NOT as "<interpreter> <entry>". Verified against real
+# pre-commit 4.6.2 behaviour, not just docs: an entry of "python3 <path>" fails with
+# "Executable .../python3 not found", because pre-commit resolves entry[0] as a path inside the
+# cloned hook repo, not a PATH lookup. Two requirements that follow from this: `entry` names the
+# script alone, and the script file must carry the executable bit (`chmod +x`, tracked by git as
+# mode 100755) so its own `#!/usr/bin/env python3` shebang is what actually runs it.
 - id: kb-validate
   name: knowledge-base validator
   description: >-
     Validates a knowledge-base-shaped docs/ tree: front-matter schema, dead links and anchors,
     size limits, staleness, and doc<->code drift via each document's `applies_to` glob. See
     skills/knowledge-base/METADATA.md for the full rule set.
-  entry: python3 skills/knowledge-base/scripts/kb_validate.py --root . --strict
+  entry: skills/knowledge-base/scripts/kb_validate.py
+  args: [--root, ., --strict]
   language: unsupported_script
   always_run: true
   pass_filenames: false

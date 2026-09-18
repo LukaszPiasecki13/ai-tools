@@ -54,6 +54,24 @@ autoupdate` albo ręcznie. To jest jedyne miejsce, które trzeba odświeżyć po
 zmianie w `ai-tools` — sam skrypt nigdy nie jest kopiowany, więc nie ma czego
 synchronizować ręcznie.
 
+**Domyślnie blokujące (`--strict`).** Manifest woła walidator z
+`args: [--root, ., --strict]` — pierwsze podpięcie w repo z nierozwiązanymi
+błędami `E*` (np. brakiem front-matter w istniejących dokumentach) zablokuje
+każdy commit dotykający `docs/`. Zanim to podepniesz, uruchom walidator raz
+ręcznie (`pre-commit run kb-validate --all-files`) i oceń skalę. Jeśli baza
+nie jest jeszcze gotowa na blokadę, nadpisz `args` po stronie konsumenta —
+własne `args:` w `.pre-commit-config.yaml` **całkowicie zastępuje** domyślne
+z manifestu (zweryfikowane empirycznie, `pre-commit try-repo`, nie tylko
+z dokumentacji):
+
+```yaml
+      - id: kb-validate
+        args: [--root, .]   # bez --strict: raportuje, nie blokuje
+```
+
+Wróć do wariantu bez `args:` (czyli do domyślnego `--strict`), gdy błędy będą
+naprawione — inaczej walidator nigdy realnie niczego nie zablokuje.
+
 ### B) Repo NIE używa `pre-commit` — kopia z manifestem jako fallback
 
 Gdy w projekcie nie ma frameworka `pre-commit` (i nie warto go teraz
