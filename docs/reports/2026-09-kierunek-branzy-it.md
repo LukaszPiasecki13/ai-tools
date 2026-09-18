@@ -146,11 +146,22 @@ oceny był odwrotny do faktu.
 
 ### Obóz „AI przyspiesza"
 
-**[B] GitHub + Accenture + Microsoft** — również RCT, ale na innej populacji i z innymi metrykami.
-Wzrost ukończonych zadań o **26,08%** (proxy: PR-y, commity, buildy). W samym Accenture przyrost
-PR-ów tygodniowo wyniósł **7,5–8,7%**, przy **+84%** udanych buildów. Największe zyski odnotowali
-**mniej doświadczeni** deweloperzy.
+**[B] Dwa powiązane RCT tej samej grupy badawczej** — na innej populacji i z innymi metrykami
+niż METR. **Sprostowanie:** w pierwszej wersji tego raportu obie liczby poniżej były przypisane
+jednemu źródłu; to dwa różne, następujące po sobie badania.
+
+Wcześniejsze: pole eksperymentalne na **ok. 1974 deweloperach** w Microsoft i Accenture
+(podpróba Accenture: 311 osób, start lipiec 2022) — stąd przyrost PR-ów tygodniowo u Accenture
+o **7,51–8,69%**, **+84%** udanych buildów i **+15%** wskaźnika mergowania PR-ów.
 ([GitHub](https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-in-the-enterprise-with-accenture/))
+
+Późniejsze: recenzowana publikacja w *Management Science* łącząca **trzy** eksperymenty polowe
+(Microsoft, Accenture i anonimowa firma z listy Fortune 100), **4867 deweloperów** łącznie —
+stąd zagregowany wzrost ukończonych zadań o **26,08%** (błąd standardowy 10,3%). Największe zyski
+odnotowali **mniej doświadczeni** deweloperzy.
+([Cui, Demirer, Jaffe, Musolff, Peng, Salz — robocza wersja, MIT Economics](https://economics.mit.edu/sites/default/files/inline-files/draft_copilot_experiments.pdf);
+opublikowane w *Management Science*, DOI 10.1287/mnsc.2025.00535 — strona wydawcy blokuje dostęp
+automatyczny, link prowadzi do dostępnej wersji roboczej)
 
 Zastrzeżenie: metryki są proxy ilościowym. Więcej PR-ów nie znaczy więcej dostarczonej wartości,
 a badanie prowadził dostawca narzędzia.
@@ -372,9 +383,11 @@ problem.
 
 ## 1.7 Warstwa agentowa się standaryzuje
 
-**[B]** **MCP** (Model Context Protocol, otwarty przez Anthropic pod koniec 2024) osiągnął rząd
-**110 mln pobrań SDK miesięcznie** i ponad **10 tys.** wdrożeń serwerów w firmach (dane na kwiecień
-2026, z 97 mln w lutym 2026). Wspierają go Anthropic, OpenAI, Google, Microsoft i Amazon.
+**[B]** **MCP** (Model Context Protocol, otwarty przez Anthropic pod koniec 2024) osiągnął
+**110 mln pobrań SDK miesięcznie** (kwiecień 2026, wynik osiągnięty w 16 miesięcy od premiery),
+wobec **97 mln** raportowanych w grudniu 2025 — **nie** w lutym 2026, jak podałem w poprzedniej
+wersji tego akapitu. Do połowy 2026 r. donoszono o ponad **10 tys.** wdrożeń serwerów MCP
+w firmach. Protokół wspierają Anthropic, OpenAI, Google, Microsoft i Amazon.
 
 **[B]** **A2A** (Agent-to-Agent) osiągnął wersję **1.0** w kwietniu 2026, jest wspierany przez ponad
 **150 organizacji** i został przekazany Linux Foundation.
@@ -899,6 +912,7 @@ regulacyjnej — bo to są jedyne rzeczy, których ten scenariusz nie unieważni
 
 - [METR — Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)
 - [GitHub — Quantifying GitHub Copilot's impact in the enterprise with Accenture](https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-in-the-enterprise-with-accenture/)
+- [Cui, Demirer, Jaffe, Musolff, Peng, Salz — The Effects of Generative AI on High-Skilled Work (robocza wersja, MIT Economics; opubl. w Management Science, DOI 10.1287/mnsc.2025.00535)](https://economics.mit.edu/sites/default/files/inline-files/draft_copilot_experiments.pdf)
 - [CircleCI — 2026 State of Software Delivery (raport roczny)](https://circleci.com/resources/2026-state-of-software-delivery/)
 - [CircleCI — komunikat prasowy z liczbami per-percentyl](https://www.prnewswire.com/news-releases/circleci-publishes-2026-state-of-software-delivery-302691131.html)
 - [Rob Bowley — krytyczna analiza raportu CircleCI 2026](https://blog.robbowley.net/2026/04/02/more-code-less-delivery-but-does-the-circleci-2026-report-really-show-1-in-20-teams-are-benefiting/)
