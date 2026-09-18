@@ -133,6 +133,7 @@ in [CLAUDE.md](CLAUDE.md).
 - [docs/COST-MODEL.md](docs/COST-MODEL.md) — where tokens go and the model policy
 - [docs/MIGRATION-2.0.md](docs/MIGRATION-2.0.md) — what changed in 2.0 and what to do about it
 - [docs/adr/](docs/adr/) — the decisions behind the structure
+- [docs/reports/](docs/reports/) — strategy and industry analysis (dated, evidence-graded, not toolkit reference)
 
 ## License
 
