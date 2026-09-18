@@ -21,20 +21,16 @@ import kb_validate as kb  # noqa: E402
 
 FRONT_MATTER = """---
 id: {id}
-title: {title}
-layer: {layer}
-status: active
-confidence: fact
-owner: t
-created: 2026-01-01
-verified: {verified}
-review_after: {review}
+status: {status}
+type: fact
+scope: test
+last_reviewed: {last_reviewed}
 ---
 """
 
 
-def doc(doc_id: str, title: str = "Dokument", layer: str = "L1", verified: str = "2026-01-01", review: str = "2030-01-01") -> str:
-    return FRONT_MATTER.format(id=doc_id, title=title, layer=layer, verified=verified, review=review)
+def doc(doc_id: str, status: str = "current", last_reviewed: str = "2026-06-01") -> str:
+    return FRONT_MATTER.format(id=doc_id, status=status, last_reviewed=last_reviewed)
 
 
 class TestSlugify(unittest.TestCase):
@@ -79,6 +75,15 @@ class TestFrontMatter(unittest.TestCase):
         self.assertEqual(body, "# Bez metadanych\n")
 
 
+class TestAddMonths(unittest.TestCase):
+    def test_przechodzi_przez_koniec_roku(self) -> None:
+        self.assertEqual(kb.add_months(date(2026, 11, 15), 6), date(2027, 5, 15))
+
+    def test_przycina_koniec_miesiaca(self) -> None:
+        # 31 stycznia + 1 mies. -> luty nie ma 31 dni.
+        self.assertEqual(kb.add_months(date(2026, 1, 31), 1), date(2026, 2, 28))
+
+
 class TestGlob(unittest.TestCase):
     def test_gwiazdka_gwiazdka_lapie_pliki(self) -> None:
         # `src/**` w stylu gita oznacza pliki, nie tylko katalogi.
@@ -117,6 +122,12 @@ class TestRegulyNaRepo(unittest.TestCase):
         (self.root / "docs" / "a.md").write_text("# A\n", encoding="utf-8")
         self.assertIn("E001", self.codes())
 
+    def test_brak_wymaganego_pola(self) -> None:
+        (self.root / "docs" / "a.md").write_text(
+            "---\nid: a\nstatus: current\ntype: fact\nlast_reviewed: 2026-06-01\n---\n# A\n", encoding="utf-8"
+        )
+        self.assertIn("E002", self.codes())
+
     def test_martwy_link_i_zywa_kotwica(self) -> None:
         (self.root / "docs" / "a.md").write_text(
             doc("a") + "# A\n## Sekcja B\n[żywa](#sekcja-b) [martwa](./brak.md)\n", encoding="utf-8"
@@ -136,14 +147,20 @@ class TestRegulyNaRepo(unittest.TestCase):
         (self.root / "docs" / "b.md").write_text(doc("x") + "# B\n", encoding="utf-8")
         self.assertIn("E004", self.codes())
 
-    def test_superseded_bez_nastepcy(self) -> None:
+    def test_nieznany_status(self) -> None:
         (self.root / "docs" / "a.md").write_text(
-            doc("a").replace("status: active", "status: superseded") + "# A\n", encoding="utf-8"
+            doc("a").replace("status: current", "status: archived") + "# A\n", encoding="utf-8"
         )
-        self.assertIn("E009", self.codes())
+        self.assertIn("E003", self.codes())
+
+    def test_draft_pomija_przeterminowanie(self) -> None:
+        (self.root / "docs" / "a.md").write_text(
+            doc("a", status="draft", last_reviewed="2020-01-01") + "# A\n", encoding="utf-8"
+        )
+        self.assertNotIn("W101", self.codes())
 
     def test_przeterminowanie_to_ostrzezenie(self) -> None:
-        (self.root / "docs" / "a.md").write_text(doc("a", review="2026-01-01") + "# A\n", encoding="utf-8")
+        (self.root / "docs" / "a.md").write_text(doc("a", last_reviewed="2020-01-01") + "# A\n", encoding="utf-8")
         codes = self.codes()
         self.assertIn("W101", codes)
         self.assertFalse([c for c in codes if c.startswith("E")])

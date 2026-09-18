@@ -140,7 +140,7 @@ przedstaw człowiekowi **przed** wykonaniem.
 ### Tryb D — utrzymanie
 
 Cykl przeglądu: `kb_validate.py --format json` → lista przeterminowanych (`W101`)
-i rozjechanych (`W102`) → przegląd, poprawka albo samo podbicie `verified`.
+i rozjechanych (`W102`) → przegląd, poprawka albo samo podbicie `last_reviewed`.
 Metryki zdrowia: [AUTOMATION.md](./AUTOMATION.md), sekcja końcowa.
 
 ## Reguły, których nie łam
@@ -148,9 +148,10 @@ Metryki zdrowia: [AUTOMATION.md](./AUTOMATION.md), sekcja końcowa.
 1. **Słownik przed resztą.** Nieustalone nazewnictwo skaża każdy kolejny dokument.
 2. **Jeden fakt — jedno miejsce.** Wszędzie indziej głęboki link.
 3. **Decyzja mieszka w ADR.** Nie w planie, nie w komentarzu, nie w czacie.
-4. **Nic nie kasujesz** — `superseded_by` albo `archived`.
+4. **Nic nie kasujesz** — dopisujesz zastąpienie w treści i przenosisz plik
+   (np. do `plans/archive/`), nigdy nie usuwasz historii decyzji.
 5. **Twierdzenie normatywne ma źródło.** Bez źródła to hipoteza i musi być tak
-   oznaczona (`confidence: hypothesis`).
+   oznaczona w treści (`> **[HIPOTEZA]** …`).
 6. **Zapisuj natychmiast.** Pojęcie i decyzja trafiają do pliku w tej samej turze,
    w której powstały. Batch na koniec sesji nie nastąpi.
 7. **Budżet L0.** `CLAUDE.md` ≤ 300 linii. Reszta to reguły ścieżkowe i skille.
@@ -165,7 +166,7 @@ Metryki zdrowia: [AUTOMATION.md](./AUTOMATION.md), sekcja końcowa.
 | „Analiza konkurencji — gdzie?" | L4 `docs/research/`. Wnioski wiążące → osobny ADR. |
 | „Nowe pojęcie w rozmowie" | `CONTEXT.md` natychmiast, z listą `_Unikać_`. |
 | „Dokumentacja API — L1 czy L2?" | L2, z `applies_to` na kod endpointów. |
-| „Cennik — gdzie?" | L1 `docs/product/`, jedno miejsce. `review_after` 3 miesiące. |
-| „Stary plan po wdrożeniu" | `status: archived`, przeniesienie do `plans/archive/`. Nie kasować. |
+| „Cennik — gdzie?" | L1 `docs/product/`, jedno miejsce. Przeglądaj co ~3 miesiące. |
+| „Stary plan po wdrożeniu" | Dopisz w treści, że jest zamknięty, przenieś do `plans/archive/`. Nie kasować. |
 | „Sprzeczność między dwoma dokumentami" | Wygrywa wyższa warstwa. Sprzeczność zapisz jako otwarty punkt — to defekt do naprawy, nie wybór do dokonania. |
 | „Czy to zasługuje na ADR?" | Trzy warunki naraz: nieodwracalne, nieoczywiste, z realną alternatywą. Brak któregoś → bez ADR. |

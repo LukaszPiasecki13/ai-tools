@@ -14,10 +14,10 @@ nie da się wyciągnąć z treści:
 
 | Pytanie | Pole | Co odblokowuje |
 |---|---|---|
-| Czy to obowiązuje? | `status`, `layer` | agent odrzuca szkice i dokumenty zastąpione |
-| Czy to nadal prawda? | `verified`, `review_after` | wykrywanie przeterminowania |
+| Czy to obowiązuje? | `status` | agent odrzuca szkice |
+| Czy to nadal prawda? | `last_reviewed` | wykrywanie przeterminowania |
 | Czego to dotyczy? | `applies_to` | pobieranie po zakresie + wykrywanie rozjazdu doc↔kod |
-| Jak pewna jest ta treść? | `confidence` | agent nie myli hipotezy z ustaleniem |
+| Jakiego rodzaju treść to jest? | `type` | agent nie myli faktu z decyzją |
 
 `applies_to` jest najważniejsze. Jest jedynym polem, które łączy dokument
 z kodem w sposób sprawdzalny maszynowo, i to ono zamienia bazę wiedzy z biblioteki
@@ -33,24 +33,12 @@ pustej linii, ani nagłówka.
 ```yaml
 ---
 id: be-telemetry-module
-title: Moduł telemetry — ingest, normalizacja, zapytania
-layer: L2
-domain: backend
-status: active
-confidence: fact
-owner: lukasz
-created: 2026-09-12
-verified: 2026-09-12
-review_after: 2026-12-12
+status: current
+type: fact
+scope: backend/telemetry
+last_reviewed: 2026-09-12
 applies_to:
   - backend/app/modules/telemetry/**
-sources:
-  - backend/app/modules/telemetry/services/ingest.py
-related:
-  - adr-0009-normalizacja-telemetrii
-  - be-architecture
-supersedes: []
-superseded_by: null
 ---
 ```
 
@@ -58,107 +46,80 @@ superseded_by: null
 
 | Pole | Wymagane | Typ | Znaczenie |
 |---|---|---|---|
-| `id` | **tak** | slug | Unikalny w całym repo, stabilny. Do niego linkują `related`. Nie zmienia się przy przenoszeniu pliku. |
-| `title` | **tak** | string | Zdanie, nie hasło. To ono trafia do mapy wiedzy. |
-| `layer` | **tak** | `L0`–`L4` | Warstwa wg [ARCHITECTURE.md](./ARCHITECTURE.md). |
-| `status` | **tak** | enum | `draft` / `active` / `superseded` / `archived`. |
-| `confidence` | **tak** | enum | `fact` / `decision` / `hypothesis`. |
-| `owner` | **tak** | string | Człowiek odpowiedzialny. Jedna osoba, nie zespół. |
-| `created` | **tak** | `YYYY-MM-DD` | Data powstania. Nigdy nie zmieniana. |
-| `verified` | **tak** | `YYYY-MM-DD` | Data ostatniego sprawdzenia treści wobec rzeczywistości. **To jest najważniejsza data w pliku.** |
-| `review_after` | L1, L2 | `YYYY-MM-DD` lub `on-change` | Termin ważności. `on-change` = ważny, dopóki nie zmieni się kod z `applies_to`. |
-| `applies_to` | L2 | lista globów | Ścieżki kodu, których dokument dotyczy. |
-| `sources` | L2, L4 | lista | Linki do kodu (`plik.py#L154`), URL-e, nazwy źródeł. |
-| `related` | nie | lista `id` | Powiązane dokumenty. Nie ścieżki — `id`. |
-| `domain` | nie | string | `backend` / `frontend` / `firmware` / `product` / `market`. |
-| `supersedes` / `superseded_by` | przy zastąpieniu | lista / `id` | Łańcuch zastąpień. |
-| `expires` | L3 | `YYYY-MM-DD` | Po tej dacie dokument roboczy jest automatycznie do archiwizacji. |
+| `id` | **tak** | slug | Unikalny w całym repo, stabilny — nie zmienia się przy przenoszeniu pliku. Do niego linkują inne dokumenty w treści (nie ma osobnego pola `related`). |
+| `status` | **tak** | enum | `current` / `draft`. |
+| `type` | **tak** | enum | `fact` / `decision` / `reference` / `mixed`. |
+| `scope` | **tak** | string | Hierarchiczny opis zakresu, wolny tekst, np. `backend/telemetry`, `business/pricing`. |
+| `last_reviewed` | **tak** | `YYYY-MM-DD` | Data ostatniego sprawdzenia treści wobec rzeczywistości. |
+| `applies_to` | nie | lista globów | Ścieżki kodu, których dokument dotyczy. Gdy obecne, włącza wykrywanie rozjazdu doc↔kod (§4). |
+| `title` | nie | string | Jeśli brak, walidator bierze pierwszy nagłówek `#` z treści, a w ostateczności nazwę pliku. |
 
 Powyższa tabela to komplet — nowe pole dodawaj dopiero wtedy, gdy potrafisz
 wskazać mechanizm, który bez niego nie działa. Każde kolejne jest kosztem
-ponoszonym przy **każdym** dokumencie. Odrzucony przykład: `tags` — wyszukiwanie
-pokrywają `domain`, `related` i szukanie pełnotekstowe, więc pole było czystą
-biurokracją i zostało usunięte ze schematu.
+ponoszonym przy **każdym** dokumencie.
 
-### Wymagalność per warstwa
+To jest schemat **v2**, celowo lżejszy niż jego poprzednik (patrz „Zmiana
+schematu" niżej). `id` i `applies_to` to jedyne pola, które warstwa mechaniczna
+dodaje ponad to, co repo już realnie używało — reszta (`layer`, `domain`,
+`confidence`, `owner`, `created`, `verified`, `review_after`, `expires`,
+`sources`, `related`, `supersedes`, `superseded_by`) została usunięta, nie
+przemianowana. Rozważane, ale **nie narzucone** rozszerzenia — dodaj je do repo
+tylko wtedy, gdy faktycznie ich potrzebujesz, i wtedy zgłoś zmianę do tego pliku:
 
-| Warstwa | Dodatkowo wymagane |
-|---|---|
-| L0 | — (wystarczy zestaw obowiązkowy; reguły `.claude/rules/*` zachowują własne `paths` i `description`) |
-| L1 | `review_after` |
-| L2 | `applies_to`, `sources`, `review_after` |
-| L3 | `expires` |
-| L4 | `sources` |
+- `type: hypothesis` — dla treści świadomie niesprawdzonej (dziś: opisz to w
+  treści dokumentu, np. blockquote `> **[HIPOTEZA]** ...`).
+- `status: superseded` / `status: archived` — dziś zastępstwo i archiwizację
+  opisuje się w treści dokumentu i przenosi plik (np. do `plans/archive/`),
+  bez osobnego stanu maszynowego.
+- `sources` — dziś źródła faktów żyją w treści dokumentu, nie w metadanych.
 
 ---
 
-## 3. `confidence` — trzy poziomy pewności
+## 3. `type` — cztery rodzaje treści
 
-Rozróżnienie, którego brak jest najczęstszą przyczyną, dla której agent buduje na
-piasku. Te trzy rzeczy wyglądają w tekście identycznie i muszą być rozdzielone
+Rozróżnienie, którego brak jest częstą przyczyną, dla której agent buduje na
+piasku. Te rzeczy wyglądają w tekście identycznie i muszą być rozdzielone
 metadanymi.
 
 | Wartość | Co to znaczy | Jak agent ma to traktować |
 |---|---|---|
 | `fact` | Stan rzeczywisty, sprawdzalny (kod robi X, pomiar dał Y, ustawa mówi Z) | Można na tym budować. Rozbieżność z rzeczywistością = defekt dokumentu. |
 | `decision` | Ustalenie ludzkie — mogło być inne, zostało wybrane | Wiążące. Zmiana wyłącznie przez nowy ADR, nigdy „przy okazji" w kodzie. |
-| `hypothesis` | Założenie niesprawdzone | **Nigdy nie jest podstawą do działania.** Agent może je testować i musi je oznaczać w wynikach. |
-
-Dokument mieszający poziomy (np. plan biznesowy: fakty rynkowe + decyzje + prognozy)
-deklaruje najsłabszy z nich i oznacza sekcje w treści:
-
-```markdown
-> **[HIPOTEZA]** Docelowy rynek to 1300–1700 gmin.
-> Podstawa: szacunek własny. Niezweryfikowane wobec rejestru GUS.
-```
+| `reference` | Materiał odsyłający / słownikowy, nie twierdzenie samo w sobie | Punkt wejścia, nie źródło prawdy — sprawdź dokument, do którego odsyła. |
+| `mixed` | Dokument łączący kilka rodzajów treści (np. plan: fakty + decyzje + prognozy) | Traktuj sekcja po sekcji; oznacz w treści, co jest czym, jeśli to niejasne z kontekstu. |
 
 ---
 
 ## 4. Cykl życia
 
-```
-draft ──► active ──► superseded ──► archived
-             │                          ▲
-             └──────────────────────────┘
-                   (dezaktualizacja bez następcy)
-```
+Dwa stany, celowo bez pośrednich:
 
 | Status | Znaczenie | Zachowanie agenta |
 |---|---|---|
-| `draft` | W opracowaniu, niezatwierdzone | Czyta wyłącznie na jawne wskazanie. Nigdy nie cytuje jako podstawy. |
-| `active` | Obowiązuje | Normalny tryb. |
-| `superseded` | Zastąpione przez `superseded_by` | Nie czyta treści — podąża za `superseded_by`. Czyta oryginał tylko przy pytaniu „dlaczego zmieniliśmy zdanie". |
-| `archived` | Nieaktualne, bez następcy | Pomija. Nie kasuje. |
+| `draft` | W opracowaniu, niezatwierdzone | Czyta wyłącznie na jawne wskazanie. Nigdy nie cytuje jako podstawy. Pomijany w sprawdzaniu przeterminowania. |
+| `current` | Obowiązuje | Normalny tryb. |
 
-**Nic nie jest kasowane.** Archiwum kosztuje kilobajty, a odtworzenie odrzuconego
-wariantu i jego uzasadnienia kosztuje dni — plus ryzyko, że wrócicie do pomysłu,
-który raz już odrzuciliście ze słusznego powodu.
+**Nic nie jest kasowane** — ale dziś to konwencja treści i lokalizacji pliku
+(np. przeniesienie do `plans/archive/`, dopisek w treści), a nie osobny stan
+`status`. Zobacz listę rozważanych, nienarzuconych rozszerzeń w §2, jeśli
+projekt faktycznie potrzebuje maszynowego rozróżnienia zastąpione/archiwalne.
 
 ### Przeterminowanie
 
-`review_after` minęło i `status: active` → walidator zgłasza **ostrzeżenie**, nie
-błąd. Dokument nadal obowiązuje; jest tylko zgłoszony do przeglądu. Sam upływ
-czasu nie czyni treści fałszywą — czyni ją niesprawdzoną.
-
-Sugerowane horyzonty:
-
-| Typ | `review_after` |
-|---|---|
-| ADR ze statusem `accepted` | `on-change` (żyje, aż zostanie zastąpiony) |
-| Słownik `CONTEXT.md` | 6 miesięcy |
-| `PRODUCT.md` | 3 miesiące (startup przed PMF: 1 miesiąc) |
-| Kontrakt L2 | `on-change` |
-| Analiza rynku / konkurencji (L4) | 6–12 miesięcy |
-| Dane cenowe, koszty, dostępność sprzętu | 3 miesiące |
+Dokument bez jawnego pola „ważne do": walidator liczy termin jako
+`last_reviewed + DEFAULT_REVIEW_MONTHS` (stała w `kb_validate.py`, domyślnie
+6 miesięcy). Minięty termin przy `status: current` → **ostrzeżenie** (`W101`),
+nie błąd. Dokument nadal obowiązuje; jest tylko zgłoszony do przeglądu. Sam
+upływ czasu nie czyni treści fałszywą — czyni ją niesprawdzoną.
 
 ### Rozjazd doc↔kod
 
-Dla dokumentów z `applies_to` i `review_after: on-change` walidator porównuje
-datę ostatniego commitu w objętym kodzie z `verified`. Kod nowszy niż weryfikacja
-→ **ostrzeżenie o rozjeździe**.
+Dla dokumentów z `applies_to` walidator porównuje datę ostatniego commitu
+w objętym kodzie z `last_reviewed`. Kod nowszy niż przegląd → **ostrzeżenie
+o rozjeździe** (`W102`).
 
 To nie oznacza, że dokument jest błędny — oznacza, że nikt tego nie sprawdził po
-zmianie. Reakcja jest tania: przejrzyj, popraw albo tylko podbij `verified`.
+zmianie. Reakcja jest tania: przejrzyj, popraw albo tylko podbij `last_reviewed`.
 Wykonywana regularnie, kosztuje minuty; pominięta przez kwartał, zamienia się
 w przepisanie dokumentu od zera.
 
@@ -173,14 +134,12 @@ Zestaw egzekwowany przez [`scripts/kb_validate.py`](./scripts/kb_validate.py).
 | Kod | Reguła |
 |---|---|
 | `E001` | Brak front-matter w pliku pod `docs/` |
-| `E002` | Brak pola obowiązkowego |
-| `E003` | Niedozwolona wartość `status` / `layer` / `confidence` |
+| `E002` | Brak pola obowiązkowego (`id`, `status`, `type`, `scope`, `last_reviewed`) |
+| `E003` | Niedozwolona wartość `status` / `type`, albo `applies_to` nie jest listą |
 | `E004` | Zduplikowane `id` w repo |
 | `E005` | Martwy link względny (plik nie istnieje) |
 | `E006` | Martwa kotwica (`#sekcja` nie istnieje w pliku docelowym) |
-| `E007` | `related` / `superseded_by` wskazuje na nieistniejące `id` |
 | `E008` | Przekroczony twardy limit rozmiaru |
-| `E009` | `status: superseded` bez `superseded_by` |
 | `E010` | Zły format daty (wymagane `YYYY-MM-DD`) |
 
 ### Zmiana schematu
@@ -204,19 +163,22 @@ Migrację przeprowadza się skryptem jednorazowym w osobnym commicie, nigdy ręc
 plik po pliku i nigdy w tym samym commicie co zmiana walidatora — inaczej nie da
 się odróżnić, co zmieniła migracja, a co człowiek.
 
-**Wersja schematu: 1.0** (2026-09-12).
+**Wersja schematu: 2.0** (2026-09-18) — zastępuje v1.0. Zmiana wynika z realnego
+konfliktu: dwa niezależne projekty w tym samym repo-konsumencie zaczęły używać
+dwóch różnych schematów front-matter (v1 tutaj vs. lżejszy schemat już przyjęty
+w praktyce). v2 rozstrzyga na korzyść lżejszego, już używanego schematu i dodaje
+do niego wyłącznie `id` i `applies_to` — żaden dokument napisany pod lżejszy
+schemat nie wymaga przepisania pól, które już ma.
 
 ### Ostrzeżenia (raportowane, nie blokują)
 
 | Kod | Reguła |
 |---|---|
-| `W101` | `review_after` minęło przy `status: active` |
-| `W102` | Rozjazd: kod z `applies_to` nowszy niż `verified` |
+| `W101` | `last_reviewed` + `DEFAULT_REVIEW_MONTHS` minęło przy `status: current` |
+| `W102` | Rozjazd: kod z `applies_to` nowszy niż `last_reviewed` |
 | `W103` | Sierota — dokument nieosiągalny z mapy wiedzy |
 | `W104` | Przekroczony miękki limit rozmiaru |
 | `W105` | `applies_to` nie dopasowuje żadnego istniejącego pliku |
-| `W106` | `expires` minęło przy `status: active` (L3) |
-| `W107` | Dokument L2 bez żadnego linku do kodu w treści |
 
 Podział jest celowy. **Błędy to naruszenia struktury** — zawsze możliwe do
 naprawienia natychmiast i zawsze warte zablokowania commitu. **Ostrzeżenia to

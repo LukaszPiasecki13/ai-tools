@@ -23,10 +23,11 @@ warstwy, zaczyna się od jednego generycznego szablonu.
 Nie da się z góry przewidzieć wszystkich typów dokumentów, jakich zażąda
 konkretny projekt — a szablon, którego nikt nie użył, jest samym kosztem bez
 korzyści: trzeba go czytać, utrzymywać w spójności z resztą i tłumaczyć, po co
-istnieje. `generic.template.md` różni się między L2/L3/L4 wyłącznie wymaganymi
-polami front-matter (`applies_to` dla L2, `expires` dla L3, `sources` dla L4 —
-patrz [METADATA.md](../METADATA.md)) i podpowiedziami w treści; strukturę pliku
-projektujesz sam, doraźnie, dla konkretnego dokumentu.
+istnieje. `generic.template.md` ma wspólny, jednolity front-matter dla L2/L3/L4
+(patrz [METADATA.md](../METADATA.md)) — jedyna różnica to `applies_to`, który ma
+sens tylko dla L2 (dokument opisujący konkretny kod) — i podpowiedziami
+w treści dobranymi wg warstwy; strukturę pliku projektujesz sam, doraźnie, dla
+konkretnego dokumentu.
 
 **Kiedy wydzielić nowy, dedykowany szablon:** dopiero gdy ten sam kształt
 sekcji powtórzy się kilkukrotnie dla jednego typu dokumentu w praktyce — nie
@@ -52,13 +53,13 @@ co innego niż wskazany autorytet, to **te pliki** są do poprawy.
 
 1. **Front-matter jest obowiązkowy.** Plik bez niego nie przejdzie walidacji (`E001`).
 2. **`id` jest stabilne.** Nadajesz raz; przeniesienie pliku go nie zmienia.
-   Linki `related` wskazują `id`, nie ścieżki.
+   Powiązania między dokumentami linkują do `id` w treści, nie do ścieżek.
 3. **Usuń niewypełnione sekcje.** Pusty nagłówek „Konsekwencje" jest gorszy niż
    jego brak — wygląda na kompletny dokument i zatrzymuje pytanie, które powinno
    paść.
 4. **Nie kopiuj treści z innych dokumentów.** Link (`plik.md#kotwica`) zamiast
    powtórzenia.
-5. **Oznaczaj niepewność w treści**, nie tylko w `confidence`:
+5. **Oznaczaj niepewność w treści**, nie tylko w `type`:
    `> **[HIPOTEZA]** … Podstawa: … Niezweryfikowane wobec: …`
 6. **Dopisz dokument do mapy wiedzy** w tym samym commicie.
 

@@ -89,7 +89,7 @@ Mapa ma dwie części:
 
 ```markdown
 <!-- KB-INDEX:START -->
-… tabela generowana: id | tytuł | warstwa | status | zweryfikowano …
+… tabela generowana: dokument | typ | status | zakres | ostatni przegląd …
 <!-- KB-INDEX:END -->
 ```
 
@@ -114,8 +114,9 @@ danym typie kodu (standardy, checklisty bezpieczeństwa). Budżet: krótko, bo t
 wchodzi do kontekstu bez pytania.
 
 **Na żądanie, po zakresie zadania.** Agent zna listę plików do zmiany →
-dopasowuje ją do `applies_to` → ładuje trafione dokumenty L2 + wskazane przez nie
-`related`. To pokrywa wiedzę projektową, która jest za duża, żeby ładować ją zawsze.
+dopasowuje ją do `applies_to` → ładuje trafione dokumenty L2 i to, na co one
+odsyłają w treści. To pokrywa wiedzę projektową, która jest za duża, żeby
+ładować ją zawsze.
 
 Nazwane pakiety dla powtarzalnych zadań zapisz w mapie wiedzy:
 
@@ -126,7 +127,7 @@ Nazwane pakiety dla powtarzalnych zadań zapisz w mapie wiedzy:
 1. `CONTEXT.md` (słownik)
 2. `docs/technical/backend/01_architektura.md`
 3. dokument modułu dopasowany przez `applies_to`
-4. ADR-y `active` z `domain: backend`
+4. ADR-y ze `scope: backend*`
 ```
 
 **Miara ukończenia:** agent rozpoczynający typowe zadanie nie używa wyszukiwania
@@ -143,8 +144,8 @@ Naturalnym miejscem wpięcia jest skill [`prepare-work`](../prepare-work/SKILL.m
 — wariant pełny ma obowiązkową Fazę 11 (Dokumentacja), wariant uproszczony
 zasadę 12. **Wpięcie nie jest wykonane**; poniższa lista jest gotowa do dopisania
 tam, gdy uznasz to za właściwe. Warunek wyzwalania trzymaj po stronie repo
-docelowego (`docs/00_KNOWLEDGE-MAP.md` albo front-matter z `layer:`), żeby
-projekty bez bazy warstwowej nie płaciły za nic.
+docelowego (obecność `docs/00_KNOWLEDGE-MAP.md`), żeby projekty bez bazy
+warstwowej nie płaciły za nic.
 
 ```
    ┌──────────────────────────────────────────────────────────┐
@@ -152,7 +153,7 @@ projekty bez bazy warstwowej nie płaciły za nic.
    ▼                                                          │
 L1/L2 ──► specyfikacja (L3) ──► implementacja ──► test ──► delta L1/L2
 kanon       pakiet kontekstu      kod + testy            ADR / kontrakt
-i kontrakty  jako wejście                                 verified++
+i kontrakty  jako wejście                                 last_reviewed++
 ```
 
 **Reguła twarda:** zadanie jest ukończone, gdy zawiera deltę w bazie wiedzy albo
@@ -169,17 +170,17 @@ Konkretne wpięcia:
 | Decyzja w trakcie | Nieodwracalna i nieoczywista → ADR **teraz**, nie po zakończeniu. |
 | Zmiana zachowania systemu | Aktualizacja dokumentu L2 w tym samym commicie co kod. |
 | Nowe pojęcie w rozmowie | Wpis do `CONTEXT.md` od razu. Termin nienazwany do jutra będzie miał trzy nazwy. |
-| Zamknięcie zadania | `verified` podbite w dotkniętych dokumentach; dokument L3 → `archived`. |
+| Zamknięcie zadania | `last_reviewed` podbite w dotkniętych dokumentach; dokument L3 zamykasz dopiskiem w treści i przenosisz do `plans/archive/`. |
 
 ### Definicja ukończenia — fragment do wklejenia
 
 ```markdown
 - [ ] Kod + testy przechodzą
-- [ ] Dokumenty L2 dopasowane przez `applies_to` są zaktualizowane i mają nowe `verified`
+- [ ] Dokumenty L2 dopasowane przez `applies_to` są zaktualizowane i mają nowe `last_reviewed`
 - [ ] Nowe/zmienione decyzje nieodwracalne mają ADR
 - [ ] Nowe pojęcia domenowe są w CONTEXT.md
 - [ ] `kb_validate.py --strict` przechodzi
-- [ ] Dokument zadania (L3) ma status `archived`
+- [ ] Dokument zadania (L3) zamknięty: dopisek w treści + przeniesiony do `plans/archive/`
 ```
 
 **Miara ukończenia:** commity zmieniające kod z `applies_to` zmieniają też
@@ -199,7 +200,7 @@ błędy szybciej, niż człowiek je wyłapie.
 | Wykrywanie luk | moduły kodu bez dokumentu L2 | lista brakujących kontraktów |
 | Audyt spójności | `CONTEXT.md` vs nazewnictwo w kodzie | lista rozjazdów terminologicznych |
 | Onboarding nowego repo | `PRODUCT.md` + `CONTEXT.md` + szablony | szkielet bazy nowego produktu |
-| Przegląd decyzji | ADR-y z `review_after` minionym | lista decyzji do potwierdzenia |
+| Przegląd decyzji | ADR-y z przeterminowanym `last_reviewed` (`W101`) | lista decyzji do potwierdzenia |
 | Pakiet sprzedażowy / raport | `PRODUCT.md` + L4 dowody | materiał zewnętrzny bez zmyśleń |
 
 Największy zysk w kontekście **wielu produktów**: `PRODUCT.md` + `CONTEXT.md` +
@@ -214,7 +215,7 @@ samych szablonów i tej samej konstytucji L0 — zmienia się wyłącznie treś�
 |---|---|
 | Pisania ADR bez człowieka | ADR zapisuje **wybór**, a wyboru nie da się wyprowadzić z kodu. Agent przygotowuje szkic i alternatywy; decyzję i status `accepted` nadaje człowiek. |
 | Słownika z kodu | Nazwy w kodzie są skutkiem słownika, nie jego źródłem. Odwrócenie kierunku utrwala każdą złą nazwę. |
-| Podbijania `verified` przy każdym commicie | Data weryfikacji, która podnosi się sama, przestaje cokolwiek znaczyć. Podbija ją ten, kto faktycznie sprawdził. |
+| Podbijania `last_reviewed` przy każdym commicie | Data przeglądu, która podnosi się sama, przestaje cokolwiek znaczyć. Podbija ją ten, kto faktycznie sprawdził. |
 | Kasowania „nieaktualnych" dokumentów | Automat nie odróżnia nieaktualnego od niewygodnego. Archiwizacja — tak; kasowanie — nigdy. |
 | Streszczania L4 do L1 | Skrót dowodu gubi zastrzeżenia i niepewność, a zostawia liczbę, która wygląda na pewnik. |
 
@@ -227,8 +228,8 @@ raportu.
 
 | Metryka | Definicja | Próg alarmowy |
 |---|---|---|
-| **Rozjazd** | `W102` / liczba dokumentów L2 | > 30% |
-| **Przeterminowanie** | `W101` / liczba dokumentów L1+L2 | > 25% |
+| **Rozjazd** | `W102` / liczba dokumentów z `applies_to` | > 30% |
+| **Przeterminowanie** | `W101` / liczba dokumentów `status: current` | > 25% |
 | **Pokrycie kontraktami** | moduły kodu z dokumentem L2 / wszystkie moduły | < 70% |
 | **Naruszenia rozmiaru** | dokumenty ponad twardym limitem | > 0 |
 

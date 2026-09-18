@@ -1,18 +1,12 @@
 ---
 id: adr-<NNNN>-<krotki-slug>
-title: <Decyzja w formie zdania oznajmującego>
-layer: L1
-domain: <backend|frontend|firmware|product|market>
-status: draft          # metadane KB, dla walidatora - patrz METADATA.md. NIE to samo, co
-                        # sekcja "## Status" niżej (ta ma własne, ustalone w repo słownictwo)
-confidence: decision
-owner: <imię>
-created: <YYYY-MM-DD>
-verified: <YYYY-MM-DD>
-review_after: on-change
-related: [<id-powiązane>]
-supersedes: []
-superseded_by: null
+status: draft          # metadane KB, dla walidatora - patrz METADATA.md. `draft` = dokument
+                        # jeszcze piszesz; `current` = gotowy do czytania. NIE to samo, co
+                        # sekcja "## Status" niżej (ta ma własne, ustalone w repo słownictwo
+                        # decyzji: Proposed/Accepted/... i zmienia się bez dotykania tego pola)
+type: decision
+scope: <np. backend/telemetry>
+last_reviewed: <YYYY-MM-DD>
 ---
 
 <!--
@@ -118,8 +112,9 @@ inaczej decyzja pozostanie widoczna wyłącznie tutaj (antywzorzec A5).
 -->
 
 - [ ] `CONTEXT.md` — nowe pojęcia: <…>
-- [ ] Kontrakt L2 `<ścieżka>` — aktualizacja + nowe `verified`
-- [ ] ADR-y zastąpione: <…> → `status: superseded`, `superseded_by`
+- [ ] Kontrakt L2 `<ścieżka>` — aktualizacja + nowe `last_reviewed`
+- [ ] ADR-y zastąpione: <…> → w ich treści dopisz „Zastąpione przez ADR-<NNNN>"
+      i zaktualizuj ich `## Status` na `Superseded by ADR-<NNNN>`
 
 ## Notatki
 

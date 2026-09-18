@@ -1,15 +1,9 @@
 ---
 id: product
-title: Kanon produktu — <nazwa produktu>
-layer: L1
-domain: product
-status: active
-confidence: decision
-owner: <imię>
-created: <YYYY-MM-DD>
-verified: <YYYY-MM-DD>
-review_after: <YYYY-MM-DD>   # startup przed PMF: 1 miesiąc; po PMF: 3 miesiące
-related: [context, <id-adr>]
+status: current
+type: decision
+scope: product
+last_reviewed: <YYYY-MM-DD>   # startup przed PMF: przeglądaj co ~1 miesiąc; po PMF: co ~3 miesiące
 ---
 
 <!--

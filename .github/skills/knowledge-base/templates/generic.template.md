@@ -1,21 +1,13 @@
 ---
 id: <unikalny-slug>
-title: <Zdanie — na jakie pytanie ten dokument odpowiada>
-layer: <L2|L3|L4>
-domain: <backend|frontend|firmware|product|market>
-status: active
-confidence: <fact|decision|hypothesis>
-owner: <imię>
-created: <YYYY-MM-DD>
-verified: <YYYY-MM-DD>
-# Pola poniżej dobierz wg warstwy — usuń te, których nie potrzebujesz.
-review_after: <YYYY-MM-DD | on-change>   # L2: zwykle on-change
-applies_to:                              # tylko L2 — obowiązkowe
+status: current
+type: <fact|decision|reference|mixed>
+scope: <np. backend/telemetry>
+last_reviewed: <YYYY-MM-DD>
+# applies_to tylko dla L2 (kontrakty) - włącza wykrywanie rozjazdu doc<->kod.
+# Usuń, jeśli dokument nie opisuje konkretnego fragmentu kodu (L3, L4).
+applies_to:
   - <glob/kodu/**>
-sources:                                 # L2 i L4 — obowiązkowe
-  - <ścieżka/do/pliku.py albo URL>
-expires: <YYYY-MM-DD>                    # tylko L3 — obowiązkowe
-related: [<id-powiązanego-dokumentu>]
 ---
 
 <!--
@@ -74,7 +66,7 @@ L4 (badanie / dowód / analiza):
 ## Otwarte punkty / znane ograniczenia
 
 <!--
-Co jest niedokończone albo niepewne w chwili `verified`. Pusta sekcja jest
+Co jest niedokończone albo niepewne w chwili `last_reviewed`. Pusta sekcja jest
 podejrzana — zwykle znaczy, że nikt nie szukał.
 -->
 

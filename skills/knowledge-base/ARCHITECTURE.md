@@ -98,8 +98,8 @@ Plany, briefy, specyfikacje zadań, katalogi przebiegów (`.tmp/tasks/…`).
 Badania rynku, analizy konkurencji, wywiady, pomiary, notatki ze spotkań,
 zrzuty danych.
 
-- **Append-only.** Nie poprawiamy starego badania — dopisujemy nowe i oznaczamy
-  poprzednie jako `superseded_by`.
+- **Append-only.** Nie poprawiamy starego badania — dopisujemy nowe i w treści
+  poprzedniego dopisujemy, czym zostało zastąpione.
 - Zawsze z datą i źródłem. Dowód bez daty jest bezużyteczny — nie wiadomo, czy
   opisuje rynek sprzed miesiąca czy sprzed trzech lat.
 - **Nigdy nie normatywne.** Agent nie podejmuje decyzji na podstawie L4. L4
@@ -248,8 +248,8 @@ przewidywalny, konkretny koszt.
 1. **Jeden fakt — jedno miejsce.** Wszędzie indziej link. *Koszt złamania:* N kopii rozjeżdża się w N wersji.
 2. **Twierdzenie normatywne ma źródło.** Kod, ADR albo dowód L4. *Koszt:* agent powiela zmyślenie z pełną pewnością siebie.
 3. **Decyzja mieszka w ADR.** Plan i dokument techniczny opisują skutek decyzji, nie podejmują jej. *Koszt:* decyzje podjęte w planach są niewidoczne i cicho unieważniane.
-4. **Nic nie jest kasowane — jest zastępowane.** `superseded_by` + `archived`. *Koszt:* tracisz uzasadnienie „dlaczego nie zrobiliśmy tego tamtędy" i wracasz do odrzuconego pomysłu.
-5. **Każdy dokument ma datę weryfikacji.** Nie datę utworzenia. *Koszt:* nie da się odróżnić prawdy od archeologii.
+4. **Nic nie jest kasowane — jest zastępowane.** Dopisek w treści + przeniesienie pliku. *Koszt:* tracisz uzasadnienie „dlaczego nie zrobiliśmy tego tamtędy" i wracasz do odrzuconego pomysłu.
+5. **Każdy dokument ma datę ostatniego przeglądu (`last_reviewed`).** Nie datę utworzenia. *Koszt:* nie da się odróżnić prawdy od archeologii.
 6. **Dokument bez wpisu w mapie nie istnieje.** *Koszt:* sierota, której agent nigdy nie znajdzie, a człowiek będzie nadal aktualizował.
 7. **Zmiana kodu objętego `applies_to` unieważnia weryfikację dokumentu.** *Koszt:* kontrakt L2 opisuje system sprzed trzech kwartałów, a agent buduje na jego podstawie.
 

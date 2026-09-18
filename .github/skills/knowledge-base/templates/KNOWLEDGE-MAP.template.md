@@ -1,13 +1,9 @@
 ---
 id: knowledge-map
-title: Mapa wiedzy — punkt wejścia do bazy
-layer: L1
-status: active
-confidence: fact
-owner: <imię>
-created: <YYYY-MM-DD>
-verified: <YYYY-MM-DD>
-review_after: <YYYY-MM-DD>
+status: current
+type: reference
+scope: knowledge-base
+last_reviewed: <YYYY-MM-DD>
 ---
 
 <!--

@@ -34,31 +34,20 @@ from typing import Any
 # Konfiguracja
 # --------------------------------------------------------------------------- #
 
-LAYERS = {"L0", "L1", "L2", "L3", "L4"}
-STATUSES = {"draft", "active", "superseded", "archived"}
-CONFIDENCES = {"fact", "decision", "hypothesis"}
+STATUSES = {"current", "draft"}
+TYPES = {"fact", "decision", "reference", "mixed"}
 
-REQUIRED_ALWAYS = ["id", "title", "layer", "status", "confidence", "owner", "created", "verified"]
-REQUIRED_BY_LAYER: dict[str, list[str]] = {
-    "L0": [],
-    "L1": ["review_after"],
-    "L2": ["applies_to", "sources", "review_after"],
-    "L3": ["expires"],
-    "L4": ["sources"],
-}
+REQUIRED_ALWAYS = ["id", "status", "type", "scope", "last_reviewed"]
 
-DATE_FIELDS = ["created", "verified", "review_after", "expires"]
-LIST_FIELDS = {"applies_to", "sources", "related", "supersedes"}
+DATE_FIELDS = ["last_reviewed"]
+LIST_FIELDS = {"applies_to"}
 
-# (miękki, twardy) limit linii
-SIZE_LIMITS: dict[str, tuple[int, int]] = {
-    "L0": (200, 300),
-    "L1": (200, 400),
-    "L2": (400, 800),
-    "L3": (400, 800),
-    "L4": (400, 800),
-}
+# (miękki, twardy) limit linii dla dokumentów spoza ADR.
+SIZE_LIMIT: tuple[int, int] = (400, 800)
 ADR_LIMITS = (80, 150)
+
+# Ile miesięcy od `last_reviewed` dokument liczy się jako świeży (status: current).
+DEFAULT_REVIEW_MONTHS = 6
 
 # Domyślnie skanowane ścieżki, względem root.
 DEFAULT_SCAN = ["docs"]
@@ -97,15 +86,12 @@ class Document:
     meta: dict[str, Any]
     body: str
     line_count: int
+    title: str = ""
     headings: list[str] = field(default_factory=list)
 
     @property
     def doc_id(self) -> str:
         return str(self.meta.get("id", ""))
-
-    @property
-    def layer(self) -> str:
-        return str(self.meta.get("layer", ""))
 
     @property
     def status(self) -> str:
@@ -214,6 +200,20 @@ def parse_date(value: Any) -> date | None:
         return None
 
 
+def add_months(d: date, months: int) -> date:
+    month_index = d.month - 1 + months
+    year = d.year + month_index // 12
+    month = month_index % 12 + 1
+    if month == 2:
+        leap = year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+        max_day = 29 if leap else 28
+    elif month in (4, 6, 9, 11):
+        max_day = 30
+    else:
+        max_day = 31
+    return date(year, month, min(d.day, max_day))
+
+
 def as_list(value: Any) -> list[Any]:
     if value is None:
         return []
@@ -300,6 +300,9 @@ def load(root: Path, paths: list[Path]) -> tuple[list[Document], list[Diagnostic
         if meta is None:
             diags.append(Diagnostic("E001", rel, "brak front-matter"))
             meta, body = {}, text
+        stripped = strip_blocks(text)
+        # title nie jest już polem front-matter - pierwszy H1, potem nazwa pliku.
+        h1 = next((m.group(2) for m in HEADING_RE.finditer(stripped) if m.group(1) == "#"), None)
         docs.append(
             Document(
                 path=p,
@@ -307,7 +310,8 @@ def load(root: Path, paths: list[Path]) -> tuple[list[Document], list[Diagnostic
                 meta=meta,
                 body=body,
                 line_count=text.count("\n") + 1,
-                headings=[slugify(m.group(2)) for m in HEADING_RE.finditer(strip_blocks(text))],
+                title=str(meta.get("title") or h1 or Path(rel).stem),
+                headings=[slugify(m.group(2)) for m in HEADING_RE.finditer(stripped)],
             )
         )
     return docs, diags
@@ -327,19 +331,12 @@ def check_metadata(doc: Document) -> list[Diagnostic]:
         if doc.meta.get(key) in (None, "", []):
             out.append(Diagnostic("E002", doc.rel, f"brak wymaganego pola: {key}"))
 
-    layer = doc.layer
-    if layer and layer not in LAYERS:
-        out.append(Diagnostic("E003", doc.rel, f"nieznana warstwa: {layer}"))
-    else:
-        for key in REQUIRED_BY_LAYER.get(layer, []):
-            if doc.meta.get(key) in (None, "", []):
-                out.append(Diagnostic("E002", doc.rel, f"warstwa {layer} wymaga pola: {key}"))
-
     if doc.status and doc.status not in STATUSES:
         out.append(Diagnostic("E003", doc.rel, f"nieznany status: {doc.status}"))
-    conf = doc.meta.get("confidence")
-    if conf and conf not in CONFIDENCES:
-        out.append(Diagnostic("E003", doc.rel, f"nieznana wartość confidence: {conf}"))
+
+    doc_type = doc.meta.get("type")
+    if doc_type and doc_type not in TYPES:
+        out.append(Diagnostic("E003", doc.rel, f"nieznana wartość type: {doc_type}"))
 
     for key in DATE_FIELDS:
         value = doc.meta.get(key)
@@ -347,9 +344,6 @@ def check_metadata(doc: Document) -> list[Diagnostic]:
             continue
         if parse_date(value) is None:
             out.append(Diagnostic("E010", doc.rel, f"pole {key}: zły format daty ({value}) - wymagane YYYY-MM-DD"))
-
-    if doc.status == "superseded" and not doc.meta.get("superseded_by"):
-        out.append(Diagnostic("E009", doc.rel, "status 'superseded' bez pola superseded_by"))
 
     for key in LIST_FIELDS:
         if key in doc.meta and doc.meta[key] is not None and not isinstance(doc.meta[key], list):
@@ -367,14 +361,6 @@ def check_ids(docs: list[Document]) -> list[Diagnostic]:
             out.append(Diagnostic("E004", doc.rel, f"zduplikowane id '{doc.doc_id}' (już w {seen[doc.doc_id]})"))
         else:
             seen[doc.doc_id] = doc.rel
-    known = set(seen)
-    for doc in docs:
-        refs = as_list(doc.meta.get("related")) + as_list(doc.meta.get("supersedes"))
-        if doc.meta.get("superseded_by"):
-            refs.append(doc.meta["superseded_by"])
-        for ref in refs:
-            if ref and str(ref) not in known and not str(ref).startswith("<"):
-                out.append(Diagnostic("E007", doc.rel, f"odwołanie do nieistniejącego id: {ref}"))
     return out
 
 
@@ -413,7 +399,7 @@ def check_links(root: Path, doc: Document, by_path: dict[str, Document]) -> list
 
 def check_size(doc: Document) -> list[Diagnostic]:
     is_adr = "/adr/" in doc.rel or Path(doc.rel).name.startswith(("adr-", "ADR-"))
-    soft, hard = ADR_LIMITS if is_adr else SIZE_LIMITS.get(doc.layer, (400, 800))
+    soft, hard = ADR_LIMITS if is_adr else SIZE_LIMIT
     if doc.line_count > hard:
         return [Diagnostic("E008", doc.rel, f"{doc.line_count} linii, twardy limit {hard} - dokument do rozbicia")]
     if doc.line_count > soft:
@@ -423,18 +409,20 @@ def check_size(doc: Document) -> list[Diagnostic]:
 
 def check_freshness(root: Path, doc: Document, today: date) -> list[Diagnostic]:
     out: list[Diagnostic] = []
-    if doc.status in ("archived", "superseded", "draft"):
+    if doc.status == "draft":
         return out
 
-    review = doc.meta.get("review_after")
-    if review and review != "on-change":
-        parsed = parse_date(review)
-        if parsed and parsed < today:
-            out.append(Diagnostic("W101", doc.rel, f"review_after minęło ({review}) - dokument do przeglądu"))
-
-    expires = parse_date(doc.meta.get("expires"))
-    if expires and expires < today:
-        out.append(Diagnostic("W106", doc.rel, f"expires minęło ({doc.meta['expires']}) - dokument L3 do archiwizacji"))
+    last_reviewed = parse_date(doc.meta.get("last_reviewed"))
+    if last_reviewed:
+        deadline = add_months(last_reviewed, DEFAULT_REVIEW_MONTHS)
+        if deadline < today:
+            out.append(
+                Diagnostic(
+                    "W101",
+                    doc.rel,
+                    f"last_reviewed {last_reviewed} + {DEFAULT_REVIEW_MONTHS} mies. minęło - dokument do przeglądu",
+                )
+            )
 
     patterns = as_list(doc.meta.get("applies_to"))
     if patterns:
@@ -445,19 +433,16 @@ def check_freshness(root: Path, doc: Document, today: date) -> list[Diagnostic]:
             matched += expand_glob(root, pat)
         if not matched:
             out.append(Diagnostic("W105", doc.rel, f"applies_to nie dopasowuje żadnego pliku: {patterns}"))
-        else:
-            verified = parse_date(doc.meta.get("verified"))
+        elif last_reviewed:
             last_code = git_last_commit(root, matched)
-            if verified and last_code and last_code > verified:
+            if last_code and last_code > last_reviewed:
                 out.append(
                     Diagnostic(
                         "W102",
                         doc.rel,
-                        f"rozjazd doc/kod: kod zmieniony {last_code}, weryfikacja {verified}",
+                        f"rozjazd doc/kod: kod zmieniony {last_code}, ostatni przegląd {last_reviewed}",
                     )
                 )
-    if doc.layer == "L2" and not re.search(r"\]\([^)]*\.(py|ts|tsx|cpp|h|hpp|sql|yaml|yml|json)", strip_noise(doc.body)):
-        out.append(Diagnostic("W107", doc.rel, "dokument L2 bez żadnego linku do kodu"))
     return out
 
 
@@ -478,7 +463,7 @@ def check_orphans(root: Path, docs: list[Document], map_path: Path | None) -> li
     out: list[Diagnostic] = []
     map_rel = map_path.relative_to(root).as_posix()
     for doc in docs:
-        if doc.rel == map_rel or doc.status in ("archived", "superseded"):
+        if doc.rel == map_rel:
             continue
         if doc.rel not in referenced and doc.doc_id not in text:
             out.append(Diagnostic("W103", doc.rel, "sierota - dokument nieosiągalny z mapy wiedzy"))
@@ -491,18 +476,19 @@ def check_orphans(root: Path, docs: list[Document], map_path: Path | None) -> li
 
 
 def build_index(root: Path, docs: list[Document], map_path: Path) -> str:
-    rows = ["| Dokument | Warstwa | Status | Pewność | Zweryfikowano |", "|---|---|---|---|---|"]
-    for doc in sorted(docs, key=lambda d: (d.layer, d.rel)):
-        if doc.rel == map_path.relative_to(root).as_posix():
+    rows = ["| Dokument | Typ | Status | Zakres | Ostatni przegląd |", "|---|---|---|---|---|"]
+    map_rel = map_path.relative_to(root).as_posix()
+    for doc in sorted(docs, key=lambda d: (str(d.meta.get("type", "")), d.rel)):
+        if doc.rel == map_rel:
             continue
         try:
             link = Path(doc.rel).relative_to(map_path.parent.relative_to(root)).as_posix()
         except ValueError:
             link = "../" * len(map_path.parent.relative_to(root).parts) + doc.rel
-        title = str(doc.meta.get("title", Path(doc.rel).stem)).replace("|", "\\|")
+        title = doc.title.replace("|", "\\|")
         rows.append(
-            f"| [{title}]({link}) | {doc.layer or '—'} | {doc.status or '—'} "
-            f"| {doc.meta.get('confidence', '—')} | {doc.meta.get('verified', '—')} |"
+            f"| [{title}]({link}) | {doc.meta.get('type', '—')} | {doc.status or '—'} "
+            f"| {doc.meta.get('scope', '—')} | {doc.meta.get('last_reviewed', '—')} |"
         )
     return "\n".join(rows)
 
@@ -525,8 +511,8 @@ def write_index(root: Path, docs: list[Document], map_path: Path) -> bool:
 
 def metrics(docs: list[Document], diags: list[Diagnostic]) -> dict[str, Any]:
     codes = [d.code for d in diags]
-    l2 = [d for d in docs if d.layer == "L2"]
-    l12 = [d for d in docs if d.layer in ("L1", "L2")]
+    with_applies_to = [d for d in docs if as_list(d.meta.get("applies_to"))]
+    current = [d for d in docs if d.status == "current"]
 
     def pct(n: int, total: int) -> float:
         return round(100 * n / total, 1) if total else 0.0
@@ -535,11 +521,12 @@ def metrics(docs: list[Document], diags: list[Diagnostic]) -> dict[str, Any]:
         "dokumentów": len(docs),
         "błędów": sum(1 for c in codes if c.startswith("E")),
         "ostrzeżeń": sum(1 for c in codes if c.startswith("W")),
-        "rozjazd_procent": pct(codes.count("W102"), len(l2)),
-        "przeterminowanie_procent": pct(codes.count("W101"), len(l12)),
+        "rozjazd_procent": pct(codes.count("W102"), len(with_applies_to)),
+        "przeterminowanie_procent": pct(codes.count("W101"), len(current)),
         "naruszenia_rozmiaru": codes.count("E008") + codes.count("W104"),
         "sieroty": codes.count("W103"),
-        "wg_warstwy": {layer: sum(1 for d in docs if d.layer == layer) for layer in sorted(LAYERS)},
+        "wg_statusu": {s: sum(1 for d in docs if d.status == s) for s in sorted(STATUSES)},
+        "wg_typu": {t: sum(1 for d in docs if d.meta.get("type") == t) for t in sorted(TYPES)},
     }
 
 

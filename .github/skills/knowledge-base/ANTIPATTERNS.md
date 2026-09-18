@@ -97,9 +97,9 @@ niż planowano".
 którego nie ma — albo który powstał z innym interfejsem. Klasa błędów najtrudniejsza
 do wykrycia, bo agent działa pewnie i spójnie z materiałem, który dostał.
 
-**Naprawa.** Plan to L3 z `expires`. Stan opisuje L2 z linkami do kodu. Ukończenie
-etapu planu **wymaga** powstania albo aktualizacji dokumentu L2 — dopiero wtedy
-wolno postawić ✅. Sam znaczek w planie nie jest dowodem istnienia.
+**Naprawa.** Plan to L3, dokument roboczy. Stan opisuje L2 z linkami do kodu.
+Ukończenie etapu planu **wymaga** powstania albo aktualizacji dokumentu L2 —
+dopiero wtedy wolno postawić ✅. Sam znaczek w planie nie jest dowodem istnienia.
 
 ---
 
@@ -141,8 +141,8 @@ najtańszy zysk w całej liście.
 konkurencji sprzed dwóch lat tak samo jak wczorajszy pomiar — jedno i drugie to
 dla niego po prostu tekst w repo.
 
-**Naprawa.** `verified` obowiązkowe. Podbija je ten, kto **sprawdził**, nie ten,
-kto poprawił literówkę.
+**Naprawa.** `last_reviewed` obowiązkowe. Podbija je ten, kto **sprawdził**, nie
+ten, kto poprawił literówkę.
 
 ---
 
@@ -157,8 +157,10 @@ plan na liczbie, która była zgadywana. To najczęstsza droga do zmyśleń
 o wysokiej pewności — model nie zmyślił, tylko wiernie powtórzył niezweryfikowane
 założenie.
 
-**Naprawa.** Pole `confidence` w metadanych + jawne znaczniki w treści:
-`> **[HIPOTEZA]** … Podstawa: … Niezweryfikowane wobec: …`.
+**Naprawa.** Jawne znaczniki w treści przy każdym twierdzeniu niepewnym:
+`> **[HIPOTEZA]** … Podstawa: … Niezweryfikowane wobec: …`. Front-matter nie
+rozróżnia dziś poziomów pewności (`type` opisuje rodzaj dokumentu, nie jego
+pewność) — patrz METADATA.md §2, rozważane rozszerzenie `type: hypothesis`.
 
 ---
 

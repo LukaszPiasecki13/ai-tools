@@ -1,15 +1,9 @@
 ---
 id: context
-title: Słownik domeny — <nazwa produktu>
-layer: L1
-domain: product
-status: active
-confidence: decision
-owner: <imię>
-created: <YYYY-MM-DD>
-verified: <YYYY-MM-DD>
-review_after: <YYYY-MM-DD>   # zwykle 6 miesięcy
-related: [product]
+status: current
+type: reference
+scope: product
+last_reviewed: <YYYY-MM-DD>   # zwykle przeglądaj co ~6 miesięcy
 ---
 
 <!--
