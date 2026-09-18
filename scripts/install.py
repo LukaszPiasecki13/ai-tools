@@ -34,6 +34,17 @@ RULES_DIR = ROOT / "rules"
 SUBDIR = "ai-tools"  # rules land in a namespaced subdirectory, never loose in rules/
 MANIFEST = ".ai-tools-install.json"
 
+# The knowledge-base validator has to live inside the target repo, not travel with the plugin:
+# pre-commit and CI run it with no Claude Code involved at all. Tracked by its own manifest so
+# re-running refreshes what this installer wrote, and a marker string lets it recognise (and
+# safely adopt) a copy that was placed by hand before this installer path existed.
+KB_VALIDATOR_DIR = ROOT / "skills" / "knowledge-base" / "scripts"
+KB_VALIDATOR_MARKERS = {
+    "kb_validate.py": "Walidator bazy wiedzy dla agentów AI",
+    "test_kb_validate.py": "Testy walidatora bazy wiedzy",
+}
+KB_VALIDATOR_MANIFEST = ".ai-tools-kb-validate.json"
+
 # Which rules a stack needs. Installing more than this spends context on every session.
 PROFILES: dict[str, tuple[str, ...]] = {
     "python": ("python-coding-standards", "error-handling-patterns", "security-checklist"),
@@ -41,6 +52,7 @@ PROFILES: dict[str, tuple[str, ...]] = {
     "powershell": ("powershell-coding-standards", "security-checklist"),
     "embedded": ("cpp-embedded-coding-standards",),
     "adr": ("architecture-decisions",),
+    "knowledge-base": ("knowledge-base",),
 }
 
 
@@ -65,8 +77,13 @@ def detect(target: Path) -> set[str]:
         profiles.add("powershell")
     if any(target.glob("**/platformio.ini")):
         profiles.add("embedded")
-    if (target / "docs" / "adr").is_dir() or (target / "docs" / "decisions").is_dir():
+    # Split-by-domain (docs/business/adr, docs/technical/adr) is a deliberate, equally valid
+    # convention some projects choose - detect it alongside the single-directory layout.
+    adr_dirs = ("docs/adr", "docs/decisions", "docs/business/adr", "docs/technical/adr")
+    if any((target / d).is_dir() for d in adr_dirs):
         profiles.add("adr")
+    if (target / "docs" / "00_KNOWLEDGE-MAP.md").is_file():
+        profiles.add("knowledge-base")
 
     return profiles
 
@@ -159,16 +176,76 @@ def install_settings(destination: Path, dry_run: bool) -> None:
     print(f"  installed settings.json -> {target}")
 
 
-def main() -> int:
+def _looks_like_kb_validator(path: Path, name: str) -> bool:
+    marker = KB_VALIDATOR_MARKERS.get(name)
+    if marker is None:
+        return False
+    try:
+        return marker in path.read_text(encoding="utf-8", errors="ignore")[:400]
+    except OSError:
+        return False
+
+
+def install_kb_validator(destination: Path, dry_run: bool) -> bool:
+    """Copy the knowledge-base validator (and its tests) into <destination>/scripts/.
+
+    Safe to re-run: files this installer wrote (tracked by KB_VALIDATOR_MANIFEST) are
+    refreshed. A file that already exists and is NOT tracked is left alone unless its content
+    matches the known validator marker - which lets a copy placed by hand before this command
+    existed be adopted instead of silently overwritten or permanently skipped.
+    """
+    scripts_root = destination / "scripts"
+    manifest_path = scripts_root / KB_VALIDATOR_MANIFEST
+    managed = manifest_path.exists()
+    installed_any = False
+
+    for name in KB_VALIDATOR_MARKERS:
+        source = KB_VALIDATOR_DIR / name
+        target = scripts_root / name
+        if target.exists() and not managed and not _looks_like_kb_validator(target, name):
+            print(f"  skipped {name}: {target} already exists and is not managed by this installer")
+            continue
+        if dry_run:
+            print(f"  would install {name} -> {target}")
+            installed_any = True
+            continue
+        scripts_root.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+        print(f"  installed {name}")
+        installed_any = True
+
+    if dry_run or not installed_any:
+        return installed_any
+
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "source": "https://github.com/lukaszpiasecki13/ai-tools",
+                "installed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "files": list(KB_VALIDATOR_MARKERS),
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return installed_any
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     scope = parser.add_mutually_exclusive_group()
     scope.add_argument("--target", type=Path, help="project directory to install into")
     scope.add_argument("--user", action="store_true", help="install into ~/.claude/rules (every project)")
     parser.add_argument("--only", default="", help="comma-separated rule names, overriding stack detection")
     parser.add_argument("--settings", action="store_true", help="also install the project settings template")
+    parser.add_argument(
+        "--validator", action="store_true",
+        help="also install the knowledge-base validator into scripts/ (requires --target)",
+    )
     parser.add_argument("--dry-run", action="store_true", help="print what would happen, change nothing")
     parser.add_argument("--list", action="store_true", help="list available rules and profiles")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.list:
         print("Rules:")
@@ -180,6 +257,9 @@ def main() -> int:
         for profile, names in PROFILES.items():
             print(f"  {profile:<12} {', '.join(names)}")
         return 0
+
+    if args.validator and args.user:
+        parser.error("--validator installs into a project's scripts/ - use --target, not --user")
 
     if args.user:
         destination = Path.home()
@@ -194,17 +274,24 @@ def main() -> int:
         print(f"Detected: {', '.join(sorted(profiles)) or 'nothing recognizable'}")
 
     names = resolve(profiles, [n.strip() for n in args.only.split(",") if n.strip()])
-    if not names:
+    did_something = bool(names)
+    if names:
+        install_rules(destination, names, args.dry_run)
+    else:
         print("No rules selected. Use --only to choose explicitly, or --list to see what exists.")
-        return 1
-
-    install_rules(destination, names, args.dry_run)
 
     if args.settings and not args.user:
         install_settings(destination, args.dry_run)
+        did_something = True
+
+    if args.validator and not args.user:
+        did_something = install_kb_validator(destination, args.dry_run) or did_something
+
+    if not did_something:
+        return 1
 
     print(
-        "\nRules installed. The rest of the toolkit - skills, agents, commands, hooks - "
+        "\nInstalled. The rest of the toolkit - skills, agents, commands, hooks - "
         "travels with the plugin:\n"
         "  /plugin marketplace add lukaszpiasecki13/ai-tools\n"
         "  /plugin install ai-tools@ai-tools"
