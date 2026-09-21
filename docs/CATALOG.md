@@ -71,8 +71,8 @@ Path-scoped standards. Installed with `scripts/install.py`; they load when a mat
 |---|---|---|
 | `architecture-decisions` | `docs/**/adr/**/*.md`, `**/adr-*.md` | ADR (Architecture Decision Record) template and process |
 | `cpp-embedded-coding-standards` | `**/*.cpp`, `**/*.h`, `**/*.hpp`, `**/*.ino` | Embedded C++/Arduino/ESP32 conventions - non-blocking loops, heap/String caution, PROGMEM, structured log tagging, pin safety, watchdog-safe loops |
-| `error-handling-patterns` | `**/*.py`, `**/*.{ts,tsx,js,jsx}` | Error handling patterns for Python backend and TypeScript frontend - exception hierarchy, HTTP contract, logging strategy |
-| `knowledge-base` | `docs/**/*.md`, `CONTEXT.md`, `PRODUCT.md`, `**/CONTEXT.md` | Konwencje bazy wiedzy dla agentów - front-matter, warstwy, limity, reguły edycji dokumentów |
+| `error-handling-patterns` | `**/*.py`, `**/*.{ts,tsx,js,jsx}` | Error handling patterns for Python backend and TypeScript frontend - exception hierarchy, HTTP error contract, logging strategy |
+| `knowledge-base` | `docs/**/*.md`, `CONTEXT.md`, `PRODUCT.md`, `**/CONTEXT.md` | Konwencje bazy wiedzy dla agentów - reguły edycji dokumentów w docs/ |
 | `powershell-coding-standards` | `**/*.ps1`, `**/*.psm1` | PowerShell 7+ coding standards - script structure, naming, error handling, Pester tests |
 | `python-coding-standards` | `**/*.py` | Python 3.12+ coding standards - Ruff, mypy strict, FastAPI patterns, pytest |
 | `security-checklist` | `**/*.py`, `**/*.{ts,tsx,js,jsx}`, `**/*.{ps1,psm1}` | OWASP Top 10 security checklist - JWT auth, input validation, SQL injection, XSS, CSRF, rate limiting, secrets management |

@@ -58,6 +58,19 @@ Opcjonalnie: co pozostaje jawnie nierozstrzygnięte (brak decyzji ≠ decyzja), 
 `Status` i `Notatki` można pominąć, gdy nie wnoszą wartości; `Kontekst`, `Decyzja`,
 `Rozpatrywane alternatywy` i `Konsekwencje` są oczekiwane w każdym ADR tego repo.
 
+## Deviations from toolkit rules
+
+A project that knowingly departs from a rule in this toolkit (for example a security-checklist
+item, `mypy strict`, or the error contract) records it as an ADR, not as a silent config
+choice. The ADR names the rule, the reason, and the condition under which the deviation is
+revisited.
+
+## Front-matter vs `## Status`
+
+If the project uses knowledge-base front-matter, its `status:` (`draft`/`current`) says whether
+the *document* is ready to read. The `## Status` section above says what was *decided*
+(`Proposed`/`Accepted`/…). They are independent; never write `Proposed` into the front-matter.
+
 ## Review Process
 
 1. Author writes ADR with status `Proposed`

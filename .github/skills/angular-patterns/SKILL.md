@@ -224,6 +224,25 @@ feature/
 └── pipes/                      # Feature-specific pipes
 ```
 
+## HTTP Error Handling
+
+The API error contract itself is defined by the `error-handling-patterns` rule and the
+project's ADR; this section only covers the Angular side.
+
+### HTTP Error Interceptor
+
+- 401: call `AuthService.logout()` + navigate to `/login`
+- 403: show permission denied notification
+- 0 (network error): show connection error notification
+- All others: `throwError(() => error)` - handled at component level
+
+### Component Error State
+
+Use `LoadState<T>` discriminated union: `idle | loading | success | error`. Store in
+`signal<LoadState<T>>()`. Read the machine-readable `code` from the error body; use the
+human-readable `detail`/`message` only as a fallback, with a generic default such as
+`'An unexpected error occurred'`.
+
 ## Performance
 
 - `OnPush` change detection on presentational components

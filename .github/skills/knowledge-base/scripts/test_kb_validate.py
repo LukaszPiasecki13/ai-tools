@@ -114,6 +114,14 @@ class TestRegulyNaRepo(unittest.TestCase):
     def codes(self) -> list[str]:
         return [d.code for d in self.run_validator()]
 
+    def test_exclude_pomija_plik_bez_front_matter(self) -> None:
+        (self.root / "docs" / "notes.md").write_text("# luzna notatka\n", encoding="utf-8")
+        self.assertIn("E001", self.codes())
+        _, diags = kb.run(
+            self.root, ["docs"], "docs/00_KNOWLEDGE-MAP.md", date(2026, 6, 1), exclude=("docs/notes.md",)
+        )
+        self.assertEqual([d.code for d in diags], [])
+
     def test_poprawny_dokument_bez_uwag(self) -> None:
         (self.root / "docs" / "a.md").write_text(doc("a") + "# A\n", encoding="utf-8")
         self.assertEqual(self.codes(), [])
