@@ -69,7 +69,7 @@ Path-scoped standards. Installed with `scripts/install.py`; they load when a mat
 
 | Rule | Applies to | Purpose |
 |---|---|---|
-| `architecture-decisions` | `docs/adr/**/*.md`, `**/adr-*.md` | ADR (Architecture Decision Record) template and process |
+| `architecture-decisions` | `docs/**/adr/**/*.md`, `**/adr-*.md` | ADR (Architecture Decision Record) template and process |
 | `cpp-embedded-coding-standards` | `**/*.cpp`, `**/*.h`, `**/*.hpp`, `**/*.ino` | Embedded C++/Arduino/ESP32 conventions - non-blocking loops, heap/String caution, PROGMEM, structured log tagging, pin safety, watchdog-safe loops |
 | `error-handling-patterns` | `**/*.py`, `**/*.{ts,tsx,js,jsx}` | Error handling patterns for Python backend and TypeScript frontend - exception hierarchy, HTTP contract, logging strategy |
 | `knowledge-base` | `docs/**/*.md`, `CONTEXT.md`, `PRODUCT.md`, `**/CONTEXT.md` | Konwencje bazy wiedzy dla agentów - front-matter, warstwy, limity, reguły edycji dokumentów |

@@ -1,7 +1,7 @@
 ---
 name: architecture-decisions
-description: ADR (Architecture Decision Record) template and process. Auto-loaded when working in docs/adr/ or on files named adr-*.
-applyTo: docs/adr/**/*.md,**/adr-*.md
+description: ADR (Architecture Decision Record) template and process. Auto-loaded when working in any docs/**/adr/ directory (e.g. docs/adr/, docs/business/adr/, docs/technical/adr/) or on files named adr-*.
+applyTo: docs/**/adr/**/*.md,**/adr-*.md
 ---
 
 <!-- GENERATED FILE - DO NOT EDIT.
