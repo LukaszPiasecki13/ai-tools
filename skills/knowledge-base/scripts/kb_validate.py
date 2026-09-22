@@ -34,7 +34,8 @@ from typing import Any
 # Konfiguracja
 # --------------------------------------------------------------------------- #
 
-STATUSES = {"current", "draft"}
+STATUSES = {"current", "draft"}  # dla zwykłych dokumentów
+ADR_STATUSES = {"Proposed", "Accepted"}  # dla ADR-ów (type: decision)
 TYPES = {"fact", "decision", "reference", "mixed"}
 
 REQUIRED_ALWAYS = ["id", "status", "type", "scope", "last_reviewed"]
@@ -331,10 +332,12 @@ def check_metadata(doc: Document) -> list[Diagnostic]:
         if doc.meta.get(key) in (None, "", []):
             out.append(Diagnostic("E002", doc.rel, f"brak wymaganego pola: {key}"))
 
-    if doc.status and doc.status not in STATUSES:
-        out.append(Diagnostic("E003", doc.rel, f"nieznany status: {doc.status}"))
-
     doc_type = doc.meta.get("type")
+    if doc.status:
+        allowed = ADR_STATUSES if doc_type == "decision" else STATUSES
+        if doc.status not in allowed:
+            out.append(Diagnostic("E003", doc.rel, f"nieznany status: {doc.status}"))
+
     if doc_type and doc_type not in TYPES:
         out.append(Diagnostic("E003", doc.rel, f"nieznana wartość type: {doc_type}"))
 
@@ -525,7 +528,7 @@ def metrics(docs: list[Document], diags: list[Diagnostic]) -> dict[str, Any]:
         "przeterminowanie_procent": pct(codes.count("W101"), len(current)),
         "naruszenia_rozmiaru": codes.count("E008") + codes.count("W104"),
         "sieroty": codes.count("W103"),
-        "wg_statusu": {s: sum(1 for d in docs if d.status == s) for s in sorted(STATUSES)},
+        "wg_statusu": {s: sum(1 for d in docs if d.status == s) for s in sorted(STATUSES | ADR_STATUSES)},
         "wg_typu": {t: sum(1 for d in docs if d.meta.get("type") == t) for t in sorted(TYPES)},
     }
 

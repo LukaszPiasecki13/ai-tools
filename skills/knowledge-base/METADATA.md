@@ -47,7 +47,7 @@ applies_to:
 | Pole | Wymagane | Typ | Znaczenie |
 |---|---|---|---|
 | `id` | **tak** | slug | Unikalny w całym repo, stabilny — nie zmienia się przy przenoszeniu pliku. Do niego linkują inne dokumenty w treści (nie ma osobnego pola `related`). |
-| `status` | **tak** | enum | `current` / `draft`. |
+| `status` | **tak** | enum | Zależy od `type`. Zwykłe dokumenty: `current` / `draft`. ADR-y (`type: decision`): `Proposed` / `Accepted` / `Rejected` / `Superseded`. |
 | `type` | **tak** | enum | `fact` / `decision` / `reference` / `mixed`. |
 | `scope` | **tak** | string | Hierarchiczny opis zakresu, wolny tekst, np. `backend/telemetry`, `business/pricing`. |
 | `last_reviewed` | **tak** | `YYYY-MM-DD` | Data ostatniego sprawdzenia treści wobec rzeczywistości. |
@@ -92,12 +92,21 @@ metadanymi.
 
 ## 4. Cykl życia
 
-Dwa stany, celowo bez pośrednich:
+Nomenklatura zależy od `type`:
+
+### Zwykłe dokumenty (`fact`, `reference`, `mixed`)
 
 | Status | Znaczenie | Zachowanie agenta |
 |---|---|---|
 | `draft` | W opracowaniu, niezatwierdzone | Czyta wyłącznie na jawne wskazanie. Nigdy nie cytuje jako podstawy. Pomijany w sprawdzaniu przeterminowania. |
 | `current` | Obowiązuje | Normalny tryb. |
+
+### ADR-y (`type: decision`)
+
+| Status | Znaczenie | Zachowanie agenta |
+|---|---|---|
+| `Proposed` | Czeka na przegląd człowieka — decyzja nie jest ostateczna | Czyta, ale nie cytuje jako wiążące; nigdy nie zmienia się przez agenta (zmiana wymaga nowego ADR) |
+| `Accepted` | Zaakceptowana przez człowieka | Wiążąca. Zmiany wyłącznie nowym ADR-em. |
 
 **Nic nie jest kasowane** — ale dziś to konwencja treści i lokalizacji pliku
 (np. przeniesienie do `plans/archive/`, dopisek w treści), a nie osobny stan
@@ -135,7 +144,7 @@ Zestaw egzekwowany przez [`scripts/kb_validate.py`](./scripts/kb_validate.py).
 |---|---|
 | `E001` | Brak front-matter w pliku pod `docs/` |
 | `E002` | Brak pola obowiązkowego (`id`, `status`, `type`, `scope`, `last_reviewed`) |
-| `E003` | Niedozwolona wartość `status` / `type`, albo `applies_to` nie jest listą |
+| `E003` | Niedozwolona wartość `status` / `type` (status musi być `draft`/`current` dla zwykłych dokumentów, `Proposed`/`Accepted` dla ADR-ów), albo `applies_to` nie jest listą |
 | `E004` | Zduplikowane `id` w repo |
 | `E005` | Martwy link względny (plik nie istnieje) |
 | `E006` | Martwa kotwica (`#sekcja` nie istnieje w pliku docelowym) |
