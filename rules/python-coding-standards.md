@@ -37,6 +37,14 @@ Invariants regardless of tool:
 
 All functions must have full type annotations.
 
+Exception - FastAPI route handlers: the response contract is `response_model=` on the
+decorator, so a missing return annotation on a handler that declares it is not a review finding.
+`mypy --strict` still reports `no-untyped-def` for it, so silence it with a per-module override
+for the `api` packages rather than line-by-line ignores. Everything below the router (services,
+repositories, helpers) is annotated with no exceptions.
+A project that cannot enable `strict` yet records the gap and a plan in an ADR instead of
+silently setting `strict = false`.
+
 ```python
 # Use | for unions (Python 3.10+)
 def get_user(user_id: str) -> User | None: ...
@@ -55,6 +63,10 @@ class Repository(Protocol):
 ## FastAPI Patterns
 
 ### Router structure
+
+Examples below use `async`; a project on a synchronous SQLAlchemy session uses plain `def`
+handlers and services throughout. Follow what the project already does - do not mix.
+
 ```python
 from fastapi import APIRouter, Depends, status
 from app.schemas.report import ReportCreate, ReportResponse

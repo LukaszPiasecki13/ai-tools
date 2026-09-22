@@ -259,11 +259,11 @@ def expand_glob(root: Path, pattern: str) -> list[Path]:
 # --------------------------------------------------------------------------- #
 
 
-def should_skip(rel: str) -> bool:
-    return any(fnmatch.fnmatch(rel, pat) or fnmatch.fnmatch(f"/{rel}", pat) for pat in SKIP_PATTERNS)
+def should_skip(rel: str, exclude: tuple[str, ...] = ()) -> bool:
+    return any(fnmatch.fnmatch(rel, pat) or fnmatch.fnmatch(f"/{rel}", pat) for pat in (*SKIP_PATTERNS, *exclude))
 
 
-def collect(root: Path, scan: list[str]) -> list[Path]:
+def collect(root: Path, scan: list[str], exclude: tuple[str, ...] = ()) -> list[Path]:
     found: list[Path] = []
     for entry in scan:
         base = root / entry
@@ -279,7 +279,7 @@ def collect(root: Path, scan: list[str]) -> list[Path]:
     result: list[Path] = []
     for p in found:
         rel = p.relative_to(root).as_posix()
-        if p in seen or should_skip(rel):
+        if p in seen or should_skip(rel, exclude):
             continue
         seen.add(p)
         result.append(p)
@@ -535,8 +535,10 @@ def metrics(docs: list[Document], diags: list[Diagnostic]) -> dict[str, Any]:
 # --------------------------------------------------------------------------- #
 
 
-def run(root: Path, scan: list[str], map_rel: str, today: date) -> tuple[list[Document], list[Diagnostic]]:
-    paths = collect(root, scan)
+def run(
+    root: Path, scan: list[str], map_rel: str, today: date, exclude: tuple[str, ...] = ()
+) -> tuple[list[Document], list[Diagnostic]]:
+    paths = collect(root, scan, exclude)
     docs, diags = load(root, paths)
     by_path = {d.rel: d for d in docs}
 
@@ -556,6 +558,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Walidator bazy wiedzy dla agentów AI")
     parser.add_argument("--root", default=".", help="katalog główny repozytorium")
     parser.add_argument("--scan", nargs="*", default=DEFAULT_SCAN, help="katalogi/pliki do skanowania")
+    parser.add_argument(
+        "--exclude", nargs="*", default=[], metavar="GLOB",
+        help="dodatkowe wzorce ścieżek (względem --root) pomijane przy skanowaniu, np. docs/notes.md",
+    )
     parser.add_argument("--map", default="docs/00_KNOWLEDGE-MAP.md", help="ścieżka mapy wiedzy")
     parser.add_argument("--format", choices=["text", "json"], default="text")
     parser.add_argument("--strict", action="store_true", help="kod wyjścia 1 przy błędach E*")
@@ -563,12 +569,17 @@ def main() -> int:
     parser.add_argument("--write-index", action="store_true", help="regeneruj tabelę w mapie wiedzy")
     args = parser.parse_args()
 
+    # Komunikaty zawierają polskie znaki; domyślne kodowanie konsoli Windows (cp1252) się na nich wywraca.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
+
     root = Path(args.root).resolve()
     if not root.is_dir():
         print(f"Nie znaleziono katalogu: {root}", file=sys.stderr)
         return 2
 
-    docs, diags = run(root, args.scan, args.map, date.today())
+    docs, diags = run(root, args.scan, args.map, date.today(), tuple(args.exclude))
     errors = [d for d in diags if d.is_error]
     warnings = [d for d in diags if not d.is_error]
 

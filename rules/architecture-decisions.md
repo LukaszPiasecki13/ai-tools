@@ -25,39 +25,27 @@ Use ADRs for decisions that affect multiple files, teams, or are hard to reverse
 ## Template
 
 ```markdown
-# {Tytuł decyzji w formie stwierdzenia, nie pytania}
+# {Tytuł decyzji}
 
-{1-3 zdania: co zostało zdecydowane i dlaczego — streszczenie dla kogoś, kto nie czyta dalej.}
+{1-3 zdania: co i dlaczego}
 
 ## Status
 Proposed | Accepted | Deprecated | Superseded by ADR-NNNN
 
 ## Kontekst
-Jaki jest problem? Jakie są ograniczenia? Jakie opcje rozważano?
+Jaki problem? Jakie opcje rozważano?
 
 ## Decyzja
-Co wybrano i dlaczego. Konkretne kompromisy, które przeważyły.
+Co wybrano i dlaczego (konkretne kompromisy).
 
 ## Rozpatrywane alternatywy
-Co jeszcze było na stole i dlaczego odpadło — konkretny powód, nie ogólnik. ADR bez odrzuconych
-alternatyw zapisuje preferencję, nie decyzję.
+Czemu zostały odrzucone?
 
 ## Konsekwencje
-Co to ułatwia, co utrudnia, co zamyka, co trzeba by zmienić, żeby to cofnąć.
+Ułatwia, utrudnia, zamyka?
 
 ## Notatki
-Opcjonalnie: co pozostaje jawnie nierozstrzygnięte (brak decyzji ≠ decyzja), odnośniki do
-źródeł/rozdziałów, które ten ADR operacjonalizuje.
+Opcjonalnie: co nierozstrzygnięte, odnośniki.
 ```
 
-`Status` i `Notatki` można pominąć, gdy nie wnoszą wartości; `Kontekst`, `Decyzja`,
-`Rozpatrywane alternatywy` i `Konsekwencje` są oczekiwane w każdym ADR tego repo.
-
-## Review Process
-
-1. Author writes ADR with status `Proposed`
-2. Team reviews via PR or meeting
-3. If accepted: change status to `Accepted`, merge — **agent nie przełącza sam na `Accepted`,
-   tylko człowiek** (patrz CLAUDE.md)
-4. If rejected: document why, close PR
-5. If superseded later: update status, link to new ADR
+Wymagane: `Kontekst`, `Decyzja`, `Rozpatrywane alternatywy`, `Konsekwencje`. `Status` i `Notatki` opcjonalnie.

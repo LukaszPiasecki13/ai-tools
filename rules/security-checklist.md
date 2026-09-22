@@ -7,6 +7,10 @@ description: OWASP Top 10 security checklist - JWT auth, input validation, SQL i
 
 OWASP Top 10. Apply to all code handling auth, user input, database access, or secrets.
 
+**Deviations are allowed, but only through an ADR** in the project (what is skipped, why, and
+what would trigger a re-evaluation). A deviation nobody wrote down is a finding; a documented
+one is not. Do not "fix" a documented deviation to match this checklist without asking.
+
 ## Authentication (JWT)
 
 - Prefer `PyJWT` for new code.
