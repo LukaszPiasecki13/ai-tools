@@ -37,9 +37,9 @@ Zasady niezależne od schematu:
    w tym samym commicie co kod.
 9. **`last_reviewed` podbija ten, kto sprawdził treść wobec rzeczywistości** — nie ten,
    kto poprawił literówkę.
-10. **Dwa różne słowniki statusu.** Front-matterowe `status:` (`draft`/`current`) mówi, czy
-    dokument jest gotowy do czytania. Sekcja `## Status` w ADR (`Proposed`/`Accepted`/…) mówi,
-    co postanowiono. Nie mieszaj ich i nie wpisuj `Proposed` do front-matter.
+10. **Nomenklatura statusu zależy od typu.** Zwykłe dokumenty: front-matter `status: draft/current`.
+    ADR-y (`type: decision`): front-matter `status: Proposed/Accepted`.
+    Brak sekcji `## Status` w treści — informacja żyje w metadanych.
 
 ## Przed zamknięciem zadania
 

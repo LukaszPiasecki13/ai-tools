@@ -27,33 +27,42 @@ Recent messages (match their style):
 
 ## Process
 
-1. **Read the actual diff** — `git diff` and `git diff --cached`. Write the message from what
+1. **Detect project area** — Analyze changed files to determine if they belong to `backend/`,
+   `frontend/`, `firmware/`, or `docs/`. If changes span multiple areas, flag it and suggest
+   splitting into separate commits. This prefix will be prepended to the scope.
+
+2. **Read the actual diff** — `git diff` and `git diff --cached`. Write the message from what
    the code does, never from the file names alone.
 
-2. **Decide what belongs in this commit.** If the working tree contains two unrelated changes,
+3. **Decide what belongs in this commit.** If the working tree contains two unrelated changes,
    say so and propose splitting into separate commits rather than bundling them. Never stage
    a file the user did not change in this session without pointing it out.
 
-3. **Never stage** `.env`, credentials, key material, local settings (`settings.local.json`),
+4. **Never stage** `.env`, credentials, key material, local settings (`settings.local.json`),
    build output, or anything matched by `.gitignore`. If `git status` shows one, stop and say so.
 
-4. **Write the message** in Conventional Commits form:
+5. **Write the message** in Conventional Commits form with detected prefix:
 
    ```
-   <type>(<scope>): <subject in imperative mood, <=72 chars>
+   <type>(<prefix>/<scope>): <subject in imperative mood, <=72 chars>
 
    <body: why the change was needed, what it changes, what it deliberately does not>
 
    <footer: BREAKING CHANGE: ... / refs #123>
    ```
 
-   Types: `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `build`, `ci`, `chore`.
+   **Prefix:** `backend`, `frontend`, `firmware`, or `docs` (auto-detected).
+   **Scope:** optional, from `$ARGUMENTS` or inferred (e.g., `security`, `auth`, `ui`).
+   **Types:** `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `build`, `ci`, `chore`.
    Omit the body only when the subject genuinely says everything.
 
-5. **Show the message and the file list, then ask for approval.** Commit only after the user
-   confirms. `$ARGUMENTS`, if given, is the scope or a note to incorporate.
+   **Example:** `fix(backend/security): remove inline import from validate_password_length`
 
-6. **Do not push.** Pushing is a separate, explicit decision.
+6. **Show the message and the file list, then ask for approval.** Commit only after the user
+   confirms. `$ARGUMENTS`, if given, is an additional scope note or type override (e.g., `auth`
+   to narrow the prefix-detected area).
+
+7. **Do not push.** Pushing is a separate, explicit decision.
 
 ## Message quality bar
 

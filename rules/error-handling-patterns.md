@@ -7,9 +7,9 @@ description: Error handling patterns for Python backend and TypeScript frontend 
 
 Rules: validate at entry points, catch only known exceptions, log once, never expose internal details in responses.
 
-**The exact class names and response shape are a project decision** — record it in a project ADR
-and follow it. If the project already has an error contract, extend it; do not introduce a second
-one. This rule fixes only the invariants below, plus a default for projects that have none.
+**The exact class names and response shape are a per-project decision** — record it in a project
+ADR and follow it. If the project already has an error contract, extend it additively; do not
+introduce a second one. The rules below describe the invariants that apply to any contract choice.
 
 ## Invariants (every project)
 
@@ -26,26 +26,48 @@ one. This rule fixes only the invariants below, plus a default for projects that
 5. **Log once**, in the layer that catches. `logger.exception()` for unexpected errors.
 6. **Never expose internals** (stack traces, SQL, paths) in a response.
 7. **Validation errors follow the same envelope** as domain errors, with per-field detail in a
-   dedicated array, not smuggled into the message field.
+   dedicated array (`errors[]`), not smuggled into the `detail` field.
 
-## Default contract (when the project has none)
+## This Project: Waterworks Monitoring Platform
 
-Compatible with RFC 9457 (Problem Details, `application/problem+json`):
+**Current contract** (shipped, read by frontend and firmware per ADR-0006):
 
 ```json
 {
-  "type": "urn:<app>:error:device-not-found",
+  "detail": "Device 42 does not exist in this organization",
+  "code": "DEVICE_NOT_FOUND"
+}
+```
+
+- `detail`: human-readable message (always a string)
+- `code`: machine-readable error identifier (always present on domain errors)
+- Validation errors: `detail` is an array of Pydantic `ValidationError.errors()`
+
+**Direction: additive migration to RFC 9457**
+
+No breaking changes. Plan: add RFC 9457 fields (`type`, `title`, `status`) alongside
+existing `detail`/`code`, migrate client code to read from RFC 9457 fields first (with
+fallback to `detail`/`code`), then remove old fields in a later major version. Example target:
+
+```json
+{
+  "type": "urn:waterworks:error:device-not-found",
   "title": "Device not found",
   "status": 404,
   "detail": "Device 42 does not exist in this organization",
   "code": "DEVICE_NOT_FOUND",
-  "errors": [{"field": "email", "issue": "..."}]
+  "errors": [{"field": "email", "message": "..."}]
 }
 ```
 
-`detail` is always a string; `errors` appears only for validation failures; `code` is the
-extension member clients switch on. A project that shipped `{"detail", "code"}` already uses the
-core of this shape — migrate additively (add fields, migrate clients, then remove old behaviour).
+**Implementation notes:**
+- `type` is always `urn:waterworks:error:` + kebab-case of `code`
+- `title` is a short label (from `code`); `detail` is the full context
+- Validation `errors[]` replaces the current practice of putting `ValidationError.errors()` into `detail`
+- Migration step 1: update handler to emit RFC fields; both formats coexist
+- Firmware may need a bridge if it reads validation responses (unlikely in device auth flow)
+
+## Reference: Generic codes (for projects that have none)
 
 | Status | Code (generic fallback) | When |
 |--------|-------------------------|------|
@@ -57,28 +79,40 @@ core of this shape — migrate additively (add fields, migrate clients, then rem
 | 422 | VALIDATION_ERROR | Semantically invalid input |
 | 500 | INTERNAL_ERROR | Never expose internal details |
 
-Prefer a specific code (`DEVICE_NOT_FOUND`) over the generic fallback.
+Prefer specific codes (`DEVICE_NOT_FOUND`, `ACTIVATION_CODE_EXPIRED`) over generic fallbacks.
 
-## Python Backend
+## Python Backend (Waterworks Monitoring Platform)
 
 ### Exception hierarchy
 
-Default names for a project without its own: `AppError(Exception)` base with `message`,
-`code`, and status; subclasses `NotFoundError`, `AuthorizationError`, `ConflictError`,
-`DomainValidationError`. Use `DomainValidationError`, not `ValidationError`, to avoid the
-Pydantic clash. A dedicated subclass is worth it only when a caller must catch it by type;
-otherwise raise the shared class with a specific `code`.
+The project uses `APIError(Exception)` as base with `message`, `code`, and status; subclasses
+are `NotFoundError`, `AuthenticationError`, `ForbiddenError`, `ConflictError`, `ValidationException`,
+and `GoneError`. All carry a `code` or accept one at construction.
+
+- Use a specific subclass when the status code is always the same (e.g., `NotFoundError` →
+  404; `ConflictError` → 409).
+- For custom domain logic, raise `BadRequestError` with a specific `code`.
+- Never raise `HTTPException` from services; let the API layer catch `APIError` and map it.
 
 ### FastAPI exception handler
 
-- Register the base class once: `app.add_exception_handler(AppError, app_error_handler)`.
-- Add a handler for Pydantic/request validation errors (invariant 7) and a catch-all that logs
-  with `logger.exception()` and returns a fixed generic message.
+Registered in `app/core/errors.py`:
+
+- `APIError` handler logs to `info` (4xx) or `error` (5xx) and returns `{"detail", "code"}`.
+- `ValidationError` (Pydantic) handler returns validation array in `detail` (to be migrated to
+  `errors[]` per migration plan above).
+- Catch-all handler logs unhandled exceptions and returns fixed `"Internal server error"` with
+  no `code`.
+
+**To add RFC 9457 fields:**
+Update `_error_response()` to emit `type`, `title`, `status` alongside `detail` and `code`.
+Both formats coexist until clients (frontend, firmware) are fully migrated.
 
 ### Logging
 
 - Structured logging: `logger.info("...", extra={"key": value})`.
-- 4xx at `info`, 5xx at `error`, unhandled at `exception`.
+- 4xx errors at `info`, 5xx errors at `error`, unhandled exceptions at `exception`.
+- Log the request path and method for every API error, not just unhandled ones.
 
 ## TypeScript Frontend
 
