@@ -20,7 +20,8 @@ Input is a plan file that already went through `prepare-to-work` Phase 6b accept
 7. **No automatic git commit/push.** Leave the working tree for the user to review and commit.
 8. **No automatic ADO state change.** Report readiness; state transitions in ADO are a manual Dev decision.
 9. **Docs are updated only on a real discrepancy** between what got implemented and what a referenced doc says (module boundary, dependency rule, table/diagram) — never as an unconditional changelog entry.
-10. **"Good code" checklist** (no dedicated house style doc exists — inferred from `/memories/repo/refactoring-notes.md` and `CodeReviewer.agent.md`): SOLID, single-responsibility small functions/methods, DI over hardcoded dependencies, DRY, no dead code/unused imports, clear naming. Repo convention (majority, per rule 5) wins over this generic checklist whenever they conflict.
+10. **Target repo's ADRs are read in full before Phase 2 (writing code), not after the fact.** Search `docs/adr/`, `docs/*/adr/` (e.g. `docs/business/adr/`, `docs/technical/adr/`) or `docs/decisions/`. Code that contradicts an `Accepted` ADR is a discrepancy under rule 3 (STOP and grill), not something to silently adapt around.
+11. **"Good code" checklist** (no dedicated house style doc exists — inferred from `/memories/repo/refactoring-notes.md` and `CodeReviewer.agent.md`): SOLID, single-responsibility small functions/methods, DI over hardcoded dependencies, DRY, no dead code/unused imports, clear naming. Repo convention (majority, per rule 5) wins over this generic checklist whenever they conflict.
 
 ---
 
@@ -30,21 +31,24 @@ Input is a plan file that already went through `prepare-to-work` Phase 6b accept
 2. Read the plan file fully (main thread — this is the one phase where full file content in main context is unavoidable and correct, see rule 4).
 3. Validate Phase 7 completion: section 3 must list concrete file paths, and section 4 must contain fenced code blocks with real imports/signatures per layer, not placeholders like `[Action]`. If not satisfied → STOP: *"Plan {task_id} nie ma jeszcze Phase 7 (gotowego kodu) z prepare-to-work. Doko\u0144cz najpierw t\u0119 rund\u0119, zanim zaczniesz implementacj\u0119."*
 4. `memory view /memories/repo/` and `/memories/session/prepare-to-work-{task_id}.md` (if it exists) — load decisions and verified facts, don't re-derive them.
-5. Create the ledger `/memories/session/implement-plan-{task_id}.md`:
+5. **Read the target repo's ADRs in full**, before touching any code: `docs/adr/`, `docs/*/adr/` (e.g. `docs/business/adr/`, `docs/technical/adr/`) or `docs/decisions/`. List each ADR's number/path, status (`Proposed`/`Accepted`/`Deprecated`/`Superseded`), and a one-line summary in the ledger under a new "ADRs" section. `Accepted` ADRs relevant to the plan's scope are binding constraints on the implementation (rule 10) — read those in full, not just the title.
+6. Create the ledger `/memories/session/implement-plan-{task_id}.md`:
 
 ```markdown
 # implement-plan {task_id} — state
 Plan file: ...
 Repo(s): ...
 Phase: 0
+## ADRs
 ## Files written
 ## Pre-flight drift found
 ## Review rounds
+## Static checks
 ## Test results
 ## Docs changes
 ```
 
-6. Determine repo(s) from the plan's header (`backend` / `frontend` / both). If both, run Phases 1-6 sequentially per repo, not interleaved.
+7. Determine repo(s) from the plan's header (`backend` / `frontend` / both). If both, run Phases 1-6 sequentially per repo, not interleaved.
 
 ---
 
@@ -100,8 +104,8 @@ Apply every CRITICAL/HIGH/MEDIUM fix in **one** `multi_replace_string_in_file` c
 
 `runSubagent agentName=Architect`:
 
-> Plan: `{plan_path}` (context only). Repo: `{repo_path}`. Changed files: {paths only}. Referenced architecture docs: `docs/2-system-architecture/2.2-backend-architecture.md` (backend) / `docs/1-frontend-architecture/1.1-frontend-architecture.md` + `1.2-frontend-conventions.md` (frontend).
-> Check the changed files against these docs: layer boundaries (API → Service → Repository → Infrastructure, never skipped or reversed), module dependency rules, and structural symmetry (a rule applied to a parent entity but silently missing on a subordinate/parallel one). Also check whether anything implemented here should be reflected back into these docs (new module, new table in a diagram, new dependency rule) — list candidates, do not edit docs yourself.
+> Plan: `{plan_path}` (context only). Repo: `{repo_path}`. Changed files: {paths only}. Referenced architecture docs: `docs/2-system-architecture/2.2-backend-architecture.md` (backend) / `docs/1-frontend-architecture/1.1-frontend-architecture.md` + `1.2-frontend-conventions.md` (frontend) — adjust these paths to whatever this repo actually uses if they don't exist. Also read every ADR under `docs/adr/`, `docs/*/adr/`, or `docs/decisions/` relevant to the changed files (from the Phase 0 "ADRs" ledger section).
+> Check the changed files against these docs: layer boundaries (API → Service → Repository → Infrastructure, never skipped or reversed), module dependency rules, structural symmetry (a rule applied to a parent entity but silently missing on a subordinate/parallel one), and conformance with every relevant `Accepted` ADR — cite the ADR number/path for each check, not just "compliant". Also check whether anything implemented here should be reflected back into these docs (new module, new table in a diagram, new dependency rule) — list candidates, do not edit docs yourself.
 > Do NOT edit any file. Return `VERDICT: CLEAN` or `VERDICT: ISSUES (n)` with a table `# | severity (BLOCKER/MAJOR/MINOR) | file:line | issue | doc citation | recommended fix`, plus a short `DOC UPDATE CANDIDATES` list.
 
 Apply every BLOCKER/MAJOR fix in one `multi_replace_string_in_file` call. If BLOCKERs remain after this fix pass, STOP: list them via `vscode_askQuestions` (`Kolejna runda review` / `Akceptuj\u0119 ryzyko, kontynuuj` / `Popraw\u0119 r\u0119cznie, zaczekaj`). Do not proceed to Phase 6 while an unresolved BLOCKER stands and the user hasn't chosen.
@@ -110,9 +114,18 @@ Log round + issues + resolutions + doc-update candidates in the ledger.
 
 ---
 
-## Phase 6 — Tests
+## Phase 6 — Static checks, then tests
 
-Backend, for each touched module:
+Static analysis is a hard gate before this phase's tests run — Phase 2/3 only checked
+per-layer or partial-file, this is the full pass over everything touched, after the code has
+settled through both review rounds:
+
+- Backend: `ruff check {changed_paths}`, `ruff format --check {changed_paths}`, `mypy {changed_paths}`. If cross-file typing makes a partial `mypy` run unreliable (e.g. a changed shared schema/base class), run `mypy app` (or the repo's documented full command) instead of the scoped one.
+- Frontend: `npm run lint` and `npm run typecheck`, scoped to changed files where the tool supports it, else full run.
+
+Fix every finding — do not defer a `ruff`/`mypy`/lint/typecheck failure to "known issue" or a review round; those rounds review logic and architecture, not tooling-catchable errors. Record the exact commands and pass/fail in the ledger under a new "Static checks" section before moving on.
+
+Then run the automated tests. Backend, for each touched module:
 ```
 pytest code/cloud_run/fastapi/app/modules/{module}/tests/unit
 pytest code/cloud_run/fastapi/app/modules/{module}/tests/integration
@@ -142,6 +155,7 @@ If found: edit only the specific section, cite the plan (`{plan_path}`) as the s
 1. `memory` → `/memories/repo/`: append reusable facts only — drift found in Phase 1, any convention correction, verified test commands, migration HEAD after this task. Not task-specific narration.
 2. Final message to the user, in Polish, no filler:
    - table `runda | reviewer | znalezione problemy | jak naprawiono`
+   - static checks: `ruff`/`mypy`/`lint`/`typecheck` status (clean, or fixed and now clean)
    - test results summary (unit/integration/frontend, pass counts)
    - docs: zmienione sekcje lub "brak zmian"
    - explicit: working tree not committed — pliki zmienione: {list}

@@ -17,6 +17,12 @@ Before reviewing, check your project memory for conventions and recurring issues
 already established in this repository, and apply them. After the review, record any new
 durable convention you confirmed — not one-off findings.
 
+Before judging architectural concerns, check for existing ADRs (`docs/adr/`, `docs/*/adr/`
+such as `docs/business/adr/` or `docs/technical/adr/`, or `docs/decisions/`) that touch the
+changed area. Read any relevant one in full, not just its title. Code that contradicts an
+`Accepted` ADR is at least HIGH severity — cite the ADR number/path in the finding, don't just
+assert "violates architecture."
+
 ## Task Execution Model
 
 1. **Understand context**: Read changed files and surrounding code to understand intent.
@@ -70,6 +76,8 @@ durable convention you confirmed — not one-off findings.
 **React**: no data fetching in `useEffect` where a query hook belongs, every effect cleans up what it starts, stable `key` (never an array index for reorderable lists), query keys built from the key factory so invalidation cannot drift.
 
 **Security**: Run through the `security-checklist` rule for anything touching auth, input, or secrets (already in context for `.py`/TS/JS/PowerShell files).
+
+**Architecture**: Check the changed files against any relevant `Accepted` ADR before flagging a design concern as personal opinion — the project may have already decided and documented the tradeoff.
 
 ## Suggested Follow-ups
 

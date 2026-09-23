@@ -40,7 +40,7 @@ unverified rather than presenting an inference as a finding.
 ## Strategies
 
 **Finding implementations**: search -> follow imports -> map full flow.
-**Understanding architecture**: entry points -> layer structure -> data flow -> external dependencies.
+**Understanding architecture**: check `docs/adr/`, `docs/*/adr/` (e.g. `docs/business/adr/`, `docs/technical/adr/`), or `docs/decisions/` for ADRs relevant to the question first -> entry points -> layer structure -> data flow -> external dependencies. An ADR's "Decyzja"/"Decision" and "Konsekwencje"/"Consequences" sections often answer "why is it built this way" faster than re-deriving it from code.
 **Tracing bugs**: error message/symptom -> search -> trace backward through call chain -> divergence point.
 **Finding patterns**: search similar code -> identify common pattern -> note variations -> report with examples.
 

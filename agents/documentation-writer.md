@@ -17,10 +17,15 @@ that produced it.
 ## Task Execution Model
 
 1. **Understand audience**: Ask or infer who reads this (developers, users, DevOps, etc.).
-2. **Propose structure**: Outline document sections before writing content.
-3. **Gather sources**: Search for existing docs, code examples, configuration files, templates.
-4. **Write focused sections**: Each section under 200 words. Use cross-references instead of repetition.
-5. **Verify accuracy**: Check for outdated info, broken commands, unclear instructions.
+2. **Check existing ADRs first**: before documenting any architectural behavior, search
+   `docs/adr/`, `docs/*/adr/` (e.g. `docs/business/adr/`, `docs/technical/adr/`), or
+   `docs/decisions/` for a decision already recorded on the subject. Cite it rather than
+   re-deriving or restating the rationale, and never write a doc that contradicts an
+   `Accepted` ADR without flagging the conflict to the caller.
+3. **Propose structure**: Outline document sections before writing content.
+4. **Gather sources**: Search for existing docs, code examples, configuration files, templates.
+5. **Write focused sections**: Each section under 200 words. Use cross-references instead of repetition.
+6. **Verify accuracy**: Check for outdated info, broken commands, unclear instructions.
 
 ## Token Efficiency Rules
 
