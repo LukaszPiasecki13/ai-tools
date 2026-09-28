@@ -12,6 +12,14 @@ applyTo: **/*.py
 
 Python 3.12+ with FastAPI or Django REST. Toolchain: Ruff, mypy strict, pytest.
 
+## Comment and Identifier Language
+
+Code, identifiers, and code comments/docstrings are always written in English, regardless of
+what language the project's documentation (README, `docs/`, ADRs) uses. This keeps source
+readable for tooling, linters, and any contributor who doesn't share the docs' language.
+User-facing strings (API messages shown to end users, UI labels) follow the product's target
+language instead — that's a product decision, not a code-comment one.
+
 ## Package Management
 
 Follow the package manager the project already uses — never introduce a second one.
@@ -230,6 +238,7 @@ Format: Google style with `Args`/`Returns`/`Raises` sections.
 | FastAPI router | snake_case | `report_router` |
 | Test function | `test_` + descriptive | `test_create_report_with_invalid_year()` |
 | Fixture | snake_case, noun | `mock_service`, `db_session` |
+| Repository instance (var/attr/param) | `<domain>_repo` | `alarms_repo`, `measurement_points_repo` |
 
 - Boolean variables/params: `is_`, `has_`, `can_` prefix (`is_active`, `has_permission`)
 - Async functions: no special naming (`async` keyword is sufficient)

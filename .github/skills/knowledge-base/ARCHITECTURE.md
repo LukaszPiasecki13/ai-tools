@@ -85,7 +85,7 @@ to zachowanie utrwala. Bez linku to jest L3 (plan), nie L2 (kontrakt).
 
 Plany, briefy, specyfikacje zadań, katalogi przebiegów (`.tmp/tasks/…`).
 
-- Każdy dokument L3 ma `status` i datę. Po zamknięciu → dopisek w treści i przeniesienie do `plans/archive/`, nie kasowany (osobnego statusu nie ma, patrz `METADATA.md` §4).
+- Każdy dokument L3 ma `status` i datę. Po zamknięciu → `archived`, nie kasowany.
 - L3 **nigdy nie jest źródłem prawdy o stanie systemu.** Plan opisuje zamiar.
   Agent, który przeczyta plan i uzna, że opisany etap już istnieje, zbuduje na
   fikcji. Stan opisuje L2 + kod.

@@ -10,6 +10,14 @@ applyTo: **/*.cpp,**/*.h,**/*.hpp,**/*.ino
 
 # Embedded C++ / Arduino / ESP32 Coding Standards
 
+## Comment and Identifier Language
+
+Code, identifiers, and code comments are always written in English, regardless of what
+language the project's documentation uses. This keeps source readable for tooling, linters,
+and any contributor who doesn't share the docs' language. Serial log strings meant for a
+project's own human-readable convention (see Structured Serial Log Tagging below) follow
+whatever that project already does.
+
 ## Non-blocking Loops and Timing
 
 In `loop()` bodies or any code that runs repeatedly at high frequency (sensor polling, communication state machines), avoid blocking `delay()` or `delayMicroseconds()`. Instead, use state machines based on `millis()` / `micros()` to yield CPU time to other tasks:

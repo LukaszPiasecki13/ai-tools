@@ -13,6 +13,14 @@ applyTo: **/*.{ts,tsx,mts,cts},**/*.{js,jsx,mjs,cjs},**/*.{html,scss,css}
 Applies to every TS/JS file regardless of framework. Framework-specific architecture is **not**
 here on purpose — it loads on demand from the `angular-patterns` or `react-patterns` skill.
 
+## Comment and Identifier Language
+
+Code, identifiers, and code comments are always written in English, regardless of what
+language the project's documentation (README, `docs/`, ADRs) uses. This keeps source readable
+for tooling, linters, and any contributor who doesn't share the docs' language. User-facing
+strings (UI labels, error messages shown to end users) follow the product's target language
+instead — that's a product decision, not a code-comment one.
+
 ## Formatting (Prettier)
 
 - Print width: 100 characters

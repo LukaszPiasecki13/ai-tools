@@ -57,6 +57,9 @@ niedokończoną walidację. Nie wznawiaj subagentów; każde wywołanie jest św
     zatrzymuje pipeline i wymaga decyzji usera. Minory zapisz bez iteracji.
 12. Dokumentacja jest opcjonalna. Aktualizuj ją tylko, gdy user jawnie o to poprosi albo konwencje
     repo wymuszają wpis (np. obowiązkowy changelog); wtedy ogranicz się do najmniejszego zakresu.
+13. ADR repo docelowego są odczytywane w całości w Fazie 1, przed planem. Sprzeczność z ADR
+    o statusie `Accepted` to co najmniej `major` - nie pomijaj jej milcząco w review planu ani
+    review kodu.
 
 
 ## Klasyfikacja
@@ -134,10 +137,17 @@ repo. W pozostałych przypadkach przejdź od razu do analizy, bez pytania o zgod
 ## Faza 1 - Analiza
 
 
-Jedno wywołanie `general-purpose` na Haiku. Może eksplorować repo szerzej, ale tylko w granicach
-zadania. Ma znaleźć istniejący punkt wpięcia, reużywalny kod, testy, dokumentację, ryzyka i braki.
-Zapisuje w `01-analysis.md` tabelę: bezwzględna ścieżka, rola i potrzebny etap. Do `_context.md`
-dopisuje wyłącznie mające zastosowanie konwencje ze źródłami oraz flagę `ui: true|false`.
+Jedno wywołanie `general-purpose` na Haiku. Zanim zacznie eksplorację kodu, musi znaleźć
+i przeczytać w całości ADR repo docelowego: `docs/adr/`, `docs/*/adr/` (np. `docs/business/adr/`,
+`docs/technical/adr/`) lub `docs/decisions/`. Do `_context.md` dopisuje sekcję "ADR" - tabelę
+numer/ścieżka, status (`Proposed`/`Accepted`/`Deprecated`/`Superseded`), jednozdaniowe
+podsumowanie - dla każdego ADR mającego zastosowanie do zadania; `Accepted` czyta w całości,
+nie tylko tytuł.
+
+Może eksplorować repo szerzej, ale tylko w granicach zadania. Ma znaleźć istniejący punkt
+wpięcia, reużywalny kod, testy, dokumentację, ryzyka i braki. Zapisuje w `01-analysis.md` tabelę:
+bezwzględna ścieżka, rola i potrzebny etap. Do `_context.md` dopisuje też mające zastosowanie
+konwencje ze źródłami oraz flagę `ui: true|false`.
 
 
 Jeśli `ui: true`, orkiestrator potwierdza dostępność `ui-verify`; brak oznacza STOP. Nie oferuj
@@ -158,6 +168,8 @@ Do `02-plan.md` zapisz zwięzłe decyzje `DEC-NN` z uzasadnieniem oraz obserwowa
 
 
 - krótki projekt rozwiązania i przepływ danych lub UX,
+- zgodność z ADR: cytuj numer/ścieżkę i status każdego `Accepted` ADR z sekcji "ADR"
+  w `_context.md`, którego dotyczy decyzja; brak dotyczących ADR odnotuj jawnie,
 - mapę plików do zmiany z miejscem wpięcia,
 - ponumerowane kroki realizujące konkretne `DEC-NN` i `AC-NN`,
 - zweryfikowane sygnatury, importy i zależności, bez ciał funkcji i numerów linii,

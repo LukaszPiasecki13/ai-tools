@@ -54,6 +54,7 @@ Loaded on demand when the description matches the task — free until used.
 | `grill-me` | model or user | A relentless interview to sharpen a plan or design. |
 | `grill-with-docs` | model or user | A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glossary) as we go. |
 | `grilling` | model-invoked | Grill the user relentlessly about a plan, decision, or idea |
+| `implement-plan` | model or user | Implements an already-accepted plan from prepare-to-work into the real repository |
 | `jira-board-extractor` | model or user | Read-only Jira Cloud board data collection skill for backlog, epics, sprints, board configuration, and issue details |
 | `knowledge-base` | model or user | Projektowanie, porządkowanie i utrzymanie bazy wiedzy czytanej przez agentów AI - warstwy L0-L4, metadane, szablony dokumentów, walidacja i automatyzacja |
 | `prepare-work` | model or user | Pipeline developerski w wariancie pełnym albo uproszczonym oszczędzającym tokeny |
