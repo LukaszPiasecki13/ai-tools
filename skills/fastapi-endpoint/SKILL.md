@@ -42,6 +42,24 @@ Query parameters go in their own `BaseModel` used with `Depends()` — even a si
 **Service** (`services/<resource>_service.py`) — the business logic and the database work.
 The route must stay thin enough that it has nothing to unit-test on its own.
 
+**Composing the service** — if the project follows the `wiring.py`/`dependencies.py`/
+`entrypoints.py` split (`python-coding-standards`, "Composing Services Outside HTTP
+Requests"), add `build_<resource>_service(session)` to the module's `wiring.py`, not directly
+to `dependencies.py`:
+
+```python
+# wiring.py
+def build_report_service(session: Session) -> ReportService:
+    return ReportService(ReportRepository(session))
+
+# dependencies.py
+get_report_service = provide(build_report_service)
+```
+
+This is what lets the exact same composition be reused from a CLI command or a background
+task later, without duplicating it. If the project has no such split, compose the service
+directly in `dependencies.py` as usual.
+
 **Route** (`api/<resource>.py`) — wiring only:
 
 ```python
