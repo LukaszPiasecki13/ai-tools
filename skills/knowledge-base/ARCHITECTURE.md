@@ -215,7 +215,7 @@ repo/
 dla decyzji biznesowych i technicznych ułatwia jedno pytanie: „wszystkie
 zaakceptowane decyzje" nie wymaga przeszukania dwóch drzew.
 
-Rozdzielenie na `docs/business/adr/` i `docs/technical/adr/` jest równie
+Rozdzielenie na `docs/business/bdr/` i `docs/technical/adr/` jest równie
 uprawnionym wyborem, gdy odbiorcy obu typów decyzji faktycznie się różnią —
 biznesowe czyta i akceptuje ktoś inny niż techniczne, więc osobne katalogi
 odpowiadają osobnym procesom przeglądu, nie tylko estetyce. To nie jest

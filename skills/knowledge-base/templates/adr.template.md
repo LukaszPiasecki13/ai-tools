@@ -22,7 +22,7 @@ rejestr i sprawiają, że nikt go nie czyta.
 Nazwa pliku i lokalizacja: rozstrzyga reguła `architecture-decisions` z TEGO
 repo — nie zgaduj z tego szablonu, przeczytaj regułę. Domyślna konwencja to
 `docs/adr/NNNN-short-title.md` z numeracją wspólną dla całego repo, ale reguła
-może przewidywać podział wg domeny (np. `docs/business/adr/` +
+może przewidywać podział wg domeny (np. `docs/business/bdr/` +
 `docs/technical/adr/`, każdy z własną, niezależną numeracją) — oba warianty są
 prawidłowe, patrz [ARCHITECTURE.md](../ARCHITECTURE.md). Numer nigdy nie jest
 użyty ponownie, niezależnie od wybranego układu.

@@ -22,7 +22,7 @@ that produced it.
 
 1. **Understand audience**: Ask or infer who reads this (developers, users, DevOps, etc.).
 2. **Check existing ADRs first**: before documenting any architectural behavior, search
-   `docs/adr/`, `docs/*/adr/` (e.g. `docs/business/adr/`, `docs/technical/adr/`), or
+   `docs/adr/`, `docs/*/adr/`, `docs/*/bdr/` (e.g. `docs/business/bdr/`, `docs/technical/adr/`), or
    `docs/decisions/` for a decision already recorded on the subject. Cite it rather than
    re-deriving or restating the rationale, and never write a doc that contradicts an
    `Accepted` ADR without flagging the conflict to the caller.

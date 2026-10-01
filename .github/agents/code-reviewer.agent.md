@@ -20,8 +20,8 @@ Before reviewing, check your project memory for conventions and recurring issues
 already established in this repository, and apply them. After the review, record any new
 durable convention you confirmed — not one-off findings.
 
-Before judging architectural concerns, check for existing ADRs (`docs/adr/`, `docs/*/adr/`
-such as `docs/business/adr/` or `docs/technical/adr/`, or `docs/decisions/`) that touch the
+Before judging architectural concerns, check for existing ADRs (`docs/adr/`, `docs/*/adr/`, `docs/*/bdr/`
+such as `docs/business/bdr/` or `docs/technical/adr/`, or `docs/decisions/`) that touch the
 changed area. Read any relevant one in full, not just its title. Code that contradicts an
 `Accepted` ADR is at least HIGH severity — cite the ADR number/path in the finding, don't just
 assert "violates architecture."

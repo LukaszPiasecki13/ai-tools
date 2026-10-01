@@ -138,7 +138,7 @@ repo. W pozostałych przypadkach przejdź od razu do analizy, bez pytania o zgod
 
 
 Jedno wywołanie `general-purpose` na Haiku. Zanim zacznie eksplorację kodu, musi znaleźć
-i przeczytać w całości ADR repo docelowego: `docs/adr/`, `docs/*/adr/` (np. `docs/business/adr/`,
+i przeczytać w całości ADR repo docelowego: `docs/adr/`, `docs/*/adr/`, `docs/*/bdr/` (np. `docs/business/bdr/`,
 `docs/technical/adr/`) lub `docs/decisions/`. Do `_context.md` dopisuje sekcję "ADR" - tabelę
 numer/ścieżka, status (`Proposed`/`Accepted`/`Deprecated`/`Superseded`), jednozdaniowe
 podsumowanie - dla każdego ADR mającego zastosowanie do zadania; `Accepted` czyta w całości,

@@ -111,10 +111,10 @@ class TestDetectProfiles(unittest.TestCase):
         self.assertIn("adr", install.detect(self.target))
 
     def test_split_by_domain_adr_directories_are_detected(self) -> None:
-        """Regression: docs/business/adr + docs/technical/adr is a deliberate, equally valid
+        """Regression: docs/business/bdr + docs/technical/adr is a deliberate, equally valid
         convention (waterworks-monitoring-platform's rules/architecture-decisions.md prescribes
         exactly this split) that the original docs/adr-only check missed entirely."""
-        (self.target / "docs" / "business" / "adr").mkdir(parents=True)
+        (self.target / "docs" / "business" / "bdr").mkdir(parents=True)
         self.assertIn("adr", install.detect(self.target))
 
     def test_knowledge_base_layout_is_detected(self) -> None:

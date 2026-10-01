@@ -77,9 +77,9 @@ def detect(target: Path) -> set[str]:
         profiles.add("powershell")
     if any(target.glob("**/platformio.ini")):
         profiles.add("embedded")
-    # Split-by-domain (docs/business/adr, docs/technical/adr) is a deliberate, equally valid
+    # Split-by-domain (docs/business/bdr, docs/technical/adr) is a deliberate, equally valid
     # convention some projects choose - detect it alongside the single-directory layout.
-    adr_dirs = ("docs/adr", "docs/decisions", "docs/business/adr", "docs/technical/adr")
+    adr_dirs = ("docs/adr", "docs/decisions", "docs/business/bdr", "docs/business/adr", "docs/technical/adr")
     if any((target / d).is_dir() for d in adr_dirs):
         profiles.add("adr")
     if (target / "docs" / "00_KNOWLEDGE-MAP.md").is_file():

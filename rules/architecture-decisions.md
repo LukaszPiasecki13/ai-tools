@@ -1,6 +1,6 @@
 ---
-paths: ["docs/**/adr/**/*.md", "**/adr-*.md"]
-description: ADR (Architecture Decision Record) template and process. Auto-loaded when working in any docs/**/adr/ directory (e.g. docs/adr/, docs/business/adr/, docs/technical/adr/) or on files named adr-*.
+paths: ["docs/**/adr/**/*.md", "docs/**/bdr/**/*.md", "**/adr-*.md"]
+description: ADR (Architecture Decision Record) template and process. Auto-loaded when working in any docs/**/adr/ or docs/**/bdr/ directory (e.g. docs/adr/, docs/business/bdr/, docs/technical/adr/) or on files named adr-*.
 ---
 
 # Architecture Decision Records (ADR)
@@ -19,7 +19,7 @@ Use ADRs for decisions that affect multiple files, teams, or are hard to reverse
 ## File Naming and Location
 
 - File: `NNNN-short-title.md` (e.g., `0001-mvp-scope-temperature-pressure.md`)
-- Location: `docs/business/adr/` for business decisions, `docs/technical/adr/` for technical ones
+- Location: `docs/business/bdr/` for business decisions (BDR-NNNN, Business Decision Record), `docs/technical/adr/` for technical ones (ADR-NNNN)
 - Number sequentially per directory, never reuse numbers, pad to 4 digits
 
 ## Template

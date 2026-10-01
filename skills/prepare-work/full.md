@@ -297,7 +297,7 @@ ZADANIE dla subagenta:
 
 
 1. **Znajdź i przeczytaj w całości ADR repo docelowego**, zanim zaczniesz inwentaryzację kodu:
-   przeszukaj `docs/adr/`, `docs/*/adr/` (np. `docs/business/adr/`, `docs/technical/adr/`) oraz
+   przeszukaj `docs/adr/`, `docs/*/adr/`, `docs/*/bdr/` (np. `docs/business/bdr/`, `docs/technical/adr/`) oraz
    `docs/decisions/`. Dla każdego znalezionego pliku zapisz w `_context.md`, w nowej sekcji
    "ADR", tabelę: numer/ścieżka, status (`Proposed`/`Accepted`/`Deprecated`/`Superseded`),
    jednozdaniowe podsumowanie decyzji. Nie ograniczaj się do tytułów - `Accepted` ADR musi być

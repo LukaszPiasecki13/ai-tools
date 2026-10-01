@@ -23,7 +23,7 @@ Input is a plan file that already went through `prepare-to-work` Phase 6b accept
 7. **No automatic git commit/push.** Leave the working tree for the user to review and commit.
 8. **No automatic ADO state change.** Report readiness; state transitions in ADO are a manual Dev decision.
 9. **Docs are updated only on a real discrepancy** between what got implemented and what a referenced doc says (module boundary, dependency rule, table/diagram) — never as an unconditional changelog entry.
-10. **Target repo's ADRs are read in full before Phase 2 (writing code), not after the fact.** Search `docs/adr/`, `docs/*/adr/` (e.g. `docs/business/adr/`, `docs/technical/adr/`) or `docs/decisions/`. Code that contradicts an `Accepted` ADR is a discrepancy under rule 3 (STOP and grill), not something to silently adapt around.
+10. **Target repo's ADRs are read in full before Phase 2 (writing code), not after the fact.** Search `docs/adr/`, `docs/*/adr/`, `docs/*/bdr/` (e.g. `docs/business/bdr/`, `docs/technical/adr/`) or `docs/decisions/`. Code that contradicts an `Accepted` ADR is a discrepancy under rule 3 (STOP and grill), not something to silently adapt around.
 11. **"Good code" checklist** (no dedicated house style doc exists — inferred from `/memories/repo/refactoring-notes.md` and `CodeReviewer.agent.md`): SOLID, single-responsibility small functions/methods, DI over hardcoded dependencies, DRY, no dead code/unused imports, clear naming. Repo convention (majority, per rule 5) wins over this generic checklist whenever they conflict.
 
 ---
@@ -34,7 +34,7 @@ Input is a plan file that already went through `prepare-to-work` Phase 6b accept
 2. Read the plan file fully (main thread — this is the one phase where full file content in main context is unavoidable and correct, see rule 4).
 3. Validate Phase 7 completion: section 3 must list concrete file paths, and section 4 must contain fenced code blocks with real imports/signatures per layer, not placeholders like `[Action]`. If not satisfied → STOP: *"Plan {task_id} nie ma jeszcze Phase 7 (gotowego kodu) z prepare-to-work. Doko\u0144cz najpierw t\u0119 rund\u0119, zanim zaczniesz implementacj\u0119."*
 4. `memory view /memories/repo/` and `/memories/session/prepare-to-work-{task_id}.md` (if it exists) — load decisions and verified facts, don't re-derive them.
-5. **Read the target repo's ADRs in full**, before touching any code: `docs/adr/`, `docs/*/adr/` (e.g. `docs/business/adr/`, `docs/technical/adr/`) or `docs/decisions/`. List each ADR's number/path, status (`Proposed`/`Accepted`/`Deprecated`/`Superseded`), and a one-line summary in the ledger under a new "ADRs" section. `Accepted` ADRs relevant to the plan's scope are binding constraints on the implementation (rule 10) — read those in full, not just the title.
+5. **Read the target repo's ADRs in full**, before touching any code: `docs/adr/`, `docs/*/adr/`, `docs/*/bdr/` (e.g. `docs/business/bdr/`, `docs/technical/adr/`) or `docs/decisions/`. List each ADR's number/path, status (`Proposed`/`Accepted`/`Deprecated`/`Superseded`), and a one-line summary in the ledger under a new "ADRs" section. `Accepted` ADRs relevant to the plan's scope are binding constraints on the implementation (rule 10) — read those in full, not just the title.
 6. Create the ledger `/memories/session/implement-plan-{task_id}.md`:
 
 ```markdown
@@ -107,7 +107,7 @@ Apply every CRITICAL/HIGH/MEDIUM fix in **one** `multi_replace_string_in_file` c
 
 `runSubagent agentName=Architect`:
 
-> Plan: `{plan_path}` (context only). Repo: `{repo_path}`. Changed files: {paths only}. Referenced architecture docs: `docs/2-system-architecture/2.2-backend-architecture.md` (backend) / `docs/1-frontend-architecture/1.1-frontend-architecture.md` + `1.2-frontend-conventions.md` (frontend) — adjust these paths to whatever this repo actually uses if they don't exist. Also read every ADR under `docs/adr/`, `docs/*/adr/`, or `docs/decisions/` relevant to the changed files (from the Phase 0 "ADRs" ledger section).
+> Plan: `{plan_path}` (context only). Repo: `{repo_path}`. Changed files: {paths only}. Referenced architecture docs: `docs/2-system-architecture/2.2-backend-architecture.md` (backend) / `docs/1-frontend-architecture/1.1-frontend-architecture.md` + `1.2-frontend-conventions.md` (frontend) — adjust these paths to whatever this repo actually uses if they don't exist. Also read every ADR under `docs/adr/`, `docs/*/adr/`, `docs/*/bdr/`, or `docs/decisions/` relevant to the changed files (from the Phase 0 "ADRs" ledger section).
 > Check the changed files against these docs: layer boundaries (API → Service → Repository → Infrastructure, never skipped or reversed), module dependency rules, structural symmetry (a rule applied to a parent entity but silently missing on a subordinate/parallel one), and conformance with every relevant `Accepted` ADR — cite the ADR number/path for each check, not just "compliant". Also check whether anything implemented here should be reflected back into these docs (new module, new table in a diagram, new dependency rule) — list candidates, do not edit docs yourself.
 > Do NOT edit any file. Return `VERDICT: CLEAN` or `VERDICT: ISSUES (n)` with a table `# | severity (BLOCKER/MAJOR/MINOR) | file:line | issue | doc citation | recommended fix`, plus a short `DOC UPDATE CANDIDATES` list.
 
