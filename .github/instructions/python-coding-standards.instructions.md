@@ -161,6 +161,44 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         yield session
 ```
 
+### Composing Services Outside HTTP Requests
+
+Startup code, a CLI command, or a background task needs a session too, and it must not
+hand-roll its own open → commit → rollback → close. Give the project one context manager that
+opens a session, rolls back on **any** exception (including `SystemExit`), always closes, and
+**never commits** — the transaction boundary stays with the service, exactly like in a request.
+Expose it next to the request-scoped session dependency (`get_db`).
+
+Split *composing* an object graph from the two ways of *calling* it, one file each per module:
+
+| File | Role | Must not know about |
+|------|------|----------------------|
+| `wiring.py` | The only place that assembles services: `build_<x>(session) -> X`, pure functions, no I/O, no commit | FastAPI, `dependencies.py` |
+| `dependencies.py` | Adapts builders to FastAPI: `get_<x> = provide(build_<x>)`, plus dependencies that exist only in HTTP (current user, permissions) | Composing object graphs itself |
+| `entrypoints.py` | The non-HTTP counterpart to a router: `with scope() as session: service = build_<x>(session); service.method(...)`, applies domain error policy. Exists only in a module that has such an operation | Committing, returning ORM entities, `dependencies.py` |
+
+Rules:
+- A builder takes the session and only what genuinely varies between calls; it reads
+  configuration itself (`get_settings()`). The calling actor (for an audit trail, etc.) is a
+  method argument on the service, not a builder argument — it depends on the call, not on
+  composition.
+- Call another module's builder through a module import (`from app.x import wiring as
+  x_wiring`, then `x_wiring.build_y(session)` inside a function body) rather than importing the
+  function by name. A module-level `from x import wiring as x_wiring` doesn't execute anything,
+  so it tolerates a cycle between two modules' `wiring.py` files that each need a service from
+  the other — importing a specific function by name does not.
+- `dependencies.py` never composes; it only wraps a builder as a FastAPI dependency via a
+  `provide(builder)` helper that supplies `session=Depends(get_db)`. Assign the result to a
+  module-level `get_<x>` name — that name is the key tests use for `dependency_overrides`.
+- Code that isn't part of an HTTP request (`wiring.py`, `entrypoints.py`, services) never
+  imports any module's `dependencies.py` — that would tie non-HTTP code to FastAPI.
+- Only `entrypoints.py` opens a session outside a request. It never commits or touches
+  repositories directly, and returns plain data (dataclass, enum, `None`), not ORM entities.
+- Error policy has an owner: *domain* policy ("this failure is non-fatal because...") belongs
+  in the entrypoint; *process* policy (exit code, "the app doesn't start") belongs in the thin
+  driver (CLI command, `lifespan`, background-task registration) that calls the entrypoint and
+  nothing else — no service, repository, or session import in the driver itself.
+
 ## Code Quality Rules
 
 | Rule | Limit |
