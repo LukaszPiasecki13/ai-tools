@@ -1,30 +1,8 @@
 # ADR Format
 
-ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc.
+The location, naming, front-matter and section layout of ADRs/BDRs are defined once, in the `architecture-decisions` rule (`rules/architecture-decisions.md`): technical decisions in `docs/technical/adr/`, business ones in `docs/business/bdr/`, numbered `NNNN-slug.md`, written as `status: Proposed` and accepted by a human. Use the `/adr` command to write one. Do not duplicate the format here.
 
-Create the `docs/adr/` directory lazily — only when the first ADR is needed.
-
-## Template
-
-```md
-# {Short title of the decision}
-
-{1-3 sentences: what's the context, what did we decide, and why.}
-```
-
-That's it. An ADR can be a single paragraph. The value is in recording *that* a decision was made and *why* — not in filling out sections.
-
-## Optional sections
-
-Only include these when they add genuine value. Most ADRs won't need them.
-
-- **Status** frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`) — useful when decisions are revisited
-- **Considered Options** — only when the rejected alternatives are worth remembering
-- **Consequences** — only when non-obvious downstream effects need to be called out
-
-## Numbering
-
-Scan `docs/adr/` for the highest existing number and increment by one.
+Create the directory lazily — only when the first ADR is needed.
 
 ## When to offer an ADR
 

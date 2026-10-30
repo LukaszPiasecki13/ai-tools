@@ -140,9 +140,9 @@ pełnotekstowego do znalezienia kontekstu.
 **Cel:** baza aktualizuje się jako element definicji ukończenia, nie jako
 osobne zadanie „kiedyś potem".
 
-Naturalnym miejscem wpięcia jest skill [`prepare-work`](../prepare-work/SKILL.md)
-(Faza 11 w wariancie pełnym, zasada 12 w uproszczonym) — **nie jest tam dziś
-wpięte**; poniższa lista jest gotowa do dopisania, gdy o tym zdecydujesz.
+Naturalnym miejscem wpięcia jest skill [`sdlc-implement`](../sdlc-implement/SKILL.md)
+(Phase 7, aktualizacja dokumentacji) — **nie jest tam dziś wpięte**; poniższa lista jest
+gotowa do dopisania, gdy o tym zdecydujesz.
 Warunek wyzwalania trzymaj po stronie repo docelowego (obecność
 `docs/00_KNOWLEDGE-MAP.md`), żeby projekty bez bazy warstwowej nie płaciły za nic.
 

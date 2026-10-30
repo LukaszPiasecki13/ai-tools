@@ -32,52 +32,25 @@ ToolSearch(query: "select:mcp__chrome-devtools__navigate_page,mcp__chrome-devtoo
   >
   > Do not fake verification with WebFetch/code reading. The only allowed fallback driver is Playwright with its own Chromium, and only after the user agrees — see "Fallback: Playwright" below.
 
-#### Troubleshooting when the MCP is missing or won't connect
-
-1. **Check `.mcp.json`** in the repo root. The working config on native Windows is:
-   ```json
-   {
-     "mcpServers": {
-       "chrome-devtools": {
-         "command": "cmd",
-         "args": ["/c", "npx", "-y", "chrome-devtools-mcp@latest"]
-       }
-     }
-   }
-   ```
-   - Do **not** use `"command": "chrome-devtools"`. In the `chrome-devtools-mcp` package, `chrome-devtools` is a CLI (`start`/`status`/`stop`/`click`…), not the MCP server — the server binary is `chrome-devtools-mcp`. That config ends in `CONNECTION_CLOSED`.
-   - `cmd /c` is required because `npx` is a `.cmd` shim on Windows.
-   - No `--executablePath` needed: the server auto-detects installed Chrome. Add `"--executablePath", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"` to `args` only if detection fails (check the path exists first; 32-bit `Program Files (x86)` is usually wrong).
-2. **Requirements:** Node/npx on PATH (`node --version`), Chrome installed, network access for the first `npx` download. A global install is not needed.
-3. **Reload the MCP.** Servers are loaded at session start — after any change to `.mcp.json`, run `/mcp` (reconnect) or restart the session. Tools then appear as `mcp__chrome-devtools__*`.
-4. **Sanity check the server by hand** (optional): `npx -y chrome-devtools-mcp@latest --help` should print options.
-5. **`Protocol error (Target.setDiscoverTargets): Target closed`** on the first `list_pages`/`new_page`: the server connected but could not attach to the Chrome it launched. Check the corporate policy first (step 6). If the policy is not the cause, a launch that was merely slow can be retried once.
-   - **Do not loop on retries.** Each failed call spawns a new Chrome that holds the profile, so the next call fails with `The browser is already running for ...chrome-profile`. If you see that error, stop the leftover MCP-launched Chrome (only processes whose command line contains `chrome-devtools-mcp`) and diagnose instead of retrying.
-6. **Check Chrome enterprise policy — the most likely cause on a managed (corporate) machine:**
-   ```powershell
-   Get-ItemProperty HKLM:\SOFTWARE\Policies\Google\Chrome | Select-Object RemoteDebuggingAllowed
-   ```
-   `RemoteDebuggingAllowed = 0` means IT has blocked remote debugging, which chrome-devtools-mcp depends on. Symptoms: `Target closed`, and Chrome started by hand with `--remote-debugging-port=9222` never opens the port. No MCP config change fixes this.
-   - **Edge is not a way around it**: check `HKLM:\SOFTWARE\Policies\Microsoft\Edge` — on the managed machine where this was diagnosed it has the same `RemoteDebuggingAllowed = 0`.
-   - **Do not edit the policy in the registry or look for workarounds** — it is an IT security control. Report it to the user and let them decide: ask IT for an exception, use Playwright with its own Chromium (see below — needs the user's consent, since it sidesteps the policy organizationally), or fall back to non-browser checks: `npm run test`, `typecheck`, `lint`, `build` in `frontend/`.
-   - Chrome can still be opened manually for the user to click through (`Start-Process chrome http://localhost:5173`), but then you cannot read or drive it — do not claim anything about what was on screen.
-7. **Dev server:** if `http://localhost:5173` returns nothing, start `npm run dev` in `frontend/` in the background and wait for the "ready" line.
-8. If it still fails after all of the above, stop and report the exact error to the user.
+  Then read [troubleshooting.md](troubleshooting.md) (loaded only in this case) and work through it
+  with the user.
 
 #### Fallback: Playwright with its own Chromium (when the MCP is unavailable)
 
-Playwright downloads its own Chromium, which does not read the `Google\Chrome` / `Microsoft\Edge` policy keys, so it works where chrome-devtools-mcp is blocked. Verified on the managed Windows machine: headless run, screenshot and console capture all worked.
+Playwright downloads its own Chromium, which does not read the `Google\Chrome` / `Microsoft\Edge` policy keys, so it works where chrome-devtools-mcp is blocked (verified on a managed Windows machine: headless run, screenshot and console capture all worked).
 
 **Gate — ask first.** Because this sidesteps an IT policy, do not use it unless the user has said yes in this conversation. Say what you would do ("run Playwright's bundled Chromium headless against localhost; nothing in the repo changes") and wait.
 
-**Setup — outside the repo**, so `frontend/package.json` stays untouched (use the scratchpad directory):
+**Setup — outside the repo**, so the app's `package.json` stays untouched (use the scratchpad directory):
 ```bash
 mkdir -p <scratchpad>/pw && cd <scratchpad>/pw
 npm init -y && npm i playwright
 npx playwright install chromium     # one-time download, cached in %LOCALAPPDATA%\ms-playwright
 ```
 
-**Run** — write a script per screen/flow and execute it with `node`. Template (smoke test of a page):
+**Run** — write a script per screen/flow and execute it with `node`, passing the app URL in the
+`APP_URL` environment variable (PowerShell: `$env:APP_URL='{app_url}'; node smoke.mjs`; bash:
+`APP_URL='{app_url}' node smoke.mjs`). Template (smoke test of a page):
 ```js
 // smoke.mjs
 import { chromium } from 'playwright';
@@ -86,7 +59,7 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 const problems = [];
 page.on('console', m => { if (['error', 'warning'].includes(m.type())) problems.push(`${m.type()}: ${m.text()}`); });
 page.on('pageerror', e => problems.push(`pageerror: ${e.message}`));
-await page.goto('http://localhost:5173', { waitUntil: 'networkidle' });
+await page.goto(process.env.APP_URL, { waitUntil: 'networkidle' }); // APP_URL = {app_url}
 console.log('url:', page.url(), '| title:', await page.title());
 console.log(await page.locator('body').innerText());      // text/presence checks
 await page.screenshot({ path: 'screen.png' });            // visual evidence
@@ -98,24 +71,27 @@ Equivalents of the MCP procedure: `page.goto` = navigate, `locator.innerText()` 
 
 **Notes**
 - Headless by default; it runs its own browser, so it never touches the user's Chrome or the MCP profile.
-- Expect `ERR_CONNECTION_REFUSED` console errors if the backend (`VITE_API_URL`, default `http://127.0.0.1:8000`) is not running. Report it as the cause rather than as a UI bug, and say that logged-in screens/data cannot be verified without it.
+- Expect `ERR_CONNECTION_REFUSED` console errors if a backend the app needs (`{api_url}`, when the inputs name one) is not running. Report it as the cause rather than as a UI bug, and say that logged-in screens/data cannot be verified without it.
 - Store screenshots under `.tmp/ui-verify/` and clean up afterwards, as in "Temporary Files".
 - Say explicitly in the report that the verification was done through the Playwright fallback, not the Chrome MCP.
 
 ## Inputs
 
-Before starting, gather:
+Before starting, gather (a caller such as `sdlc-implement` passes them; otherwise find them):
 
 1. **The plan/checklist** — a doc, PR description, or the user's own message listing
    what should exist per screen (e.g. "Users page: table with role column, invite
    button top-right, disabled state for self"). If the user just points at a plan
    file, read it. If they describe it inline, use that as the checklist directly.
-2. **The dev server URL.** Default: `http://localhost:5173` (Vite default in
-   `frontend/`). Check if it's already running (`list_pages` / try navigating); if
-   not, start it in the background from `frontend/`: `npm run dev`, then wait for the
-   "ready" log line before navigating.
-3. **Auth state**, if screens require login — ask the user for test credentials or a
-   known dev-login shortcut rather than guessing.
+2. **The app**: `{app_url}`, `{start_command}` and `{app_dir}` (where the command runs), plus
+   `{api_url}` when the app needs a backend. Sources in order: the caller (for `sdlc-implement`,
+   the `app` row of `Komendy weryfikacji` in `01-context.md`), repo instructions (`CLAUDE.md`,
+   README), the app's manifest/scripts and framework config. Record the source of each value; if
+   none is found, ask the user — never assume a port or folder. Check whether the app is already
+   running (`list_pages` / navigate); if not, run `{start_command}` in `{app_dir}` in the background
+   and wait for its "ready" line before navigating.
+3. **Auth state**, if screens require login — use the caller's login instructions, otherwise ask
+   the user for test credentials or a known dev-login shortcut rather than guessing.
 
 ## Procedure
 
@@ -162,7 +138,7 @@ Before starting, gather:
 Clean up after yourself at the end of **every** run, including runs that failed or were aborted. Do it after the report is written, so screenshots you cite are still available while you write it.
 
 1. **Files:** delete `.tmp/ui-verify/` (and `.tmp/` itself if it is now empty). Check `git status` to confirm nothing from the run is left in the repo.
-2. **Dev server:** stop it only if *you* started it in this run (`npm run dev`). If it was already running when you began, leave it alone.
+2. **App:** stop it only if *you* started it in this run (`{start_command}`). If it was already running when you began, leave it alone.
 3. **Browsers:** close pages you opened. With the Playwright fallback, call `browser.close()` (also on failure paths — use `try/finally`). If the MCP left Chrome running, end only processes whose command line contains `chrome-devtools-mcp`; never touch the user's own Chrome windows.
 4. **Playwright scripts:** keep them in the scratchpad directory, never in the repo. The installed `playwright` package and the Chromium cache are reusable — do not delete them unless the user asks.
 5. **Do not undo what the user declined.** If a cleanup command is denied, don't retry it with another tool — list what is left (paths/PIDs) in the report and let the user decide.

@@ -25,21 +25,7 @@ unverified rather than presenting an inference as a finding.
 4. **Verify**: Check findings against a second code reference or run a command to validate.
 5. **Report**: Exact file references [file.ts](path/to/file.ts#L10) and minimal code snippets.
 
-## Token Efficiency Rules
-
-- **Batch reads**: Identify all files needed upfront, then read them in parallel.
-- **Read only what matters**: Use the Read tool's `offset`/`limit` for specific function ranges, not whole files.
-- **Avoid re-reading**: If content is already in context, don't read the same file again.
-- **Short commands**: Prefer Grep with a precise pattern over broad terminal greps.
-- **Stop when done**: Don't search for "more context" after answering the question.
-
-## Tool Usage
-
-- **Grep**: Conceptual and exact-string search (e.g., "where is user authentication?", `TODO:`, `export const`, function names).
-- **Glob**: Locate files by name/path pattern.
-- **Read**: Inspect code flow, imports, dependencies after locating the file.
-- **WebFetch/WebSearch**: External docs, API specs, design docs.
-- **Batch all independent reads in parallel** - never sequentially.
+Stop when the question is answered; do not search for more context.
 
 ## Strategies
 
@@ -67,5 +53,5 @@ unverified rather than presenting an inference as a finding.
 ## Suggested Follow-ups
 
 Report is read-only - the calling thread decides what's next. Common continuations:
-- Hand findings to **debugger** to diagnose a bug this exploration surfaced.
+- Use the `diagnosing-bugs` skill to diagnose a bug this exploration surfaced.
 - Hand findings to **code-reviewer** if the exploration turned up a quality/security concern.

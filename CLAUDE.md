@@ -56,8 +56,8 @@ Assign the cheapest model that does the job correctly, and say why in the agent 
 
 | Model | For | Agents |
 |-------|-----|--------|
-| `haiku` | Search, retrieval, summarizing, drafting docs | `explorer`, `documentation-writer` |
-| `sonnet` | Root-cause reasoning, review judgment, test design, hardware risk | `debugger`, `code-reviewer`, `test-writer`, `esp32-firmware-engineer` |
+| `haiku` | Search, retrieval, summarizing | `explorer` |
+| `sonnet` | Root-cause reasoning, review judgment, test design, hardware risk | `code-reviewer`, `test-writer`, `esp32-firmware-engineer` |
 | `opus` | Reserve for genuinely hard architecture work; not set as a default anywhere | — |
 
 Never put a reasoning-heavy agent on `haiku` to save tokens. A missed defect costs more than

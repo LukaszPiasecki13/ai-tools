@@ -55,5 +55,8 @@ costs the main conversation one summary rather than a full diff read.
   be doing work `haiku` handles reliably, or vice versa.
 
 ### Neutral
+- The `debugger` agent was later removed in favor of the `diagnosing-bugs` skill, and
+  `documentation-writer` was removed as unused; the table above reflects the decision at the
+  time. The remaining assignments are unchanged.
 - Aliases mean the actual model changes as new versions ship. That is intended; a pinned id
   would quietly age.

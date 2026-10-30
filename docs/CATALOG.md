@@ -13,11 +13,9 @@ Delegated automatically when a task matches the description, or invoked by name.
 | Agent | Model | Purpose |
 |---|---|---|
 | `code-reviewer` | sonnet | Performs systematic code reviews against configurable standards |
-| `debugger` | sonnet | Systematic bug diagnosis and fix agent |
-| `documentation-writer` | haiku | Generates and maintains technical documentation |
 | `esp32-firmware-engineer` | sonnet | Autonomous ESP32/PlatformIO C++ firmware engineer that writes embedded code, runs static checks, builds, uploads to physical hardware under a risk-based confir… |
 | `explorer` | haiku | Fast read-only codebase exploration and research agent |
-| `test-writer` | sonnet | Generates unit, integration, and regression tests for existing code |
+| `test-writer` | sonnet | Writes tests for existing code in an isolated context - coverage gaps, regression tests for a fixed bug, missing edge cases |
 
 
 ## Commands
@@ -26,7 +24,7 @@ Typed deliberately. Hidden from automatic model invocation, so they never fire o
 
 | Command | Arguments | Context | Purpose |
 |---|---|---|---|
-| `/ai-tools:adr` | `[decision title]` | — | Record an architecture decision as a numbered ADR in docs/adr/. |
+| `/ai-tools:adr` | `[decision title]` | — | Record an architecture or business decision as a numbered ADR/BDR in docs/technical/adr/ or docs/business/bdr/. |
 | `/ai-tools:commit` | `[optional scope or note]` | — | Stage the right files and write a Conventional Commits message from the actual diff. |
 | `/ai-tools:fastapi-endpoint` | `[METHOD /path - what it does]` | — | Scaffold a FastAPI endpoint end to end |
 | `/ai-tools:onboard-project` | `[path to project, default: current directory]` | — | Set up a repository for this toolkit |
@@ -34,7 +32,6 @@ Typed deliberately. Hidden from automatic model invocation, so they never fire o
 | `/ai-tools:react-feature` | `[feature name - what it does]` | — | Scaffold a React feature slice |
 | `/ai-tools:security-scan` | `[optional path or base branch]` | fork | Audit the current changes against the OWASP security checklist in an isolated subagent. |
 | `/ai-tools:setup-ai-tools` | — | — | Automated setup for new repository |
-| `/ai-tools:test-focus` | `[optional path or test name filter]` | — | Run only the tests affected by the current changes, then widen if they pass. |
 | `/ai-tools:toolkit-validate` | — | — | Validate this toolkit |
 
 
@@ -54,13 +51,13 @@ Loaded on demand when the description matches the task — free until used.
 | `grill-me` | model or user | A relentless interview to sharpen a plan or design. |
 | `grill-with-docs` | model or user | A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glossary) as we go. |
 | `grilling` | model-invoked | Grill the user relentlessly about a plan, decision, or idea |
-| `implement-plan` | model or user | Implements an already-accepted plan from prepare-to-work into the real repository |
 | `jira-board-extractor` | model or user | Read-only Jira Cloud board data collection skill for backlog, epics, sprints, board configuration, and issue details |
 | `knowledge-base` | model or user | Projektowanie, porządkowanie i utrzymanie bazy wiedzy czytanej przez agentów AI - warstwy L0-L4, metadane, szablony dokumentów, walidacja i automatyzacja |
-| `prepare-work` | model or user | Pipeline developerski w wariancie pełnym albo uproszczonym oszczędzającym tokeny |
 | `react-patterns` | model-invoked | React 19 architecture - component and hook design, TanStack Query server state, react-hook-form + zod forms, Radix UI primitives, Tailwind styling, and Testing… |
-| `testing` | model-invoked | Testing patterns and frameworks for Python (pytest, pytest-asyncio), TypeScript (Vitest, Jest), and Angular (Testing Library) |
-| `to-spec` | model or user | Turn the current conversation into a spec and publish it to the project issue tracker |
+| `sdlc-context` | model or user | Etap 1 z 3 pipeline SDLC (orkiestrator: sdlc-run): zbiera kontekst repo (mapa plików, ADR, konwencje, ryzyka), proponuje tier trivial/standard/full i prowadzi… |
+| `sdlc-implement` | model or user | Stage 3 of 3 of the SDLC pipeline (orchestrator: sdlc-run): implements an accepted sdlc-plan plan |
+| `sdlc-plan` | model or user | Etap 2 z 3 pipeline SDLC (orkiestrator: sdlc-run): z zatwierdzonego kontekstu (sdlc-context) pisze plan implementacji - mapa plików, interfejsy, kroki, macierz… |
+| `sdlc-run` | model or user | Orkiestrator pipeline SDLC: prowadzi zmianę od opisu pomysłu przez kontekst (sdlc-context), plan (sdlc-plan), implementację, review kodu i testy (sdlc-implemen… |
 | `ui-verify` | model or user | Physically click through the running frontend in a real Chrome browser (via the chrome-devtools MCP server) and check each screen/flow against a plan or checkl… |
 
 

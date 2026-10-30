@@ -126,5 +126,5 @@ The repository is its own single-plugin marketplace (`source: "./"`), so
 `/plugin marketplace add lukaszpiasecki13/ai-tools` is enough to find it.
 
 Breaking changes — a renamed rule, a moved directory, a changed command name — get a major
-bump and an entry in [MIGRATION-2.0.md](MIGRATION-2.0.md)-style notes, because installed
+bump and a note in the changelog or release notes, because installed
 copies do not migrate themselves.

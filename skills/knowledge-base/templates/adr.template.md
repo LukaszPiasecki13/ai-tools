@@ -1,9 +1,7 @@
 ---
-id: adr-<NNNN>-<krotki-slug>
-status: draft          # metadane KB, dla walidatora - patrz METADATA.md. `draft` = dokument
-                        # jeszcze piszesz; `current` = gotowy do czytania. NIE to samo, co
-                        # sekcja "## Status" niżej (ta ma własne, ustalone w repo słownictwo
-                        # decyzji: Proposed/Accepted/... i zmienia się bez dotykania tego pola)
+id: adr-<NNNN>-<english-slug>   # bdr-<NNNN>-... dla BDR
+status: Proposed       # Proposed | Accepted. Agent pisze Proposed; Accepted ustawia CZŁOWIEK
+                       # po przeglądzie. Nie ma osobnej sekcji "## Status" w treści.
 type: decision
 scope: <np. backend/telemetry>
 last_reviewed: <YYYY-MM-DD>
@@ -19,13 +17,10 @@ Piszesz ADR, gdy spełnione są TRZY warunki naraz:
 Brak któregokolwiek → bez ADR. ADR-y pisane "na wszelki wypadek" rozmywają
 rejestr i sprawiają, że nikt go nie czyta.
 
-Nazwa pliku i lokalizacja: rozstrzyga reguła `architecture-decisions` z TEGO
-repo — nie zgaduj z tego szablonu, przeczytaj regułę. Domyślna konwencja to
-`docs/adr/NNNN-short-title.md` z numeracją wspólną dla całego repo, ale reguła
-może przewidywać podział wg domeny (np. `docs/business/bdr/` +
-`docs/technical/adr/`, każdy z własną, niezależną numeracją) — oba warianty są
-prawidłowe, patrz [ARCHITECTURE.md](../ARCHITECTURE.md). Numer nigdy nie jest
-użyty ponownie, niezależnie od wybranego układu.
+Nazwa pliku i lokalizacja: rozstrzyga reguła `architecture-decisions` — nie zgaduj
+z tego szablonu, przeczytaj regułę. Konwencja: `docs/technical/adr/NNNN-slug.md`
+(ADR) i `docs/business/bdr/NNNN-slug.md` (BDR), numeracja niezależna w każdym
+katalogu i nigdy nie użyta ponownie, patrz [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 Ten plik dodaje do tej konwencji wyłącznie **front-matter** wymagany przez bazę
 wiedzy oraz polskie nagłówki sekcji. Kryteria „czy to w ogóle zasługuje na ADR"
@@ -41,21 +36,6 @@ measurements", nie "Wybór modelu przechowywania telemetrii".
 
 <!-- Jeden akapit streszczenia: co postanowiono i co zostaje otwarte.
      Dla czytelnika, który nie przeczyta reszty. -->
-
-## Status
-
-<!--
-Wartości i słowa ustala reguła `architecture-decisions` tego repo (domyślnie:
-Proposed | Accepted | Deprecated | Superseded by ADR-NNNN) — to jest INNE
-słownictwo niż front-matterowe `status:` wyżej, celowo: to pole czyta człowiek
-i wpisuje w nim wynik przeglądu, tamto czyta walidator.
-
-Nowy ADR zaczyna od najsłabszego stanu (Proposed / draft). Przejście na
-Accepted / active wpisuje CZŁOWIEK po przeglądzie — agent nigdy nie zmienia
-tego pola samodzielnie, choćby decyzja wyglądała na oczywistą.
--->
-
-Proposed
 
 ## Kontekst
 
@@ -95,27 +75,17 @@ Uczciwie w obie strony. ADR z samymi zaletami jest reklamą, nie decyzją,
 i czytelnik przestaje mu ufać.
 -->
 
-**Pozytywne**
-- <co staje się łatwiejsze>
-
-**Negatywne**
+- <co ułatwia>
 - <co oddajemy, co staje się trudniejsze, jaki dług zaciągamy>
-
-**Neutralne**
-- <skutki uboczne bez znaku>
-
-## Wpływ na bazę wiedzy
-
-<!--
-Co ta decyzja zmienia w innych dokumentach. Uzupełnij w tym samym commicie,
-inaczej decyzja pozostanie widoczna wyłącznie tutaj (antywzorzec A5).
--->
-
-- [ ] `CONTEXT.md` — nowe pojęcia: <…>
-- [ ] Kontrakt L2 `<ścieżka>` — aktualizacja + nowe `last_reviewed`
-- [ ] ADR-y zastąpione: <…> → w ich treści dopisz „Zastąpione przez ADR-<NNNN>"
-      i zaktualizuj ich `## Status` na `Superseded by ADR-<NNNN>`
 
 ## Notatki
 
-<!-- Opcjonalne. Zastrzeżenia, co świadomie pominięto, do czego wrócić. -->
+<!--
+Opcjonalne. Zastrzeżenia, co świadomie pominięto, do czego wrócić.
+"Powiązane:" z linkami. "Zastępuje ADR-<NNNN>" w nowym ADR oraz "Zastąpiony
+przez ADR-<NNNN>" w starym (jego `status` zostaje Accepted).
+
+Skutki w innych dokumentach uzupełnij w tym samym commicie, inaczej decyzja
+pozostanie widoczna wyłącznie tutaj (antywzorzec A5): `CONTEXT.md` (nowe
+pojęcia), kontrakty L2 (aktualizacja + nowe `last_reviewed`).
+-->

@@ -38,7 +38,7 @@ This is exactly why `scripts/install.py` detects the stack and installs a subset
 all seven rules everywhere would put ~7 400 tokens of standards in front of every project,
 most of it irrelevant.
 
-**Skills** — about 21 000 tokens across all 24 skills, of which a typical session loads one
+**Skills** — about 21 000 tokens across all 27 skills and commands, of which a typical session loads one
 or none. Moving framework detail out of rules and into skills was the single largest saving in
 version 2.0:
 
@@ -59,8 +59,8 @@ tokens too, plus your time.
 
 | Model | Assigned to | Why |
 |-------|-------------|-----|
-| `haiku` | `explorer`, `documentation-writer` | Retrieval, search and drafting: high volume, low judgment. The work is finding the right file, not deciding what it means. |
-| `sonnet` | `debugger`, `code-reviewer`, `test-writer`, `esp32-firmware-engineer` | Root-cause reasoning, review judgment, test design, hardware risk. Each of these produces a decision someone will trust without re-checking. |
+| `haiku` | `explorer` | Retrieval and search: high volume, low judgment. The work is finding the right file, not deciding what it means. |
+| `sonnet` | `code-reviewer`, `test-writer`, `esp32-firmware-engineer` | Root-cause reasoning, review judgment, test design, hardware risk. Each of these produces a decision someone will trust without re-checking. |
 | `opus` | nothing by default | Reserved for genuinely hard architecture work, chosen deliberately per task. |
 
 Before 2.0 every agent ran on `haiku`, including the reviewer and the debugger. That is not

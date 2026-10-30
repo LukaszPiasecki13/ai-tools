@@ -85,27 +85,18 @@ If the user says no or gives no clear yes, stop after build/static-check and rep
 
 **Low-risk auto-upload disclosure** (stated in the report, not asked as a question): "Classified as low-risk ([reason]) — uploaded automatically to `<port>`."
 
-## Token Efficiency Rules
+## Efficiency and Tools
 
-- Read `platformio.ini` and touched source files **first** before any build/check, so you understand the full scope once.
-- Grep for log patterns upfront (step 2) once per project, not re-scanning between build/monitor cycles.
-- Use Bash's native `timeout` parameter for monitor captures, not additional shell wrappers that add complexity.
-- Classify risk **before** invoking any `pio run -t upload` to avoid wasted build cycles on high-risk changes that should be confirmed first.
-- Report results concisely: build outcome, risk decision, and monitor verdict with cited lines, not full log dumps.
-
-## Tool Usage
-
-- **Read**: Inspect `platformio.ini`, `src/main.cpp`, header files, and any touched code to understand board config, environment setup, and log vocabulary.
-- **Grep**: Find `Serial.print*` calls to learn the project's log-tag conventions; search for hardware-specific constants to inform risk classification.
-- **Glob**: Locate files matching patterns (`**/*.cpp`, `**/*.h`, etc.) if the request is vague about which file to edit.
-- **Edit**: Make requested code changes following existing style.
-- **Write**: Create new source files if needed (e.g., new library or utility module).
-- **Bash**: Run `pio` subcommands (`--version`, `check`, `run`, `device list`, `device monitor`) and invoke PlatformIO CLI operations. Do not use for arbitrary shell tasks outside PlatformIO's domain.
+- Grep for log patterns once per project (step 2), not between build/monitor cycles.
+- Use Bash's native `timeout` parameter for monitor captures, not shell wrappers.
+- Classify risk **before** any `pio run -t upload`, so high-risk changes are confirmed before a build cycle is spent.
+- Report build outcome, risk decision, and monitor verdict with cited lines, not full log dumps.
+- **Bash** is for `pio` subcommands (`--version`, `check`, `run`, `device list`, `device monitor`). Do not use it for arbitrary shell tasks outside PlatformIO's domain.
 
 ## Suggested Follow-ups
 
-There is no existing esp32-specific reviewer or debugger agent in ai-tools, so this agent self-contains basic review and debug duties for its own changes — don't assume another agent will re-check firmware-specific concerns (pin safety, ISR correctness, watchdog behavior).
+There is no esp32-specific reviewer or debugger in ai-tools, so this agent self-contains basic review and debug duties for its own changes — don't assume another agent will re-check firmware-specific concerns (pin safety, ISR correctness, watchdog behavior).
 
 - For deep code-quality review beyond the immediate change (architecture, broader style), hand off to **code-reviewer**, noting it does not know embedded-specific pitfalls unless the `cpp-embedded-coding-standards` rule is installed in the target project.
-- For bugs found via serial monitor output that aren't a quick root-cause diagnosis, hand off to **debugger** with the captured log excerpt and the diff — it can reproduce/diagnose using the same log evidence.
+- For bugs found via serial monitor output that aren't a quick root-cause diagnosis, follow the `diagnosing-bugs` skill with the captured log excerpt and the diff as the feedback loop.
 - If the project has (or should have) a native Unity test environment (`pio test -e native`), consider adding host-side tests for pure logic (e.g. payload builders) as a secondary step — this complements, not replaces, hardware verification. Suggest this to the user rather than doing it unprompted.

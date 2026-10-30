@@ -55,10 +55,10 @@ repository": load it as a plugin rather than opening both repositories side by s
 
 | | Count | |
 |---|---|---|
-| **Agents** | 6 | `explorer`, `debugger`, `code-reviewer`, `test-writer`, `documentation-writer`, `esp32-firmware-engineer` |
-| **Commands** | 9 | `/ai-tools:commit`, `pr-description`, `adr`, `security-scan`, `test-focus`, `onboard-project`, `fastapi-endpoint`, `react-feature`, `toolkit-validate` |
-| **Skills** | 16 | API and database design, React and Angular patterns, testing, git workflows, debugging, domain modelling, UI verification, the `prepare-work` pipeline, Jira extraction, ESP32 serial monitoring |
-| **Rules** | 7 | Python, TypeScript, PowerShell, embedded C++, security, error handling, ADRs |
+| **Agents** | 4 | `explorer`, `code-reviewer`, `test-writer`, `esp32-firmware-engineer` |
+| **Commands** | 9 | `/ai-tools:commit`, `pr-description`, `adr`, `security-scan`, `onboard-project`, `setup-ai-tools`, `fastapi-endpoint`, `react-feature`, `toolkit-validate` |
+| **Skills** | 18 | API and database design, React and Angular patterns, git workflows, debugging, domain modelling, knowledge base, grilling (`grill-me`, `grill-with-docs`), UI verification, the `sdlc-run` pipeline (`sdlc-context`, `sdlc-plan`, `sdlc-implement`), Jira extraction, ESP32 serial monitoring |
+| **Rules** | 8 | Python, TypeScript, PowerShell, embedded C++, security, error handling, ADRs, knowledge base |
 | **Hooks** | 3 | destructive-command guard, credential-read guard, format-on-edit |
 
 Full inventory with descriptions and trigger conditions: [docs/CATALOG.md](docs/CATALOG.md).
@@ -131,7 +131,6 @@ in [CLAUDE.md](CLAUDE.md).
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the pieces fit and how distribution works
 - [docs/CATALOG.md](docs/CATALOG.md) — every component, what it does, when it triggers
 - [docs/COST-MODEL.md](docs/COST-MODEL.md) — where tokens go and the model policy
-- [docs/MIGRATION-2.0.md](docs/MIGRATION-2.0.md) — what changed in 2.0 and what to do about it
 - [docs/adr/](docs/adr/) — the decisions behind the structure
 
 ## License

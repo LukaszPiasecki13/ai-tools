@@ -1,6 +1,6 @@
 ---
 name: adr
-description: Record an architecture decision as a numbered ADR in docs/adr/.
+description: Record an architecture or business decision as a numbered ADR/BDR in docs/technical/adr/ or docs/business/bdr/.
 ---
 
 <!-- GENERATED FILE - DO NOT EDIT.
@@ -13,19 +13,20 @@ Decision to record: **$ARGUMENTS**
 
 ## Process
 
-1. **Find the ADR directory and the next number.** Look for `docs/adr/`, `docs/decisions/`,
-   or `doc/adr/`. Follow whatever naming the existing files use; where there are none, the
-   `architecture-decisions` rule sets the convention: `adr-NNN-short-title.md`, numbered
-   sequentially, never reusing a number. If no directory exists, ask where ADRs should live
-   before creating one.
+1. **Find the directory and the next number.** The `architecture-decisions` rule sets the
+   convention: technical decisions go to `docs/technical/adr/NNNN-slug.md`, business ones to
+   `docs/business/bdr/NNNN-slug.md`, numbered independently per directory and never reusing a
+   number. If the repo already has an ADR directory with a different layout (e.g. `docs/adr/`),
+   follow it. If none exists, ask where decisions should live before creating one.
 
 2. **Check for a superseded decision.** Grep existing ADRs for the same subject. If this
-   decision replaces one, the new ADR links back to it and the old one's status becomes
-   `Superseded by ADR-XXXX`. An ADR is never edited to reverse its own decision —
-   the record of what was decided and when is the point.
+   decision replaces one, the new ADR says "Zastępuje ADR-NNNN" in `## Notatki` and the old
+   one gets "Zastąpiony przez ADR-NNNN" in its `## Notatki`. An ADR is never edited to reverse
+   its own decision — the record of what was decided and when is the point.
 
-3. **Write it.** The `architecture-decisions` rule loads automatically in `docs/adr/` and
-   governs the format. The bar for each section:
+3. **Write it.** The `architecture-decisions` rule loads automatically in these directories and
+   governs the format (front-matter, section order). Write `status: Proposed`; only a human
+   sets `Accepted`. The bar for each section:
 
    - **Context** — the forces in play: constraints, deadlines, existing commitments,
      what breaks if nothing changes. A reader in a year must be able to tell whether the

@@ -17,6 +17,10 @@ uncommitted diff, falling back to the last commit when the tree is clean.
 
 Runs in an isolated context so the audit does not consume the main conversation's window.
 
+Claude Code uses the forked `code-reviewer` agent configured above. In the generated Copilot
+mirror, launch `code-reviewer` as a Local subagent; if that cannot be done, report the scan as
+limited rather than claiming an isolated review.
+
 ## Scope
 
 Start from the diff, then follow each change outward to the boundary it affects. A safe-looking
@@ -25,7 +29,7 @@ line inside an unsafe boundary is still a finding.
 ## Checks
 
 **Secrets** — hardcoded keys, tokens, passwords, connection strings; secrets in log
-statements, error messages, test fixtures, or committed config. Any hit is CRITICAL,
+statements, error messages, test fixtures, or committed config. Any confirmed exposure is BLOCKER,
 and the remediation includes rotating the exposed value, not just deleting the line.
 
 **AuthN/AuthZ** — every new endpoint states who may call it. Missing authorization is the
@@ -56,15 +60,17 @@ not reach the client response.
 
 ## Output
 
-One block per finding, most severe first:
+Use the shared finding schema, most severe first. Do not cap BLOCKER/MAJOR findings; group MINOR/INFO findings and return at most five, noting if more were omitted.
 
 ```
-[CRITICAL|HIGH|MEDIUM|LOW] path/to/file.py#L42 - <one-line claim>
-  Attack: concrete path from untrusted input to impact.
-  Evidence: the code that makes it possible.
+[BLOCKER|MAJOR|MINOR|INFO] path/to/file.py#L42 - <concise claim>
+  Category: security
+  Evidence: exact code or configuration that enables the issue.
+  Attack path: concrete source-to-impact path.
+  Scenario/impact: trigger and consequence.
   Fix: the specific change, and the safer of two options when there is a choice.
 ```
 
-End with a one-line verdict: what blocks merge, and what is acceptable to defer and why.
+Use `VERDICT: CLEAN`, `VERDICT: FINDINGS`, or `VERDICT: LIMITED`; state what blocks delivery and what can be deferred. Uncertain claims are `UNCLEAR`, not findings. Do not assign numeric confidence.
 Report no findings rather than padding the list — a scan that always finds something
 trains the reader to ignore it.
