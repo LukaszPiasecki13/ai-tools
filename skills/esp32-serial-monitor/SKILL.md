@@ -18,6 +18,16 @@ log lines to judge success/failure — for interactive, back-and-forth debugging
   ("what does the device print when I send X") or spans a multi-step protocol (activation,
   pairing, a config handshake) rather than a single build-then-verify cycle.
 
+## Prefer the PlatformIO MCP when connected
+
+If the `platformio` MCP server is available (tools `mcp__platformio__pio_*`), use it instead of
+the pyserial helper for most sessions: `pio_list_devices` (port detection, flags likely dev
+boards), `pio_monitor_start` → `pio_monitor_write` / `pio_monitor_read(wait_for=…)` →
+`pio_monitor_stop` (interactive session), `pio_monitor_capture` (bounded capture),
+`pio_decode_backtrace` (crash dumps). Fall back to the pyserial flow below when the server is
+not connected or you need custom parsing of the tagged log. Only one process can hold a COM
+port: stop MCP monitor sessions before running `esp32_serial.py`, and the reverse.
+
 ## Detection
 
 Identify available serial ports and match to the ESP32's USB-to-serial chip. The common

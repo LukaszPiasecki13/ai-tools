@@ -25,5 +25,25 @@
   }
 }
 
+// OPTION 3: PlatformIO MCP for ESP32 firmware projects (build/flash/monitor tools)
+// Setup, inside the project's venv (not globally): pip install platformio-mcp
+// (PyPI package "platformio.mcp"; needs Python >= 3.12 and PlatformIO Core installed).
+// If pip fails on the "mcp" index page with a gzip/chunked error, download the wheel from
+// files.pythonhosted.org and install it with --no-deps.
+// Policy: full | build_only | read_only. PROJECT_DIR = folder with platformio.ini.
+// Windows venv path shown; on Linux/macOS use ".venv/bin/platformio-mcp".
+{
+  "mcpServers": {
+    "platformio": {
+      "command": ".venv/Scripts/platformio-mcp.exe",
+      "env": {
+        "PLATFORMIO_MCP_POLICY": "full",
+        "PLATFORMIO_MCP_PROJECT_DIR": "firmware",
+        "PLATFORMIO_MCP_LOG_DIR": ".tmp/platformio-mcp-logs"
+      }
+    }
+  }
+}
+
 // Windows CHROME_PATH example:
 // "CHROME_PATH": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
