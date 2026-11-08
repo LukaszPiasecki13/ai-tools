@@ -257,6 +257,10 @@ autor był uruchomiony w innej sesji. Odnotuj wariant w `model_notes`.
    Claude Code. W innym hoście (np. Copilot: `runSubagent`) użyj odpowiedników; jeśli host nie pozwala
    wybrać modelu, zapisz w `Plan metrics` faktycznie użyty model. Brak możliwości uruchomienia
    subagentów = STOP z opisem naprawy, bez udawania review samodzielnie.
+7. **Artefakty procesu zostają w `{task_dir}`.** W plikach repo (kod, komentarze, testy, dokumentacja,
+   ADR) nie ma identyfikatorów `DEC`/`AC`, kroków planu ani znalezisk review, nazwy runu, odwołań do
+   `{task_dir}` ani dat sesji pracy; pisz fakty, nie historię ich ustalania. Zasada ma numer 13 w
+   `sdlc-implement`; prompty subagentów piszących kod lub dokumentację przekazują ją skrótem.
 
 ## 8. Wspólna skala znalezisk (review planu i kodu)
 

@@ -54,6 +54,17 @@ Paths used below: `{drift_check}` = `${CLAUDE_SKILL_DIR}/../sdlc-run/scripts/dri
 12. **"Good code" checklist** applies only when the repository has no more specific standard: SOLID,
     small single-responsibility functions, DI over hardcoded dependencies, DRY, no dead code/unused
     imports, clear naming. Report violations only when they create concrete maintainability risk.
+13. **Repo files carry no process artifacts.** The run's bookkeeping stays in `{task_dir}` (ledger,
+    review report, `Historia`); it never leaks into code comments, test names or comments,
+    documentation or ADR bodies. Forbidden there: `DEC-NN`/`AC-NN`, plan step IDs (`S0`, `S13`),
+    review finding IDs (`F-6`, `S-01`, `RV-12`), the slug/run id, references to `{task_dir}` or the
+    plan, phrases such as "user decision", "approved", "per plan", "pending approval", and dates of
+    the work session ("verified 2026-11-07"; git history has them). Write the fact, not the story of
+    how it was reached: a comment says why the code is the way it is, a doc describes the current
+    state. A date stays only when it is data (certificate validity, `last_reviewed` metadata).
+    Allowed: identifiers the repo itself defines and tracks (ADR-NNNN, BDR-NNNN, ticket keys it
+    uses). Enforced three times: at write time (Phase 2), by R1 (Phase 4) and by the sweep in
+    Phase 6.
 
 ---
 
@@ -187,8 +198,9 @@ baseline before each write; never overwrite a path that was already changed at b
    - After the red run, change a test only when the test itself is wrong, and record why; R1 checks
      these records.
 2. **Code, step by step.** Implement the plan's `Kroki` in order. After each step run its `Bramka`
-   and keep it green before the next step. Trace each change to its `DEC`/`AC`; do not add comments
-   that merely repeat the plan.
+   and keep it green before the next step. Trace each change to its `DEC`/`AC` in the ledger
+   (`Files written`), never in repo files (rule 13); do not add comments that merely repeat the plan
+   or narrate the process.
 3. **Formatter/lint per step** with the ledger commands, scoped to changed files where the tool
    allows; fix mechanical findings immediately (tooling, not a review round).
 
@@ -248,7 +260,8 @@ finding, the orchestrator does not look it up elsewhere.
 
 Run a fresh, read-only `code-reviewer` subagent (contract, section 6, `I-2`). R1 reviews the full
 task delta against the accepted plan, every `AC`/`DEC`, test adequacy, relevant contracts and ADRs,
-and checks that every test changed after its red run has a recorded reason. Return an `AC`/`DEC`
+and checks that every test changed after its red run has a recorded reason. It also reports process
+artifacts in repo files (rule 13) as `MINOR`, citing file and line. Return an `AC`/`DEC`
 coverage matrix (`satisfied` / `gap` / `unclear` / `N/A` with evidence or reason); every `gap` is a
 finding. Findings use the scale in contract, section 8. Do not edit files.
 
@@ -294,14 +307,20 @@ risk (a `BLOCKER` can never be accepted; contract, section 8). Proceed only when
 
 ## Phase 6 — Final confirmation and E2E
 
-1. **Final deterministic run.** If any code or test changed after the last full Phase 3 run, re-run
-   Phase 3 once over the whole delta; otherwise the last Phase 3 results are final (say so in the
-   ledger).
-2. **Edits after R2.** If a failure here requires a code or test edit after R2 already ran, run one
+1. **Hygiene sweep (rule 13).** Search every added or changed file of the task delta (excluding
+   baseline paths) for process artifacts: the plan's `DEC-`/`AC-` ids, its step ids, review finding
+   ids, the slug and run id, `{task_dir}` paths, the phrases listed in rule 13, and session dates.
+   Remove them or rewrite the line as a plain fact. Edits that only touch comments, docs or ADR
+   text do not count as code edits for step 3 and do not reopen review, but step 2 still applies.
+   Record the sweep result in the ledger.
+2. **Final deterministic run.** If any code or test changed after the last full Phase 3 run (the
+   sweep included), re-run Phase 3 once over the whole delta; otherwise the last Phase 3 results are
+   final (say so in the ledger).
+3. **Edits after R2.** If a failure here requires a code or test edit after R2 already ran, run one
    bounded fresh review (`I-4`) limited to files changed since R2, same schema. This does not open
    R3; a `BLOCKER`/`MAJOR` there is a Phase 5 STOP. If R2 was skipped, the edit triggers the R2
    required by Phase 5. Never treat a review of an earlier candidate as validation of later edits.
-3. **E2E** only when `ui: true` in `_context.md`:
+4. **E2E** only when `ui: true` in `_context.md`:
    - If the `e2e` row of `Komendy weryfikacji` names a test command, run only the specs that cover
      the plan's E2E checklist.
    - Run the plan's `### E2E` checklist through one fresh `general-purpose` subagent (`I-5`) with
@@ -321,7 +340,7 @@ Record pass/fail counts in the ledger.
 
 Apply any documentation update the plan explicitly lists as required. Beyond that, only edit docs if Phase 5's `DOC UPDATE CANDIDATES` (or your own observation) shows the implementation genuinely diverges from or extends what a referenced doc states — e.g. a new module not in the dependency diagram, a new table not in the module definitions, a rule that's now stricter/looser than documented.
 
-If found: edit only the specific section, cite the plan (`{plan_path}`) as the source, keep the edit scoped (~200 words), and do not touch unrelated sections. If nothing diverges, state explicitly *"Docs zgodne z implementacją, brak zmian"* and move on — do not add a changelog entry for its own sake.
+If found: edit only the specific section, keep the edit scoped (~200 words), and do not touch unrelated sections. Describe the current state, not the change history, and do not cite the plan or other `{task_dir}` artifacts (they live outside the repo; rule 13). A fact stays in one place: link to it instead of repeating it in another document or in an ADR. If nothing diverges, state explicitly *"Docs zgodne z implementacją, brak zmian"* and move on — do not add a changelog entry for its own sake.
 
 ---
 
