@@ -130,3 +130,48 @@ class TestDetectProfiles(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestInstallCommitInstructions(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.destination = Path(self._tmp.name)
+
+    def test_fresh_install_writes_instructions_and_points_the_setting_at_them(self) -> None:
+        install.install_commit_instructions(self.destination, dry_run=False)
+
+        instructions = self.destination / ".github" / "commit-instructions.md"
+        template = ROOT / "templates" / "project" / "commit-instructions.md"
+        self.assertEqual(instructions.read_text(encoding="utf-8"), template.read_text(encoding="utf-8"))
+
+        settings = json.loads((self.destination / ".vscode" / "settings.json").read_text(encoding="utf-8"))
+        self.assertEqual(
+            settings[install.COMMIT_INSTRUCTIONS_SETTING],
+            [{"file": ".github/commit-instructions.md"}],
+        )
+
+    def test_existing_settings_file_is_left_untouched(self) -> None:
+        settings = self.destination / ".vscode" / "settings.json"
+        settings.parent.mkdir()
+        original = '{\n    // keep my comment\n    "editor.tabSize": 2\n}\n'
+        settings.write_text(original, encoding="utf-8")
+
+        install.install_commit_instructions(self.destination, dry_run=False)
+
+        self.assertEqual(settings.read_text(encoding="utf-8"), original)
+        self.assertTrue((self.destination / ".github" / "commit-instructions.md").exists())
+
+    def test_existing_instructions_are_not_overwritten(self) -> None:
+        instructions = self.destination / ".github" / "commit-instructions.md"
+        instructions.parent.mkdir()
+        instructions.write_text("my own rules\n", encoding="utf-8")
+
+        install.install_commit_instructions(self.destination, dry_run=False)
+
+        self.assertEqual(instructions.read_text(encoding="utf-8"), "my own rules\n")
+
+    def test_dry_run_writes_nothing(self) -> None:
+        install.install_commit_instructions(self.destination, dry_run=True)
+
+        self.assertEqual(list(self.destination.iterdir()), [])

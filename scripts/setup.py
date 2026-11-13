@@ -90,6 +90,7 @@ def setup_project(project_path: Path) -> None:
         "--only",
         ",".join(rules),
         "--settings",
+        "--commit-instructions",
     ]
 
     result = subprocess.run(cmd, capture_output=False)

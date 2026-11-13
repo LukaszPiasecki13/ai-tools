@@ -29,7 +29,13 @@ cd ai-tools
 python scripts/install.py --user                    # every project on this machine
 python scripts/install.py --target ../my-project    # one project, rules matched to its stack
 python scripts/install.py --list                    # what is available
+python scripts/install.py --target ../my-project --commit-instructions   # VS Code Source Control ✨ button
 ```
+
+The ✨ button in VS Code's Source Control view is a GitHub Copilot feature, so the `/commit` skill
+does not drive it. `--commit-instructions` adds `.github/commit-instructions.md` and points the
+`github.copilot.chat.commitMessageGeneration.instructions` setting at it, so the button produces
+the same `<area>/ <type>(<scope>): <subject>` messages as `/commit`.
 
 The installer detects the stack from `pyproject.toml`, `package.json`, `platformio.ini` and
 friends, and installs only the matching rules — an irrelevant rule costs context in every

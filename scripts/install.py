@@ -11,6 +11,7 @@ Typical use:
     python scripts/install.py --user                      # rules for every project on this machine
     python scripts/install.py --target ../my-project      # rules for one project
     python scripts/install.py --target ../my-project --settings
+    python scripts/install.py --target ../my-project --commit-instructions
     python scripts/install.py --list
 
 Re-running is safe: files this installer wrote are refreshed, and anything it did not write is
@@ -176,6 +177,45 @@ def install_settings(destination: Path, dry_run: bool) -> None:
     print(f"  installed settings.json -> {target}")
 
 
+COMMIT_INSTRUCTIONS_SETTING = "github.copilot.chat.commitMessageGeneration.instructions"
+COMMIT_INSTRUCTIONS_FILE = Path(".github") / "commit-instructions.md"
+
+
+def install_commit_instructions(destination: Path, dry_run: bool) -> None:
+    """Teach the VS Code Source Control ✨ button (GitHub Copilot) the commit-message convention.
+
+    The button is a Copilot feature, so the `/commit` skill never sees it. It reads instructions
+    from the `github.copilot.chat.commitMessageGeneration.instructions` setting, which here
+    points at a Markdown file inside the repo so the whole team shares one convention.
+
+    Never rewrites a file that already exists: `.vscode/settings.json` may hold comments and
+    hand formatting, so when it is present the snippet is printed instead of merged.
+    """
+    template = ROOT / "templates" / "project" / "commit-instructions.md"
+    instructions = destination / COMMIT_INSTRUCTIONS_FILE
+    settings = destination / ".vscode" / "settings.json"
+    snippet = {COMMIT_INSTRUCTIONS_SETTING: [{"file": COMMIT_INSTRUCTIONS_FILE.as_posix()}]}
+
+    if instructions.exists():
+        print(f"  skipped commit instructions: {instructions} already exists")
+    elif dry_run:
+        print(f"  would install commit-instructions.md -> {instructions}")
+    else:
+        instructions.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(template, instructions)
+        print(f"  installed commit-instructions.md -> {instructions}")
+
+    if settings.exists():
+        body = json.dumps(snippet, indent=4)[1:-1].strip()
+        print(f"  add to {settings} by hand:\n    {body}")
+    elif dry_run:
+        print(f"  would create {settings}")
+    else:
+        settings.parent.mkdir(parents=True, exist_ok=True)
+        settings.write_text(json.dumps(snippet, indent=4) + "\n", encoding="utf-8")
+        print(f"  created {settings}")
+
+
 def _looks_like_kb_validator(path: Path, name: str) -> bool:
     marker = KB_VALIDATOR_MARKERS.get(name)
     if marker is None:
@@ -240,6 +280,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--only", default="", help="comma-separated rule names, overriding stack detection")
     parser.add_argument("--settings", action="store_true", help="also install the project settings template")
     parser.add_argument(
+        "--commit-instructions", action="store_true",
+        help="also set up commit-message instructions for the VS Code Source Control button (requires --target)",
+    )
+    parser.add_argument(
         "--validator", action="store_true",
         help="also install the knowledge-base validator into scripts/ (requires --target)",
     )
@@ -260,6 +304,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.validator and args.user:
         parser.error("--validator installs into a project's scripts/ - use --target, not --user")
+
+    if args.commit_instructions and args.user:
+        parser.error("--commit-instructions writes into a project's .github/ and .vscode/ - use --target, not --user")
 
     if args.user:
         destination = Path.home()
@@ -282,6 +329,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.settings and not args.user:
         install_settings(destination, args.dry_run)
+        did_something = True
+
+    if args.commit_instructions and not args.user:
+        install_commit_instructions(destination, args.dry_run)
         did_something = True
 
     if args.validator and not args.user:
