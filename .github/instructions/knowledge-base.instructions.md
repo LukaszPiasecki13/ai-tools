@@ -34,8 +34,11 @@ Zasady niezależne od schematu:
 3. **Decyzja idzie do ADR**, nie do planu. Warunki łącznie: nieodwracalna,
    nieoczywista, był realny wybór. Format ADR ustala reguła `architecture-decisions`.
 4. **Nowe pojęcie domenowe → `CONTEXT.md` natychmiast**, z listą `_Unikać_`.
-5. **Nic nie kasujesz** — zastąpiony lub zamknięty dokument zostaje w repo, z
-   dopiskiem w treści i linkiem do następcy (konwencję lokalizacji wybiera projekt).
+5. **Nieaktualne usuwasz, nie archiwizujesz.** Treść zastąpiona, wycofana lub
+   przestarzała znika z dokumentu (historię trzyma git). W dokumencie nie zostaje
+   opis tego, jak było dawniej, ani wzmianka „zastąpiono X”. Wyjątek: ADR — decyzji
+   nie edytuje się, by ją odwrócić; zastąpienie oznacza „Zastąpiony przez” w starym
+   ADR-ze i „Zastępuje” w nowym (reguła `architecture-decisions`).
 6. **Zmiana nagłówka zrywa kotwice** — napraw linkujące dokumenty w tym commicie.
 7. **Nowy dokument → wpis w `docs/00_KNOWLEDGE-MAP.md`** w tym samym commicie.
 8. **Zmiana kodu z `applies_to`** → aktualizacja dokumentu i nowe `last_reviewed`,
