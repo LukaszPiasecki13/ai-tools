@@ -33,12 +33,16 @@ main (production)
 
 ### Format
 ```
-type(scope): subject
+area/ type(scope): subject
 
 body (optional - explain WHY, not WHAT)
 
 footer (optional - references, breaking changes)
 ```
+
+`area/` is the top-level part of the repo the change touches (`backend/`, `frontend/`,
+`firmware/`, `docs/` in a monorepo). Omit it only in single-package repos. A commit touches
+one area; split changes that span several.
 
 ### Types
 | Type | Use for |
@@ -53,10 +57,10 @@ footer (optional - references, breaking changes)
 
 ### Examples
 ```
-feat(auth): add JWT refresh token rotation
-fix(api): handle null response from BigQuery
-docs(readme): update deployment steps
-refactor(dashboard): extract chart component
+backend/ feat(auth): add JWT refresh token rotation
+backend/ fix(api): handle null response from BigQuery
+docs/ docs: update deployment steps
+frontend/ refactor(dashboard): extract chart component
 ```
 
 ## Pull Request Workflow

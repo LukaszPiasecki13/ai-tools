@@ -27,9 +27,10 @@ Recent messages (match their style):
 
 ## Process
 
-1. **Detect project area** — Analyze changed files to determine if they belong to `backend/`,
-   `frontend/`, `firmware/`, or `docs/`. If changes span multiple areas, flag it and suggest
-   splitting into separate commits. This prefix will be prepended to the scope.
+1. **Detect project area** — Analyze changed files to determine the top-level area they belong
+   to (in a monorepo typically `backend/`, `frontend/`, `firmware/`, `docs/`; otherwise the
+   top-level directory that holds the change). If changes span multiple areas, flag it and
+   suggest splitting into separate commits. The area opens the subject line.
 
 2. **Read the actual diff** — `git diff` and `git diff --cached`. Write the message from what
    the code does, never from the file names alone.
@@ -41,31 +42,37 @@ Recent messages (match their style):
 4. **Never stage** `.env`, credentials, key material, local settings (`settings.local.json`),
    build output, or anything matched by `.gitignore`. If `git status` shows one, stop and say so.
 
-5. **Write the message** in Conventional Commits form with detected prefix:
+5. **Write the message** in Conventional Commits form, preceded by the detected area:
 
    ```
-   <type>(<prefix>/<scope>): <subject in imperative mood, <=72 chars>
+   <area>/ <type>(<scope>): <subject in imperative mood, <=72 chars>
 
    <body: why the change was needed, what it changes, what it deliberately does not>
 
    <footer: BREAKING CHANGE: ... / refs #123>
    ```
 
-   **Prefix:** `backend`, `frontend`, `firmware`, or `docs` (auto-detected).
-   **Scope:** optional, from `$ARGUMENTS` or inferred (e.g., `security`, `auth`, `ui`).
+   **Area:** always first, followed by `/` and a space: `backend/`, `frontend/`, `firmware/`,
+   `docs/` (auto-detected; use the project's own top-level directories if they differ).
+   Omit it only when the repo has no such split (single-package repo).
+   **Scope:** optional, in parentheses after the type, from `$ARGUMENTS` or inferred
+   (e.g., `security`, `auth`, `ui`).
    **Types:** `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `build`, `ci`, `chore`.
    Omit the body only when the subject genuinely says everything.
 
-   **Example:** `fix(backend/security): remove inline import from validate_password_length`
+   **Examples:**
+   `backend/ feat: add device command retry policy`
+   `firmware/ fix(modem): release reset pin on power-on`
+   `docs/ docs: describe remote commands flow`
 
 6. **Show the message and the file list, then ask for approval.** Commit only after the user
    confirms. `$ARGUMENTS`, if given, is an additional scope note or type override (e.g., `auth`
-   to narrow the prefix-detected area).
+   to narrow the scope).
 
 7. **Do not push.** Pushing is a separate, explicit decision.
 
 ## Message quality bar
 
-- Subject says what changed, not that something changed: `fix(auth): reject tokens signed with none` beats `fix: bug fix`.
+- Subject says what changed, not that something changed: `backend/ fix(auth): reject tokens signed with none` beats `backend/ fix: bug fix`.
 - The body answers "why now", not "what the diff shows" — the diff already shows that.
 - No model names, tool names, or session identifiers in the message.

@@ -62,7 +62,7 @@ Paths used below: `{drift_check}` = `${CLAUDE_SKILL_DIR}/../sdlc-run/scripts/dri
     documentation or ADR bodies. Forbidden there: `DEC-NN`/`AC-NN`, plan step IDs (`S0`, `S13`),
     review finding IDs (`F-6`, `S-01`, `RV-12`), the slug/run id, references to `{task_dir}` or the
     plan, phrases such as "user decision", "approved", "per plan", "pending approval", and dates of
-    the work session. Write the fact, not the story of
+    the work session ("verified 2026-11-07"; git history has them). Write the fact, not the story of
     how it was reached: a comment says why the code is the way it is, a doc describes the current
     state. A date stays only when it is data (certificate validity, `last_reviewed` metadata).
     Allowed: identifiers the repo itself defines and tracks (ADR-NNNN, BDR-NNNN, ticket keys it

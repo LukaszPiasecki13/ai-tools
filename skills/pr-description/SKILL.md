@@ -62,5 +62,5 @@ Changed files:
 
 ## Title
 
-`<type>(<scope>): <what changed>` — same vocabulary as the commit messages, one line,
+`<area>/ <type>(<scope>): <what changed>` — same vocabulary as the commit messages, one line,
 no trailing period.
