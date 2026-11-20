@@ -73,6 +73,11 @@ Paths used below: `{drift_check}` = `${CLAUDE_SKILL_DIR}/../sdlc-run/scripts/dri
 Claude Code is primary: `Glob`/`Read` for discovery, `Edit`/`Write` for files, `Agent` for fresh
 subagents with the exact `subagent_type`, `AskUserQuestion` for decisions.
 
+Every question to the user must be self-contained (contract, section 7, rule 8): the user may see
+only the question dialog, so put the **problem** (the finding's content, not just `F-6`/`R2`/`MAJOR`),
+its **consequence**, the **options** with consequences, and a **recommendation** (first option,
+marked `(Recommended)`) inside the `question` field itself, never only in text before the call.
+
 - **Model.** Run the main thread on Sonnet (`/model sonnet`); use Opus only when the user chooses
   it. Record the model actually used in `Implementation metrics`.
 - **Integrations.** Use Azure DevOps or memory integrations only when configured; otherwise report

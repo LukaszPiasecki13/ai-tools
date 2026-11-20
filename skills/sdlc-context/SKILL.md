@@ -131,6 +131,8 @@ Haiku, cel około 8 tur, zwraca fakt i źródło, maks. 100 słów).
 2. Zadawaj decyzje **po jednej**, bez limitu liczby, w kolejności od najbardziej wpływającej na
    resztę. Każde pytanie zawiera fakt z repo, rekomendację i konsekwencję alternatywy; użyj narzędzia
    pytań hosta (`AskUserQuestion` w Claude Code) z opcjami, jeśli decyzja ma skończony zbiór.
+   Pytanie jest samowystarczalne (contract, sekcja 7, zasada 8): problem, skutek i rekomendacja
+   stoją w polu pytania, nie w tekście przed nim.
 3. Nie pytaj o to, co ustalisz z repo lub `01-context.md`; nie powtarzaj zamkniętych decyzji.
 4. Decyzja sprzeczna z `Accepted` ADR to jawny punkt do rozstrzygnięcia przez usera, nie ciche
    obejście.

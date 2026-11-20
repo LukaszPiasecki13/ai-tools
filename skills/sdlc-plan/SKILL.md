@@ -194,7 +194,9 @@ każdy `BLOCKER` był `RESOLVED`, a każdy `MAJOR` był `RESOLVED` albo `ACCEPTE
 2. Są `BLOCKER`/`MAJOR`: `P-5` (wznowiony autor, fallback: nowe wywołanie; zakres tylko
    zakwestionowane fragmenty), ponowny lint, potem `P-6` (R2): nowy `code-reviewer`, pełny zakres,
    weryfikuje poprawki i regresje.
-3. Po R2 został nierozwiązany `BLOCKER`/`MAJOR`: STOP i pytanie do usera. **R3 tylko na jawną zgodę.**
+3. Po R2 został nierozwiązany `BLOCKER`/`MAJOR`: STOP i pytanie do usera, wg contract, sekcja 7,
+   zasada 8: w polu pytania opisz każde otwarte znalezisko (treść, nie sam identyfikator), skutek i
+   opcje z rekomendacją. **R3 tylko na jawną zgodę.**
 
 ## Gate P - akceptacja planu (blokująca)
 
@@ -203,7 +205,8 @@ każdy `BLOCKER` był `RESOLVED`, a każdy `MAJOR` był `RESOLVED` albo `ACCEPTE
    są dopisane do `Drift snapshot`, więc `sdlc-implement` sprawdzi także je.
 2. Pokaż: listę kroków, podsumowanie macierzy, status lintu i review, otwarte punkty z obu plików
    (każdy `RESOLVED` albo `ACCEPTED-BY-USER` z wagą i konsekwencją).
-3. Poproś o jedną decyzję. Opcje 1 i 2 są **niedostępne**, dopóki jakikolwiek `BLOCKER` nie jest
+3. Poproś o jedną decyzję (pytanie samowystarczalne wg contract, sekcja 7, zasada 8; ryzyka
+   zaakceptowane przez usera opisz treścią, nie identyfikatorem). Opcje 1 i 2 są **niedostępne**, dopóki jakikolwiek `BLOCKER` nie jest
    `RESOLVED` albo jakikolwiek `MAJOR` jest `OPEN` (user może `MAJOR` jawnie oznaczyć
    `ACCEPTED-BY-USER`; `BLOCKER` - nigdy, contract sekcja 8).
 

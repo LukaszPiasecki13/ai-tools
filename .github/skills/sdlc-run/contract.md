@@ -261,6 +261,18 @@ autor był uruchomiony w innej sesji. Odnotuj wariant w `model_notes`.
    ADR) nie ma identyfikatorów `DEC`/`AC`, kroków planu ani znalezisk review, nazwy runu, odwołań do
    `{task_dir}` ani dat sesji pracy; pisz fakty, nie historię ich ustalania. Zasada ma numer 13 w
    `sdlc-implement`; prompty subagentów piszących kod lub dokumentację przekazują ją skrótem.
+8. **Każde pytanie do usera jest samowystarczalne** (STOP, Gate, wybór opcji, akceptacja ryzyka).
+   User może widzieć tylko okno pytania: wcześniejszy tekst bywa zwinięty, a pliki `{task_dir}` są
+   mu nieznane. Dlatego treść trafia **do samego pola pytania** (`question` w `AskUserQuestion`), nie
+   do wiadomości przed nim. Pytanie zawiera, w tej kolejności:
+   - **Problem:** co konkretnie się stało lub czego brakuje - treść znaleziska własnymi słowami
+     (plik/sekcja, cytat lub fakt), nie same identyfikatory (`F-6`, `R2`, `MAJOR`, `Gate P`) bez
+     rozwinięcia;
+   - **Skutek:** co się stanie, jeśli zostanie jak jest;
+   - **Opcje:** każda z jednozdaniową konsekwencją (koszt, ryzyko, co zostaje zrobione);
+   - **Rekomendacja:** pierwsza opcja z dopiskiem `(Recommended)` i jednozdaniowym "dlaczego".
+   Test: czy osoba, która nie widziała rozmowy, wie, o co chodzi i co wybrać? Pytanie bez opisu
+   problemu jest błędem procedury - dopisz opis przed wysłaniem. Dotyczy też `sdlc-implement`.
 
 ## 8. Wspólna skala znalezisk (review planu i kodu)
 
